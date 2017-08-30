@@ -29,7 +29,8 @@
 
 - (void)cameraVC{
     CameraViewController *cVC = [[CameraViewController alloc] init];
-    [self.navigationController pushViewController:cVC animated:YES];
+    [self presentViewController:cVC animated:YES completion:nil];
+    
 }
 
 - (void)didReceiveMemoryWarning {
