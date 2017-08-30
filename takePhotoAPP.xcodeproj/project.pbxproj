@@ -456,7 +456,7 @@
 				DEVELOPMENT_TEAM = 5VMXNS7PPW;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = /Users/admin/Desktop/takePhotoAPP/takePhotoAPP/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/PrefixHeader.pch";
 				INFOPLIST_FILE = takePhotoAPP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = takePhotoAPP.takePhotoAPP;
@@ -471,7 +471,7 @@
 				DEVELOPMENT_TEAM = 5VMXNS7PPW;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = /Users/admin/Desktop/takePhotoAPP/takePhotoAPP/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/PrefixHeader.pch";
 				INFOPLIST_FILE = takePhotoAPP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = takePhotoAPP.takePhotoAPP;
@@ -548,6 +548,7 @@
 				8363E9AA1F4C4C24004B7ACA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8363E9AB1F4C4C24004B7ACA /* Build configuration list for PBXNativeTarget "takePhotoAPPTests" */ = {
 			isa = XCConfigurationList;
@@ -556,6 +557,7 @@
 				8363E9AD1F4C4C24004B7ACA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8363E9AE1F4C4C24004B7ACA /* Build configuration list for PBXNativeTarget "takePhotoAPPUITests" */ = {
 			isa = XCConfigurationList;
@@ -564,6 +566,7 @@
 				8363E9B01F4C4C24004B7ACA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
