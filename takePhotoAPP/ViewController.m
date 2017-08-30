@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "CameraViewController.h"
 @interface ViewController ()
 
 @end
@@ -17,8 +17,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    UIButton *but = [UIButton buttonWithType:UIButtonTypeCustom];
+    but.frame = CGRectMake(20, 20, 100, 30);
+    but.backgroundColor = [UIColor orangeColor];
+    [but setTitle:@"镜头" forState:UIControlStateNormal];
+    [but addTarget:self action:@selector(cameraVC) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:but];
+    
 }
 
+- (void)cameraVC{
+    CameraViewController *cVC = [[CameraViewController alloc] init];
+    [self.navigationController pushViewController:cVC animated:YES];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
