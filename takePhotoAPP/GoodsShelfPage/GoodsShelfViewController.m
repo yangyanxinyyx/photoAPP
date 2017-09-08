@@ -43,7 +43,7 @@
     static NSString *identifier = @"goodsShelfCell";
     GoodsShelfTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     if (cell == nil) {
-        GoodsShelfTableViewCell *cell = [[GoodsShelfTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+        cell = [[GoodsShelfTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
     }
     return cell;
 }
