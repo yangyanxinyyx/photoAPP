@@ -10,7 +10,6 @@
 		8363E9801F4C4C24004B7ACA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E97F1F4C4C24004B7ACA /* main.m */; };
 		8363E9831F4C4C24004B7ACA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9821F4C4C24004B7ACA /* AppDelegate.m */; };
 		8363E9861F4C4C24004B7ACA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9851F4C4C24004B7ACA /* ViewController.m */; };
-		8363E9891F4C4C24004B7ACA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8363E9871F4C4C24004B7ACA /* Main.storyboard */; };
 		8363E98B1F4C4C24004B7ACA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8363E98A1F4C4C24004B7ACA /* Assets.xcassets */; };
 		8363E98E1F4C4C24004B7ACA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8363E98C1F4C4C24004B7ACA /* LaunchScreen.storyboard */; };
 		8363E9991F4C4C24004B7ACA /* takePhotoAPPTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9981F4C4C24004B7ACA /* takePhotoAPPTests.m */; };
@@ -18,7 +17,15 @@
 		8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9B71F4C4E30004B7ACA /* GoodsShelfViewController.m */; };
 		8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9BA1F4D1708004B7ACA /* GoodsShelfTableViewCell.m */; };
 		8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9CD1F4D1DBF004B7ACA /* GoodsShelfModel.m */; };
-		84378DA01F56699000DFD242 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84378D9F1F56699000DFD242 /* CameraViewController.m */; };
+		A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A75803F41F63DE8D00DADBE1 /* CameraViewController.m */; };
+		A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */; };
+		A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD61F64EAB9004859D0 /* GoodsShelfPreViewViewController.m */; };
+		A7676DDC1F64EAB9004859D0 /* GSChoosePhotosView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD91F64EAB9004859D0 /* GSChoosePhotosView.m */; };
+		A7676DE11F64EAD3004859D0 /* CameraBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DDF1F64EAD3004859D0 /* CameraBaseViewController.m */; };
+		A7676DE31F651F01004859D0 /* 000.JPG in Resources */ = {isa = PBXBuildFile; fileRef = A7676DE21F651F01004859D0 /* 000.JPG */; };
+		A7676DE91F6553BB004859D0 /* UIImage+imageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DE81F6553BB004859D0 /* UIImage+imageHelper.m */; };
+		A7676DEC1F657FE3004859D0 /* GSThumbnailViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */; };
+		A7676DEF1F65814E004859D0 /* GSImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DEE1F65814E004859D0 /* GSImage.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,7 +52,6 @@
 		8363E9821F4C4C24004B7ACA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		8363E9841F4C4C24004B7ACA /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		8363E9851F4C4C24004B7ACA /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		8363E9881F4C4C24004B7ACA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8363E98A1F4C4C24004B7ACA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8363E98D1F4C4C24004B7ACA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8363E98F1F4C4C24004B7ACA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -62,8 +68,24 @@
 		8363E9BA1F4D1708004B7ACA /* GoodsShelfTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfTableViewCell.m; sourceTree = "<group>"; };
 		8363E9CC1F4D1DBF004B7ACA /* GoodsShelfModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfModel.h; sourceTree = "<group>"; };
 		8363E9CD1F4D1DBF004B7ACA /* GoodsShelfModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfModel.m; sourceTree = "<group>"; };
-		84378D9E1F56699000DFD242 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraViewController.h; sourceTree = "<group>"; };
-		84378D9F1F56699000DFD242 /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraViewController.m; sourceTree = "<group>"; };
+		A75803F31F63DE8D00DADBE1 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraViewController.h; sourceTree = "<group>"; };
+		A75803F41F63DE8D00DADBE1 /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraViewController.m; sourceTree = "<group>"; };
+		A7676DD31F64EAB9004859D0 /* CustomCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCollectionViewLayout.h; sourceTree = "<group>"; };
+		A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCollectionViewLayout.m; sourceTree = "<group>"; };
+		A7676DD51F64EAB9004859D0 /* GoodsShelfPreViewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfPreViewViewController.h; sourceTree = "<group>"; };
+		A7676DD61F64EAB9004859D0 /* GoodsShelfPreViewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfPreViewViewController.m; sourceTree = "<group>"; };
+		A7676DD81F64EAB9004859D0 /* GSChoosePhotosView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSChoosePhotosView.h; sourceTree = "<group>"; };
+		A7676DD91F64EAB9004859D0 /* GSChoosePhotosView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSChoosePhotosView.m; sourceTree = "<group>"; };
+		A7676DDE1F64EAD3004859D0 /* CameraBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraBaseViewController.h; sourceTree = "<group>"; };
+		A7676DDF1F64EAD3004859D0 /* CameraBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraBaseViewController.m; sourceTree = "<group>"; };
+		A7676DE01F64EAD3004859D0 /* CameraUIConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraUIConstant.h; sourceTree = "<group>"; };
+		A7676DE21F651F01004859D0 /* 000.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 000.JPG; sourceTree = "<group>"; };
+		A7676DE71F6553BB004859D0 /* UIImage+imageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+imageHelper.h"; sourceTree = "<group>"; };
+		A7676DE81F6553BB004859D0 /* UIImage+imageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+imageHelper.m"; sourceTree = "<group>"; };
+		A7676DEA1F657FE3004859D0 /* GSThumbnailViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSThumbnailViewCell.h; sourceTree = "<group>"; };
+		A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSThumbnailViewCell.m; sourceTree = "<group>"; };
+		A7676DED1F65814E004859D0 /* GSImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSImage.h; sourceTree = "<group>"; };
+		A7676DEE1F65814E004859D0 /* GSImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSImage.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,17 +136,14 @@
 		8363E97D1F4C4C24004B7ACA /* takePhotoAPP */ = {
 			isa = PBXGroup;
 			children = (
+				A7676DE61F655380004859D0 /* Category */,
+				A7676DE21F651F01004859D0 /* 000.JPG */,
 				8363E9811F4C4C24004B7ACA /* AppDelegate.h */,
 				8363E9821F4C4C24004B7ACA /* AppDelegate.m */,
-				8363E9B41F4C4D2E004B7ACA /* PrefixHeader.pch */,
 				8363E9841F4C4C24004B7ACA /* ViewController.h */,
 				8363E9851F4C4C24004B7ACA /* ViewController.m */,
-				84378D9D1F56697900DFD242 /* Camera */,
+				A7C931CC1F63B0A600EC1AD9 /* CameraPage */,
 				8363E9B51F4C4E30004B7ACA /* GoodsShelfPage */,
-				8363E9871F4C4C24004B7ACA /* Main.storyboard */,
-				8363E98A1F4C4C24004B7ACA /* Assets.xcassets */,
-				8363E98C1F4C4C24004B7ACA /* LaunchScreen.storyboard */,
-				8363E98F1F4C4C24004B7ACA /* Info.plist */,
 				8363E97E1F4C4C24004B7ACA /* Supporting Files */,
 			);
 			path = takePhotoAPP;
@@ -133,6 +152,10 @@
 		8363E97E1F4C4C24004B7ACA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8363E98A1F4C4C24004B7ACA /* Assets.xcassets */,
+				8363E98C1F4C4C24004B7ACA /* LaunchScreen.storyboard */,
+				8363E9B41F4C4D2E004B7ACA /* PrefixHeader.pch */,
+				8363E98F1F4C4C24004B7ACA /* Info.plist */,
 				8363E97F1F4C4C24004B7ACA /* main.m */,
 			);
 			name = "Supporting Files";
@@ -169,13 +192,59 @@
 			path = GoodsShelfPage;
 			sourceTree = "<group>";
 		};
-		84378D9D1F56697900DFD242 /* Camera */ = {
+		A7676DD21F64EAB9004859D0 /* PreViewPhotos */ = {
 			isa = PBXGroup;
 			children = (
-				84378D9E1F56699000DFD242 /* CameraViewController.h */,
-				84378D9F1F56699000DFD242 /* CameraViewController.m */,
+				A7676DD71F64EAB9004859D0 /* View */,
+				A7676DD31F64EAB9004859D0 /* CustomCollectionViewLayout.h */,
+				A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */,
+				A7676DD51F64EAB9004859D0 /* GoodsShelfPreViewViewController.h */,
+				A7676DD61F64EAB9004859D0 /* GoodsShelfPreViewViewController.m */,
 			);
-			name = Camera;
+			path = PreViewPhotos;
+			sourceTree = "<group>";
+		};
+		A7676DD71F64EAB9004859D0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A7676DED1F65814E004859D0 /* GSImage.h */,
+				A7676DEE1F65814E004859D0 /* GSImage.m */,
+				A7676DD81F64EAB9004859D0 /* GSChoosePhotosView.h */,
+				A7676DD91F64EAB9004859D0 /* GSChoosePhotosView.m */,
+				A7676DEA1F657FE3004859D0 /* GSThumbnailViewCell.h */,
+				A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		A7676DDD1F64EAD3004859D0 /* base */ = {
+			isa = PBXGroup;
+			children = (
+				A7676DDE1F64EAD3004859D0 /* CameraBaseViewController.h */,
+				A7676DDF1F64EAD3004859D0 /* CameraBaseViewController.m */,
+				A7676DE01F64EAD3004859D0 /* CameraUIConstant.h */,
+			);
+			path = base;
+			sourceTree = "<group>";
+		};
+		A7676DE61F655380004859D0 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				A7676DE71F6553BB004859D0 /* UIImage+imageHelper.h */,
+				A7676DE81F6553BB004859D0 /* UIImage+imageHelper.m */,
+			);
+			name = Category;
+			sourceTree = "<group>";
+		};
+		A7C931CC1F63B0A600EC1AD9 /* CameraPage */ = {
+			isa = PBXGroup;
+			children = (
+				A7676DDD1F64EAD3004859D0 /* base */,
+				A7676DD21F64EAB9004859D0 /* PreViewPhotos */,
+				A75803F31F63DE8D00DADBE1 /* CameraViewController.h */,
+				A75803F41F63DE8D00DADBE1 /* CameraViewController.m */,
+			);
+			path = CameraPage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,7 +358,7 @@
 			files = (
 				8363E98E1F4C4C24004B7ACA /* LaunchScreen.storyboard in Resources */,
 				8363E98B1F4C4C24004B7ACA /* Assets.xcassets in Resources */,
-				8363E9891F4C4C24004B7ACA /* Main.storyboard in Resources */,
+				A7676DE31F651F01004859D0 /* 000.JPG in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,11 +384,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				8363E9861F4C4C24004B7ACA /* ViewController.m in Sources */,
+				A7676DEF1F65814E004859D0 /* GSImage.m in Sources */,
 				8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */,
+				A7676DE11F64EAD3004859D0 /* CameraBaseViewController.m in Sources */,
+				A7676DE91F6553BB004859D0 /* UIImage+imageHelper.m in Sources */,
+				A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */,
 				8363E9831F4C4C24004B7ACA /* AppDelegate.m in Sources */,
+				A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */,
 				8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */,
 				8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */,
-				84378DA01F56699000DFD242 /* CameraViewController.m in Sources */,
+				A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */,
+				A7676DEC1F657FE3004859D0 /* GSThumbnailViewCell.m in Sources */,
+				A7676DDC1F64EAB9004859D0 /* GSChoosePhotosView.m in Sources */,
 				8363E9801F4C4C24004B7ACA /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,14 +432,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		8363E9871F4C4C24004B7ACA /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				8363E9881F4C4C24004B7ACA /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		8363E98C1F4C4C24004B7ACA /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

@@ -10,9 +10,17 @@
 #import "CameraViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "GSChoosePhotosView.h"
+#import "CustomCollectionViewLayout.h"
+#import "UIImage+imageHelper.h"
+#import "GSThumbnailViewCell.h"
+#import "GSImage.h"
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
-
-@interface CameraViewController ()<UIGestureRecognizerDelegate>
+typedef NS_ENUM(NSInteger, kImageDataType) {
+    kImageDataVerticallyType = 1, //竖直方向
+    kImageDataHorizontalType, //横向方向
+};
+@interface CameraViewController ()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource>
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureDeviceInput *captureDeviceInput;
 @property (nonatomic, strong) AVCaptureStillImageOutput *captureStillImageOutput;
@@ -22,16 +30,22 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 @property (nonatomic, assign) CGFloat effectiveScale;
 @property (nonatomic, strong) UIView *contentView;
 
-
-@property (nonatomic, strong) UIView *topView;
+//顶部
 @property (nonatomic, strong) UIButton *OrSoButton; //左右
 @property (nonatomic, strong) UIButton *upAndDownButton; //上下
 @property (nonatomic, strong) UIButton *flashButton; //闪光
 
-@property (nonatomic, strong) UIView *tabView;
+//底部
+@property (nonatomic, strong) UIScrollView * tabScrollView ;
 @property (nonatomic, strong) UIButton *accomplishButton;
 @property (nonatomic, strong) UIButton *takePhotButton;     //拍照按钮;
+@property (nonatomic, strong) UIButton * goForwardBtn;
 @property (nonatomic, strong) UIImageView *showImageView;
+
+/** 第二页leftButton */
+@property (nonatomic, strong) UIButton *goBackBtn;
+@property (nonatomic, strong) GSChoosePhotosView * imageChooseView ;
+@property (nonatomic, strong) CustomCollectionViewLayout * imageChooseViewLayout ;
 
 @property (nonatomic, strong) UIView *segmentView1;
 @property (nonatomic, strong) UIView *segmentView2;
@@ -51,8 +65,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor yellowColor];
-    _isorSo = YES;
-    _isUpDown = NO;
+//    _isorSo = YES;
+    _isUpDown = YES;
+    [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];//模拟数据
+    
     [self setupUI];
     [self initCamera];
     [self setUpGesture];
@@ -235,10 +251,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         }
     }
 }
-
-
-#pragma mark - UI
-
+#pragma mark - Init Method
 - (void)setupUI{
     [self.view addSubview:self.contentView];
     
@@ -254,148 +267,18 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [self.topView addSubview:self.flashButton];
     
     [self.view addSubview:self.tabView];
-    [self.tabView addSubview:self.accomplishButton];
-    [self.tabView addSubview:self.takePhotButton];
-    [self.tabView addSubview:self.showImageView];
+    [self.tabView addSubview:self.tabScrollView];
+    [self.tabScrollView addSubview:self.accomplishButton];
+    [self.tabScrollView addSubview:self.takePhotButton];
+    [self.tabScrollView addSubview:self.goForwardBtn];
+    [self.tabScrollView addSubview:self.showImageView];
+    [self.tabScrollView addSubview:self.goBackBtn];
+    [self.tabScrollView addSubview:self.imageChooseView];
+    
     
 }
 
-
-- (UIView *)contentView {
-    if (!_contentView) {
-        _contentView = [[UIView alloc] init];
-        _contentView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        _contentView.userInteractionEnabled = YES;
-    }
-    return _contentView;
-}
-
-- (UIView *)topView{
-    if (!_topView) {
-        _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64 * SCREEN_RATE)];
-        _topView.backgroundColor = [UIColor whiteColor];
-    }
-    return _topView;
-}
-- (UIButton *)OrSoButton{
-    if (!_OrSoButton) {
-        _OrSoButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _OrSoButton.frame = CGRectMake(40 * SCREEN_RATE, 22, 32 * SCREEN_RATE, 32 * SCREEN_RATE);
-        [_OrSoButton setBackgroundImage:[UIImage imageNamed:@"orso"] forState:UIControlStateNormal];
-        [_OrSoButton addTarget:self action:@selector(toucheOrSOButtonValue:) forControlEvents:UIControlEventTouchDown];
-        _OrSoButton.userInteractionEnabled = NO;
-    }
-    return _OrSoButton;
-}
-
-- (UIButton *)upAndDownButton{
-    if (!_upAndDownButton) {
-        _upAndDownButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _upAndDownButton.frame = CGRectMake((SCREEN_WIDTH - (32 * SCREEN_RATE))/2, 22, 32 * SCREEN_RATE, 32 *SCREEN_RATE);
-        [_upAndDownButton setBackgroundImage:[UIImage imageNamed:@"updownGray"] forState:UIControlStateNormal];
-        [_upAndDownButton addTarget:self action:@selector(toucheUpAndDownButton:) forControlEvents:UIControlEventTouchDown];
-    }
-    return _upAndDownButton;
-}
-
-- (UIButton *)flashButton{
-    if (!_flashButton) {
-        _flashButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _flashButton.frame = CGRectMake(SCREEN_WIDTH - (72 * SCREEN_RATE), 22, 32 * SCREEN_RATE, 32 * SCREEN_RATE);
-        [_flashButton setBackgroundImage:[UIImage imageNamed:@"flashOn"] forState:UIControlStateNormal];
-        [_flashButton addTarget:self action:@selector(toucheFlashButton:) forControlEvents:UIControlEventTouchDown];
-    }
-    return _flashButton;
-}
-
-- (UIView *)tabView{
-    if (!_tabView) {
-        _tabView = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 44, SCREEN_WIDTH, 44)];
-        _tabView.backgroundColor = [UIColor whiteColor];
-    }
-    return _tabView;
-}
-
-- (UIButton *)accomplishButton{
-    if (!_accomplishButton) {
-        _accomplishButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _accomplishButton.frame = CGRectMake(40 * SCREEN_RATE, 5, 40, 32 * SCREEN_RATE);
-        [_accomplishButton setTitle:@"完成" forState:UIControlStateNormal];
-        [_accomplishButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-        [_accomplishButton addTarget:self action:@selector(toucheAccomoplishButton:) forControlEvents:UIControlEventTouchDown];
-    }
-    return _accomplishButton;
-}
-
-- (UIButton *)takePhotButton{
-    if (!_takePhotButton) {
-        _takePhotButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _takePhotButton.frame = CGRectMake((SCREEN_WIDTH - 40) / 2, 2, 40, 40);
-        _takePhotButton.layer.masksToBounds = YES;
-        _takePhotButton.layer.cornerRadius = 20;
-        [_takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto"] forState:UIControlStateNormal];
-        [_takePhotButton addTarget:self action:@selector(takePhotoButtonClick:) forControlEvents:UIControlEventTouchDown];
-    }
-    return _takePhotButton;
-}
-
-- (UIImageView *)showImageView{
-    if (_showImageView) {
-        _showImageView = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 72 * SCREEN_RATE, 5, 32 * SCREEN_RATE, 32 *SCREEN_RATE)];
-        _showImageView.backgroundColor = [UIColor orangeColor];
-    }
-    return _showImageView;
-}
-
-- (UIView *)segmentView1{
-    if (!_segmentView1) {
-        _segmentView1 = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH / 3, 0, 1, SCREEN_HEIGHT)];
-        _segmentView1.backgroundColor = [UIColor whiteColor];
-    }
-    return _segmentView1;
-}
-
-- (UIView *)segmentView2{
-    if (!_segmentView2) {
-        _segmentView2 = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH / 3 * 2, 0, 1, SCREEN_HEIGHT)];
-        _segmentView2.backgroundColor = [UIColor whiteColor];
-    }
-    return _segmentView2;
-}
-
-- (UIView *)segmentView3{
-    if (!_segmentView3) {
-        _segmentView3 = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT / 3, SCREEN_WIDTH, 1)];
-        _segmentView3.backgroundColor = [UIColor whiteColor];
-    }
-    return _segmentView3;
-}
-
-- (UIView *)segmentView4 {
-    if (!_segmentView4) {
-        _segmentView4 = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, 1)];
-        _segmentView4.backgroundColor = [UIColor whiteColor];
-    }
-    return _segmentView4;
-}
-
-- (UIImageView *)imageViewOverlap{
-    if (!_imageViewOverlap) {
-        _imageViewOverlap = [[UIImageView alloc]initWithFrame:CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT)];
-        _imageViewOverlap.alpha = 0;
-    }
-    return _imageViewOverlap;
-}
-
-- (NSMutableArray *)arrayImages{
-    if (!_arrayImages) {
-        _arrayImages = [NSMutableArray array];
-        NSMutableArray *array = [NSMutableArray array];
-        [_arrayImages addObject:array];
-    }
-    return _arrayImages;
-}
-#pragma makr - function
+#pragma mark - Action Method
 //左右按钮
 - (void)toucheOrSOButtonValue:(UIButton *)sender{
     if (!_isorSo) {
@@ -440,4 +323,321 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)toucheAccomoplishButton:(UIButton *)sender{
     
 }
+
+- (void)goForWardBtnClick:(UIButton *)button {
+    [self.tabScrollView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:YES];
+}
+
+- (void)goBackBtnClick:(UIButton *)button {
+    [self.tabScrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+}
+#pragma mark - Privacy Method
+
+- (NSArray *)getImageDataWithType:(kImageDataType)imageType imageArray:(NSArray *)imageArray {
+    
+    switch (imageType) {
+        case kImageDataVerticallyType: {
+            NSMutableArray *imageDataArr = [[NSMutableArray alloc] init];
+
+            for (NSArray *sectionArr in imageArray) {
+                for (UIImage *image in sectionArr) {
+                    
+                    [imageDataArr addObject:image];
+                }
+            }
+            return imageDataArr;
+        }
+            break;
+        case kImageDataHorizontalType: {
+            NSMutableArray *imageDataArr = [[NSMutableArray alloc] init];
+            NSMutableArray *upArrM = [[NSMutableArray alloc] init];
+            
+            for (NSArray *sectionArr in imageArray) {
+                
+                if (sectionArr.count == 1) {
+                    [upArrM addObject:[sectionArr objectAtIndex:0]];
+                }
+            }
+            [imageDataArr addObject:upArrM];
+            return imageDataArr;
+        }
+        default:
+            break;
+    }
+    NSAssert(YES, @"imageData 数据错误");
+    
+}
+
+#pragma mark - UICollectionViewDelegate&UICollectionViewDataSource
+
+//- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+//    
+//    int sectionCount = 0;
+////    if (_isorSo) {
+////        sectionCount = 1;
+////    }
+////    if (_isUpDown) {
+////        sectionCount = 2;
+////    }
+//    
+//    return sec;
+//}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView
+     numberOfItemsInSection:(NSInteger)section {
+    
+    NSArray *imageData = [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];
+    
+    return imageData.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSArray *imageData = [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];
+
+    GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
+    
+    GSImage *image = [imageData objectAtIndex:indexPath.row];
+    image.imageID = indexPath.row;
+    UIImage *thumb = [UIImage getThumbnailWidthImage:image size:cell.frame.size];
+    UIImageView *imageView =[[UIImageView alloc] initWithImage:thumb];
+    
+    [cell.contentView addSubview:imageView];
+
+    
+    return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    CGFloat width =  collectionView.frame.size.width;
+    CGFloat height = collectionView.frame.size.height;
+    
+    CGFloat itemsWidth = width / 5.0;
+    CGFloat itemsHeight ;
+    
+    if (_isorSo) {
+        itemsHeight = height - 2 * kTabViewTopMargin  ;
+    }else {
+        itemsHeight = height / 2.0 - 2 * kTabViewTopMargin;
+    }
+   
+    return CGSizeMake(itemsWidth, itemsHeight);
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSLog(@"====>%ld===>%ld",(long)indexPath.section,(long)indexPath.row);
+    
+    
+}
+
+#pragma mark - Setter&Getter
+
+#pragma mark -- Content
+- (UIView *)contentView {
+    if (!_contentView) {
+        _contentView = [[UIView alloc] init];
+        _contentView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        _contentView.userInteractionEnabled = YES;
+    }
+    return _contentView;
+}
+
+
+- (UIView *)segmentView1{
+    if (!_segmentView1) {
+        _segmentView1 = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH / 3, 0, 1, SCREEN_HEIGHT)];
+        _segmentView1.backgroundColor = [UIColor whiteColor];
+    }
+    return _segmentView1;
+}
+
+- (UIView *)segmentView2{
+    if (!_segmentView2) {
+        _segmentView2 = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH / 3 * 2, 0, 1, SCREEN_HEIGHT)];
+        _segmentView2.backgroundColor = [UIColor whiteColor];
+    }
+    return _segmentView2;
+}
+
+- (UIView *)segmentView3{
+    if (!_segmentView3) {
+        _segmentView3 = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT / 3, SCREEN_WIDTH, 1)];
+        _segmentView3.backgroundColor = [UIColor whiteColor];
+    }
+    return _segmentView3;
+}
+
+- (UIView *)segmentView4 {
+    if (!_segmentView4) {
+        _segmentView4 = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, 1)];
+        _segmentView4.backgroundColor = [UIColor whiteColor];
+    }
+    return _segmentView4;
+}
+
+- (UIImageView *)imageViewOverlap{
+    if (!_imageViewOverlap) {
+        _imageViewOverlap = [[UIImageView alloc]initWithFrame:CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _imageViewOverlap.alpha = 0;
+    }
+    return _imageViewOverlap;
+}
+
+#pragma mark -- Top
+- (UIButton *)OrSoButton{
+    if (!_OrSoButton) {
+        _OrSoButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _OrSoButton.frame = CGRectMake(40 * SCREEN_RATE, 22, 32 * SCREEN_RATE, 32 * SCREEN_RATE);
+        [_OrSoButton setBackgroundImage:[UIImage imageNamed:@"orso"] forState:UIControlStateNormal];
+        [_OrSoButton addTarget:self action:@selector(toucheOrSOButtonValue:) forControlEvents:UIControlEventTouchDown];
+        _OrSoButton.userInteractionEnabled = NO;
+    }
+    return _OrSoButton;
+}
+
+- (UIButton *)upAndDownButton{
+    if (!_upAndDownButton) {
+        _upAndDownButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _upAndDownButton.frame = CGRectMake((SCREEN_WIDTH - (32 * SCREEN_RATE))/2, 22, 32 * SCREEN_RATE, 32 *SCREEN_RATE);
+        [_upAndDownButton setBackgroundImage:[UIImage imageNamed:@"updownGray"] forState:UIControlStateNormal];
+        [_upAndDownButton addTarget:self action:@selector(toucheUpAndDownButton:) forControlEvents:UIControlEventTouchDown];
+    }
+    return _upAndDownButton;
+}
+
+- (UIButton *)flashButton{
+    if (!_flashButton) {
+        _flashButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _flashButton.frame = CGRectMake(SCREEN_WIDTH - (72 * SCREEN_RATE), 22, 32 * SCREEN_RATE, 32 * SCREEN_RATE);
+        [_flashButton setBackgroundImage:[UIImage imageNamed:@"flashOn"] forState:UIControlStateNormal];
+        [_flashButton addTarget:self action:@selector(toucheFlashButton:) forControlEvents:UIControlEventTouchDown];
+    }
+    return _flashButton;
+}
+
+#pragma mark -- bottom
+- (UIScrollView *)tabScrollView {
+    
+    if (!_tabScrollView) {
+        _tabScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0,self.tabView.frame.size.width, self.tabView.frame.size.height)];
+        _tabScrollView.scrollEnabled = NO;
+        _tabScrollView.contentSize = CGSizeMake(2 * SCREEN_WIDTH , 0);
+    }
+    return _tabScrollView;
+}
+
+- (UIButton *)accomplishButton{
+    if (!_accomplishButton) {
+        _accomplishButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _accomplishButton.frame = CGRectMake(40 * SCREEN_RATE, kTabViewTopMargin, 40, 32 * SCREEN_RATE);
+        [_accomplishButton setTitle:@"完成" forState:UIControlStateNormal];
+        [_accomplishButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        [_accomplishButton addTarget:self action:@selector(toucheAccomoplishButton:) forControlEvents:UIControlEventTouchDown];
+    }
+    return _accomplishButton;
+}
+
+- (UIButton *)takePhotButton{
+    if (!_takePhotButton) {
+        _takePhotButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _takePhotButton.frame = CGRectMake((SCREEN_WIDTH - 40) / 2, kTabViewTopMargin, 40, 40);
+        _takePhotButton.layer.masksToBounds = YES;
+        _takePhotButton.layer.cornerRadius = 20;
+        [_takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto"] forState:UIControlStateNormal];
+        [_takePhotButton addTarget:self action:@selector(takePhotoButtonClick:) forControlEvents:UIControlEventTouchDown];
+    }
+    return _takePhotButton;
+}
+
+- (UIButton *)goForwardBtn {
+    if (!_goForwardBtn) {
+        _goForwardBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        CGFloat width = 70;
+        CGFloat imageViewWidth = 70;
+        _goForwardBtn.frame = CGRectMake(SCREEN_WIDTH - width - imageViewWidth - 2 *kTabViewRightMargin, kTabViewTopMargin, width, self.tabScrollView.frame.size.height - 2 * kTabViewTopMargin);
+        [_goForwardBtn setTitle:@"go" forState:UIControlStateNormal];
+        [_goForwardBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_goForwardBtn addTarget:self action:@selector(goForWardBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _goForwardBtn;
+}
+
+- (UIImageView *)showImageView{
+    if (!_showImageView) {
+        _showImageView = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 72 * SCREEN_RATE, 5, 32 * SCREEN_RATE, 32 *SCREEN_RATE)];
+        
+        _showImageView.backgroundColor = [UIColor blackColor];
+    }
+    return _showImageView;
+}
+
+- (UIButton *)goBackBtn {
+    if (!_goBackBtn) {
+        _goBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        CGFloat width = 30;
+        _goBackBtn.frame = CGRectMake(SCREEN_WIDTH + kTabViewLeftMargin, kTabViewTopMargin, width, self.tabScrollView.frame.size.height - 2 * kTabViewTopMargin);
+        [_goBackBtn setTitle:@"back" forState:UIControlStateNormal];
+        [_goBackBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_goBackBtn addTarget:self action:@selector(goBackBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _goBackBtn;
+}
+
+- (GSChoosePhotosView *)imageChooseView {
+    
+    if (!_imageChooseView) {
+        CGFloat tabViewW = self.tabView.frame.size.width;
+        CGFloat tabViewH = self.tabView.frame.size.height;
+        CGFloat goBackBtnW = self.goBackBtn.frame.size.width;
+        CGFloat preViewBtnW = 65;
+        
+        self.imageChooseViewLayout = [[CustomCollectionViewLayout alloc] init];
+        self.imageChooseViewLayout.minimumLineSpacing = 8;
+        self.imageChooseViewLayout.minimumInteritemSpacing = 8;
+        self.imageChooseViewLayout.sectionInset = UIEdgeInsetsMake(12, 8, 12, 8);
+        
+        _imageChooseView = [[GSChoosePhotosView alloc] initWithFrame:
+                            CGRectMake(SCREEN_WIDTH + goBackBtnW + kTabViewLeftMargin,
+                                       kTabViewTopMargin,
+                                       tabViewW - goBackBtnW - 2 * kTabViewLeftMargin - preViewBtnW - kTabViewRightMargin , tabViewH - 2 * kTabViewTopMargin) collectionViewLayout:self.imageChooseViewLayout];
+        
+        _imageChooseView.backgroundColor = [UIColor blueColor];
+        _imageChooseView.dataSource = self;
+        _imageChooseView.delegate = self;
+
+    }
+    
+    return _imageChooseView;
+    
+}
+
+#pragma mark --Other
+
+- (NSMutableArray *)arrayImages{
+    if (!_arrayImages) {
+        _arrayImages = [NSMutableArray array];
+        
+        int photosCount = 10;
+//        int sectionCount = 2;
+        int rowCount = 2;
+
+        for (int i = 1 ; i <= photosCount/rowCount ; i++) {
+            
+            NSMutableArray *array = [NSMutableArray array];
+
+            for (int row = 1 ; row <= rowCount; row++) {
+                
+                UIImage *image = [UIImage imageNamed:@"000.JPG"];
+                [array addObject:image];
+            }
+            [_arrayImages addObject:array];
+        }
+        
+    }
+    return _arrayImages;
+}
+
 @end
