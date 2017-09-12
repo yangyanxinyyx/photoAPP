@@ -20,9 +20,9 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     ViewController *VC = [[ViewController alloc] init];
-//    UINavigationController *Nav = [[UINavigationController alloc] initWithRootViewController:VC];
+    UINavigationController *Nav = [[UINavigationController alloc] initWithRootViewController:VC];
     
-    self.window.rootViewController = VC;
+    self.window.rootViewController = Nav;
     [self.window makeKeyAndVisible];
     return YES;
 }

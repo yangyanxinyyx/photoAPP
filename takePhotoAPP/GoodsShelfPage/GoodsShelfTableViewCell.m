@@ -14,12 +14,17 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.contentView.backgroundColor = UICOLOR(248, 248, 248, 1);
+        self.backgroundColor = UICOLOR(248, 248, 248, 1);
+        
+        self.viewBackground = [[UIView alloc] init];
+        [self.contentView addSubview:_viewBackground];
         
         self.thumbImageView = [[UIImageView alloc] init];
-        [self.contentView addSubview:_thumbImageView];
+        [self.viewBackground addSubview:_thumbImageView];
         
         self.uploadStateLabel = [[UILabel alloc] init];
-        [self.contentView addSubview:_uploadStateLabel];
+        [self.viewBackground addSubview:_uploadStateLabel];
         
     }
     return self;
@@ -29,9 +34,17 @@
 {
     [super layoutSubviews];
     
-    _thumbImageView.frame = CGRectMake(15, 15, 150 * SCREEN_RATE, 80 * SCREEN_RATE);
+    _viewBackground.frame = CGRectMake(10, 5, self.contentView.frame.size.width - 20, 110);
+    _viewBackground.backgroundColor = [UIColor whiteColor];
+    _viewBackground.layer.cornerRadius = 10;
+    _viewBackground.layer.masksToBounds = YES;
     
-    _uploadStateLabel.frame  = CGRectMake(SCREEN_WIDTH - 80 * SCREEN_RATE - 10, 50, 80 * SCREEN_RATE, 50);
+    
+    _thumbImageView.frame = CGRectMake(10, 10, 160, 90);
+    _thumbImageView.backgroundColor = [UIColor redColor];
+    
+    _uploadStateLabel.frame  = CGRectMake(SCREEN_WIDTH - 80 * SCREEN_RATE - 10, 50, 80 * SCREEN_RATE, 16);
+    _uploadStateLabel.backgroundColor = [UIColor greenColor];
 
     
 }

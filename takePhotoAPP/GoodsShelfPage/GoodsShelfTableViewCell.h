@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GoodsShelfModel.h"
 
 @interface GoodsShelfTableViewCell : UITableViewCell
 
+@property (nonatomic,strong) UIView *viewBackground;
 @property (nonatomic,strong) UIImageView *thumbImageView;
 @property (nonatomic,strong) UILabel *uploadStateLabel;
+
+@property (nonatomic,assign) GoodsUploadState state;
 
 @end

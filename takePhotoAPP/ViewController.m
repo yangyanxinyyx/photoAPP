@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "CameraViewController.h"
 #import "GoodsShelfPreViewViewController.h"
+#import "GoodsShelfViewController.h"
 @interface ViewController ()
 
 @end
@@ -17,6 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationController.navigationBarHidden = YES;
     
     self.view.backgroundColor = [UIColor whiteColor];
     UIButton *but = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -39,21 +41,32 @@
         buttonTest;
     });
 
-    
+
+    UIButton *bu = [UIButton buttonWithType:UIButtonTypeCustom];
+    bu.frame = CGRectMake(200, 20, 100, 30);
+    bu.backgroundColor = [UIColor orangeColor];
+    [bu setTitle:@"货架" forState:UIControlStateNormal];
+    [bu addTarget:self action:@selector(pressToGoodsShelfVC) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:bu];
 }
 
 - (void)goGoodsShelfViewController:(UIButton *)button {
     
     GoodsShelfPreViewViewController *goodShelfVC = [[GoodsShelfPreViewViewController alloc] init];
     
-    [self presentViewController:goodShelfVC animated:YES completion:nil];
+    [self.navigationController pushViewController:goodShelfVC animated:YES];
     
 }
 
 - (void)cameraVC{
     CameraViewController *cVC = [[CameraViewController alloc] init];
-    [self presentViewController:cVC animated:YES completion:nil];
+    [self.navigationController pushViewController:cVC animated:YES];
     
+}
+
+- (void)pressToGoodsShelfVC {
+    GoodsShelfViewController *VC = [[GoodsShelfViewController alloc] init];
+    [self.navigationController pushViewController:VC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {
