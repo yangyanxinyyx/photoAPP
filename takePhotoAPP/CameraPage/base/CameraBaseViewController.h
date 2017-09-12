@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#define kTabViewTopMargin 8
-#define kTabViewLeftMargin 8
-#define kTabViewRightMargin 8
+#define kTabViewTopMargin 20
+#define kTabViewLeftMargin 10
+#define kTabViewRightMargin 10
 
 @interface CameraBaseViewController : UIViewController
 

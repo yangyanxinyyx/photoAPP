@@ -17,13 +17,11 @@
 		8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9B71F4C4E30004B7ACA /* GoodsShelfViewController.m */; };
 		8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9BA1F4D1708004B7ACA /* GoodsShelfTableViewCell.m */; };
 		8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9CD1F4D1DBF004B7ACA /* GoodsShelfModel.m */; };
+
+		843A89931F663713007B7496 /* GSProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 843A89921F663713007B7496 /* GSProgressView.m */; };
+
 		838ACB211F67D1B400D19ACE /* GoodsShelfTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB201F67D1B400D19ACE /* GoodsShelfTopBar.m */; };
-		838ACB3F1F67F0EE00D19ACE /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB351F67F0EE00D19ACE /* FMDatabase.m */; };
-		838ACB401F67F0EE00D19ACE /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB371F67F0EE00D19ACE /* FMDatabaseAdditions.m */; };
-		838ACB411F67F0EE00D19ACE /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB391F67F0EE00D19ACE /* FMDatabasePool.m */; };
-		838ACB421F67F0EE00D19ACE /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB3B1F67F0EE00D19ACE /* FMDatabaseQueue.m */; };
-		838ACB431F67F0EE00D19ACE /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB3E1F67F0EE00D19ACE /* FMResultSet.m */; };
-		838ACB461F67F11E00D19ACE /* DataBaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB451F67F11E00D19ACE /* DataBaseManager.m */; };
+
 		A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A75803F41F63DE8D00DADBE1 /* CameraViewController.m */; };
 		A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */; };
 		A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD61F64EAB9004859D0 /* GoodsShelfPreViewViewController.m */; };
@@ -75,21 +73,13 @@
 		8363E9BA1F4D1708004B7ACA /* GoodsShelfTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfTableViewCell.m; sourceTree = "<group>"; };
 		8363E9CC1F4D1DBF004B7ACA /* GoodsShelfModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfModel.h; sourceTree = "<group>"; };
 		8363E9CD1F4D1DBF004B7ACA /* GoodsShelfModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfModel.m; sourceTree = "<group>"; };
+
+		843A89911F663713007B7496 /* GSProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSProgressView.h; sourceTree = "<group>"; };
+		843A89921F663713007B7496 /* GSProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSProgressView.m; sourceTree = "<group>"; };
+
 		838ACB1F1F67D1B400D19ACE /* GoodsShelfTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfTopBar.h; sourceTree = "<group>"; };
 		838ACB201F67D1B400D19ACE /* GoodsShelfTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfTopBar.m; sourceTree = "<group>"; };
-		838ACB341F67F0EE00D19ACE /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
-		838ACB351F67F0EE00D19ACE /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
-		838ACB361F67F0EE00D19ACE /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
-		838ACB371F67F0EE00D19ACE /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
-		838ACB381F67F0EE00D19ACE /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
-		838ACB391F67F0EE00D19ACE /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
-		838ACB3A1F67F0EE00D19ACE /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
-		838ACB3B1F67F0EE00D19ACE /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
-		838ACB3C1F67F0EE00D19ACE /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
-		838ACB3D1F67F0EE00D19ACE /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
-		838ACB3E1F67F0EE00D19ACE /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
-		838ACB441F67F11E00D19ACE /* DataBaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataBaseManager.h; sourceTree = "<group>"; };
-		838ACB451F67F11E00D19ACE /* DataBaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataBaseManager.m; sourceTree = "<group>"; };
+
 		A75803F31F63DE8D00DADBE1 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraViewController.h; sourceTree = "<group>"; };
 		A75803F41F63DE8D00DADBE1 /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraViewController.m; sourceTree = "<group>"; };
 		A7676DD31F64EAB9004859D0 /* CustomCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCollectionViewLayout.h; sourceTree = "<group>"; };
@@ -166,7 +156,6 @@
 				8363E9851F4C4C24004B7ACA /* ViewController.m */,
 				A7C931CC1F63B0A600EC1AD9 /* CameraPage */,
 				8363E9B51F4C4E30004B7ACA /* GoodsShelfPage */,
-				838ACB321F67F0D400D19ACE /* database */,
 				8363E97E1F4C4C24004B7ACA /* Supporting Files */,
 			);
 			path = takePhotoAPP;
@@ -217,34 +206,6 @@
 			path = GoodsShelfPage;
 			sourceTree = "<group>";
 		};
-		838ACB321F67F0D400D19ACE /* database */ = {
-			isa = PBXGroup;
-			children = (
-				838ACB331F67F0EE00D19ACE /* fmdb */,
-				838ACB441F67F11E00D19ACE /* DataBaseManager.h */,
-				838ACB451F67F11E00D19ACE /* DataBaseManager.m */,
-			);
-			path = database;
-			sourceTree = "<group>";
-		};
-		838ACB331F67F0EE00D19ACE /* fmdb */ = {
-			isa = PBXGroup;
-			children = (
-				838ACB341F67F0EE00D19ACE /* FMDatabase.h */,
-				838ACB351F67F0EE00D19ACE /* FMDatabase.m */,
-				838ACB361F67F0EE00D19ACE /* FMDatabaseAdditions.h */,
-				838ACB371F67F0EE00D19ACE /* FMDatabaseAdditions.m */,
-				838ACB381F67F0EE00D19ACE /* FMDatabasePool.h */,
-				838ACB391F67F0EE00D19ACE /* FMDatabasePool.m */,
-				838ACB3A1F67F0EE00D19ACE /* FMDatabaseQueue.h */,
-				838ACB3B1F67F0EE00D19ACE /* FMDatabaseQueue.m */,
-				838ACB3C1F67F0EE00D19ACE /* FMDB.h */,
-				838ACB3D1F67F0EE00D19ACE /* FMResultSet.h */,
-				838ACB3E1F67F0EE00D19ACE /* FMResultSet.m */,
-			);
-			path = fmdb;
-			sourceTree = "<group>";
-		};
 		A7676DD21F64EAB9004859D0 /* PreViewPhotos */ = {
 			isa = PBXGroup;
 			children = (
@@ -266,6 +227,8 @@
 				A7676DD91F64EAB9004859D0 /* GSChoosePhotosView.m */,
 				A7676DEA1F657FE3004859D0 /* GSThumbnailViewCell.h */,
 				A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */,
+				843A89911F663713007B7496 /* GSProgressView.h */,
+				843A89921F663713007B7496 /* GSProgressView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -438,25 +401,20 @@
 			files = (
 				838ACB211F67D1B400D19ACE /* GoodsShelfTopBar.m in Sources */,
 				8363E9861F4C4C24004B7ACA /* ViewController.m in Sources */,
+				843A89931F663713007B7496 /* GSProgressView.m in Sources */,
 				A7676DEF1F65814E004859D0 /* GSImage.m in Sources */,
 				8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */,
-				838ACB401F67F0EE00D19ACE /* FMDatabaseAdditions.m in Sources */,
 				A7676DE11F64EAD3004859D0 /* CameraBaseViewController.m in Sources */,
 				A7676DE91F6553BB004859D0 /* UIImage+imageHelper.m in Sources */,
 				A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */,
 				8363E9831F4C4C24004B7ACA /* AppDelegate.m in Sources */,
-				838ACB421F67F0EE00D19ACE /* FMDatabaseQueue.m in Sources */,
 				A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */,
-				838ACB461F67F11E00D19ACE /* DataBaseManager.m in Sources */,
 				8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */,
 				8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */,
 				A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */,
-				838ACB431F67F0EE00D19ACE /* FMResultSet.m in Sources */,
-				838ACB411F67F0EE00D19ACE /* FMDatabasePool.m in Sources */,
 				A7676DEC1F657FE3004859D0 /* GSThumbnailViewCell.m in Sources */,
 				A7676DDC1F64EAB9004859D0 /* GSChoosePhotosView.m in Sources */,
 				8363E9801F4C4C24004B7ACA /* main.m in Sources */,
-				838ACB3F1F67F0EE00D19ACE /* FMDatabase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
