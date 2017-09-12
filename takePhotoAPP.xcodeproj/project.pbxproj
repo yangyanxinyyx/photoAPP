@@ -17,6 +17,7 @@
 		8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9B71F4C4E30004B7ACA /* GoodsShelfViewController.m */; };
 		8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9BA1F4D1708004B7ACA /* GoodsShelfTableViewCell.m */; };
 		8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9CD1F4D1DBF004B7ACA /* GoodsShelfModel.m */; };
+		843A89931F663713007B7496 /* GSProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 843A89921F663713007B7496 /* GSProgressView.m */; };
 		A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A75803F41F63DE8D00DADBE1 /* CameraViewController.m */; };
 		A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */; };
 		A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD61F64EAB9004859D0 /* GoodsShelfPreViewViewController.m */; };
@@ -68,6 +69,8 @@
 		8363E9BA1F4D1708004B7ACA /* GoodsShelfTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfTableViewCell.m; sourceTree = "<group>"; };
 		8363E9CC1F4D1DBF004B7ACA /* GoodsShelfModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfModel.h; sourceTree = "<group>"; };
 		8363E9CD1F4D1DBF004B7ACA /* GoodsShelfModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfModel.m; sourceTree = "<group>"; };
+		843A89911F663713007B7496 /* GSProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSProgressView.h; sourceTree = "<group>"; };
+		843A89921F663713007B7496 /* GSProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSProgressView.m; sourceTree = "<group>"; };
 		A75803F31F63DE8D00DADBE1 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraViewController.h; sourceTree = "<group>"; };
 		A75803F41F63DE8D00DADBE1 /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraViewController.m; sourceTree = "<group>"; };
 		A7676DD31F64EAB9004859D0 /* CustomCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCollectionViewLayout.h; sourceTree = "<group>"; };
@@ -213,6 +216,8 @@
 				A7676DD91F64EAB9004859D0 /* GSChoosePhotosView.m */,
 				A7676DEA1F657FE3004859D0 /* GSThumbnailViewCell.h */,
 				A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */,
+				843A89911F663713007B7496 /* GSProgressView.h */,
+				843A89921F663713007B7496 /* GSProgressView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -384,6 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8363E9861F4C4C24004B7ACA /* ViewController.m in Sources */,
+				843A89931F663713007B7496 /* GSProgressView.m in Sources */,
 				A7676DEF1F65814E004859D0 /* GSImage.m in Sources */,
 				8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */,
 				A7676DE11F64EAD3004859D0 /* CameraBaseViewController.m in Sources */,
