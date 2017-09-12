@@ -166,6 +166,23 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     }
     return  result;
 }
+
+//属性改变操作
+- (void)changeDeviceProperty:(PropertyChangeBlock ) propertyChange{
+    
+    AVCaptureDevice * captureDevice = [self.captureDeviceInput device];
+    NSError * error;
+    //注意改变设备属性前一定要首先调用lockForConfiguration:调用完之后使用unlockForConfiguration方法解锁
+    if ([captureDevice lockForConfiguration:&error]) {
+        
+        propertyChange(captureDevice);
+        [captureDevice unlockForConfiguration];
+        
+    } else {
+        
+        NSLog(@"设置设备属性过程发生错误，错误信息：%@", error.localizedDescription);
+    }
+}
 #pragma mark - 手势
 - (void)setUpGesture{
     UIPinchGestureRecognizer *pinch  = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
@@ -385,21 +402,20 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 //闪光灯
 - (void)toucheFlashButton:(UIButton *)sender{
     if (!_isFlash) {
+        [self changeDeviceProperty:^(AVCaptureDevice *captureDevice) {
+            if ([captureDevice isFlashModeSupported:AVCaptureFlashModeOn]) {
+                [captureDevice setFlashMode:AVCaptureFlashModeOn];
+            }
+        }];
         [sender setBackgroundImage:[UIImage imageNamed:@"flash_on"] forState:UIControlStateNormal];
-        AVCaptureDevice *captureDevice = [self getCameraDeviceWithPosition:AVCaptureDevicePositionBack];
-        if (!captureDevice) {
-            NSLog(@"取得后置摄像头出现问题");
-            return;
-        }
-        [captureDevice setFlashMode:AVCaptureFlashModeOn];
     } else {
         [sender setBackgroundImage:[UIImage imageNamed:@"flash_off"] forState:UIControlStateNormal];
-        AVCaptureDevice *captureDevice = [self getCameraDeviceWithPosition:AVCaptureDevicePositionBack];
-        if (!captureDevice) {
-            NSLog(@"取得后置摄像头出现问题");
-            return;
-        }
-        [captureDevice setFlashMode:AVCaptureFlashModeOff];
+
+        [self changeDeviceProperty:^(AVCaptureDevice *captureDevice) {
+            if ([captureDevice isFlashModeSupported:AVCaptureFlashModeOff]) {
+                [captureDevice setFlashMode:AVCaptureFlashModeOff];
+            }
+        }];
 
     }
     _isFlash = !_isFlash;
@@ -619,7 +635,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIButton *)accomplishButton{
     if (!_accomplishButton) {
         _accomplishButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _accomplishButton.frame = CGRectMake(10 * SCREEN_RATE, 50 * SCREEN_RATE, 40, 15 * SCREEN_RATE);
+        _accomplishButton.frame = CGRectMake(10 , 50 , 40, 15 );
         [_accomplishButton setTitle:@"完成" forState:UIControlStateNormal];
         [_accomplishButton setTitleColor:[UIColor colorWithRed:213 / 255.0 green:43 / 255.0 blue:39 / 255.0 alpha:1] forState:UIControlStateNormal];
         [_accomplishButton addTarget:self action:@selector(toucheAccomoplishButton:) forControlEvents:UIControlEventTouchDown];
@@ -642,10 +658,9 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIButton *)goForwardBtn {
     if (!_goForwardBtn) {
         _goForwardBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGFloat width = 70;
-        CGFloat imageViewWidth = 70;
-        _goForwardBtn.frame = CGRectMake(SCREEN_WIDTH - width - imageViewWidth - 2 *kTabViewRightMargin, kTabViewTopMargin, width, self.tabScrollView.frame.size.height - 2 * kTabViewTopMargin);
-        [_goForwardBtn setTitle:@"go" forState:UIControlStateNormal];
+        _goForwardBtn.frame = CGRectMake(SCREEN_WIDTH - 86 , 0, 38, 113 - 10);
+        [_goForwardBtn setBackgroundImage:[UIImage imageNamed:@"leftArrow"] forState:UIControlStateNormal];
+        
         [_goForwardBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_goForwardBtn addTarget:self action:@selector(goForWardBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -654,9 +669,9 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 
 - (UIImageView *)showImageView{
     if (!_showImageView) {
-        _showImageView = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 72 * SCREEN_RATE, 5, 32 * SCREEN_RATE, 32 *SCREEN_RATE)];
+        _showImageView = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 48, (113 - 50 ) / 2, 38 , 50 )];
+        _showImageView.image = [UIImage imageNamed:@"thumbnail"];
         
-        _showImageView.backgroundColor = [UIColor blackColor];
     }
     return _showImageView;
 }
@@ -664,9 +679,9 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIButton *)goBackBtn {
     if (!_goBackBtn) {
         _goBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGFloat width = 30;
+        CGFloat width = 50;
         _goBackBtn.frame = CGRectMake(SCREEN_WIDTH + kTabViewLeftMargin, kTabViewTopMargin, width, self.tabScrollView.frame.size.height - 2 * kTabViewTopMargin);
-        [_goBackBtn setTitle:@"back" forState:UIControlStateNormal];
+        [_goBackBtn setBackgroundImage:[UIImage imageNamed:@"rightArrow"] forState:UIControlStateNormal];
         [_goBackBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_goBackBtn addTarget:self action:@selector(goBackBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -712,7 +727,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 
 - (GSProgressView *)progressView{
     if (!_progressView) {
-        _progressView = [[GSProgressView alloc]initWithFrame:CGRectMake(61 * SCREEN_RATE, SCREEN_HEIGHT - 163 * SCREEN_RATE, 250 * SCREEN_RATE, 50 * SCREEN_RATE)];
+        _progressView = [[GSProgressView alloc]initWithFrame:CGRectMake(61 * SCREEN_RATE, SCREEN_HEIGHT - 113 - 50 * SCREEN_RATE, 250 * SCREEN_RATE, 50 * SCREEN_RATE)];
         _progressView.delgegate = self;
         
     }

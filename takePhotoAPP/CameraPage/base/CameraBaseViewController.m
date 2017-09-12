@@ -69,7 +69,7 @@
 
 - (UIView *)tabView{
     if (!_tabView) {
-        CGFloat height = 113 * SCREEN_RATE;
+        CGFloat height = 113;
         _tabView = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT - height, SCREEN_WIDTH,height)];
         _tabView.backgroundColor = [UIColor whiteColor];
     }
