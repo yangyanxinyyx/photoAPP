@@ -13,20 +13,19 @@ typedef NS_ENUM(NSInteger, GoodsDirection) {
     GoodsDirectionVertical,
 };
 
-typedef NS_ENUM(NSInteger, GoodsUploadState) {
-    GoodsUploadStateSuccess,
-    GoodsUploadStateUploading,
-    GoodsUploadStateFail,
-};
+typedef NSString * GoodsUploadState;
+extern GoodsUploadState const GoodsUploadStateSuccess;
+extern GoodsUploadState const GoodsUploadStateUploading;
+extern GoodsUploadState const GoodsUploadStateFail;
 
 @interface GoodsShelfModel : NSObject
-
-@property (nonatomic,assign) BOOL isLast;
-
-@property (nonatomic,assign) NSInteger imageCount;
 @property (nonatomic,assign) GoodsDirection goodDirection;
 
-@property (nonatomic,strong) NSString *imagePath;
-@property (nonatomic,assign) GoodsUploadState goodUploadState;
+@property (nonatomic,strong) NSString *dbid;
+@property (nonatomic,strong) NSString *imageCount;
+@property (nonatomic,strong) NSString *thumbLink;
+@property (nonatomic,strong) NSString *imagePaths;
+@property (nonatomic,strong) NSString *failArrays;
+@property (nonatomic,strong) GoodsUploadState goodUploadState;
 
 @end
