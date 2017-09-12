@@ -15,12 +15,14 @@
 #import "UIImage+imageHelper.h"
 #import "GSThumbnailViewCell.h"
 #import "GSImage.h"
+#import <CoreMotion/CoreMotion.h>
+#import "GSProgressView.h"
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 typedef NS_ENUM(NSInteger, kImageDataType) {
     kImageDataVerticallyType = 1, //竖直方向
     kImageDataHorizontalType, //横向方向
 };
-@interface CameraViewController ()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource>
+@interface CameraViewController ()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,GSProgressViewDelegate>
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureDeviceInput *captureDeviceInput;
 @property (nonatomic, strong) AVCaptureStillImageOutput *captureStillImageOutput;
@@ -58,6 +60,12 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 
 @property (nonatomic) BOOL isorSo;
 @property (nonatomic) BOOL isUpDown;
+@property (nonatomic) BOOL isFlash;
+@property (nonatomic) BOOL isAngle;
+
+@property (nonatomic, strong) UIImageView *angleImageView;
+@property (nonatomic, strong) GSProgressView *progressView;
+
 @end
 
 @implementation CameraViewController
@@ -65,11 +73,14 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor yellowColor];
-//    _isorSo = YES;
-    _isUpDown = YES;
+    _isorSo = YES;
+    _isUpDown = NO;
+    _isAngle = YES;
+    _isFlash = NO;
     [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];//模拟数据
     
     [self setupUI];
+    [self setInitMotionMangager];
     [self initCamera];
     [self setUpGesture];
     [self.captureSession startRunning];
@@ -108,7 +119,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
         return;
     }
     [captureDevice lockForConfiguration:nil];
-    [captureDevice setFlashMode:AVCaptureFlashModeAuto];
+    [captureDevice setFlashMode:AVCaptureFlashModeOff];
     [captureDevice unlockForConfiguration];
     NSError *error;
     self.captureDeviceInput = [[AVCaptureDeviceInput alloc] initWithDevice:captureDevice error:&error];
@@ -159,7 +170,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (void)setUpGesture{
     UIPinchGestureRecognizer *pinch  = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
     pinch.delegate = self;
-    [self.contentView addGestureRecognizer:pinch];
+//    [self.contentView addGestureRecognizer:pinch];
 }
 
 #pragma mark - GestureRecognizer delegate 
@@ -178,6 +189,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     AVCaptureVideoOrientation captureOrientation = [self AVCaptureVideoOrientationForDeviceOrientation:currenDeciceOrientation];
     [stillImageConnection setVideoOrientation:captureOrientation];
     [stillImageConnection setVideoScaleAndCropFactor:self.effectiveScale];
+    
     [self.captureStillImageOutput captureStillImageAsynchronouslyFromConnection:stillImageConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         UIImage *image = [UIImage imageWithData:jpegData];
@@ -195,7 +207,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
             NSLog(@"无权限");
             return ;
         }
-         [self.captureSession stopRunning];
+        [self.captureSession stopRunning];
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
         [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
             [self.captureSession startRunning];
@@ -275,15 +287,71 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     [self.tabScrollView addSubview:self.goBackBtn];
     [self.tabScrollView addSubview:self.imageChooseView];
     
+    [self.view addSubview:self.angleImageView];
+    [self.view addSubview:self.progressView];
     
+    
+}
+
+- (void)setInitMotionMangager{
+    CMMotionManager *motionManager = [[CMMotionManager alloc]init];
+    
+    NSOperationQueue*queue = [[NSOperationQueue alloc]init];
+    
+    //加速计
+    
+    if(motionManager.accelerometerAvailable) {
+        
+        motionManager.accelerometerUpdateInterval = 0.5;
+        
+        [motionManager startAccelerometerUpdatesToQueue:queue withHandler:^(CMAccelerometerData*accelerometerData,NSError*error){
+            
+            if(error) {
+                
+                [motionManager stopAccelerometerUpdates];
+                
+                NSLog(@"error");
+                
+            }else{
+                
+                double zTheta = atan2(accelerometerData.acceleration.z,sqrtf(accelerometerData.acceleration.x*accelerometerData.acceleration.x+accelerometerData.acceleration.y*accelerometerData.acceleration.y))/M_PI*(-90.0)*2-90;
+
+
+                if (-zTheta > 45 && -zTheta < 135 ) {
+                    _isAngle = YES;
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [self.takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto"] forState:UIControlStateNormal];
+                        self.takePhotButton.userInteractionEnabled = YES;
+                      self.angleImageView.image = [UIImage imageNamed:@"equilibristat"];
+                    });
+                    
+                } else {
+                    _isAngle = NO;
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [self.takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_gray"] forState:UIControlStateNormal];
+                        self.takePhotButton.userInteractionEnabled = NO;
+                        self.angleImageView.image = [UIImage imageNamed:@"equilibristat_red"];
+                    });
+                    
+                }
+            }
+            
+        }];
+        
+    }else{
+        
+        NSLog(@"This device has no accelerometer");
+        
+    }
+
 }
 
 #pragma mark - Action Method
 //左右按钮
 - (void)toucheOrSOButtonValue:(UIButton *)sender{
     if (!_isorSo) {
-        [sender setBackgroundImage:[UIImage imageNamed:@"orso"] forState:UIControlStateNormal];
-        [_upAndDownButton setBackgroundImage:[UIImage imageNamed:@"updownGray"] forState:UIControlStateNormal];
+        [sender setBackgroundImage:[UIImage imageNamed:@"OrSo"] forState:UIControlStateNormal];
+        [_upAndDownButton setBackgroundImage:[UIImage imageNamed:@"upDown_gray"] forState:UIControlStateNormal];
         _upAndDownButton.userInteractionEnabled = YES;
         sender.userInteractionEnabled = NO;
     }
@@ -304,7 +372,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     
     if (!_isUpDown){
         [sender setBackgroundImage:[UIImage imageNamed:@"upDown"] forState:UIControlStateNormal];
-        [_OrSoButton setBackgroundImage:[UIImage imageNamed:@"soGray"] forState:UIControlStateNormal];
+        [_OrSoButton setBackgroundImage:[UIImage imageNamed:@"OrSo_gray"] forState:UIControlStateNormal];
         _OrSoButton.userInteractionEnabled = YES;
         sender.userInteractionEnabled = NO;
     }
@@ -316,6 +384,25 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 
 //闪光灯
 - (void)toucheFlashButton:(UIButton *)sender{
+    if (!_isFlash) {
+        [sender setBackgroundImage:[UIImage imageNamed:@"flash_on"] forState:UIControlStateNormal];
+        AVCaptureDevice *captureDevice = [self getCameraDeviceWithPosition:AVCaptureDevicePositionBack];
+        if (!captureDevice) {
+            NSLog(@"取得后置摄像头出现问题");
+            return;
+        }
+        [captureDevice setFlashMode:AVCaptureFlashModeOn];
+    } else {
+        [sender setBackgroundImage:[UIImage imageNamed:@"flash_off"] forState:UIControlStateNormal];
+        AVCaptureDevice *captureDevice = [self getCameraDeviceWithPosition:AVCaptureDevicePositionBack];
+        if (!captureDevice) {
+            NSLog(@"取得后置摄像头出现问题");
+            return;
+        }
+        [captureDevice setFlashMode:AVCaptureFlashModeOff];
+
+    }
+    _isFlash = !_isFlash;
     
 }
 
@@ -399,7 +486,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     
     GSImage *image = [imageData objectAtIndex:indexPath.row];
-    image.imageID = indexPath.row;
+//    image.imageID = indexPath.row;
     UIImage *thumb = [UIImage getThumbnailWidthImage:image size:cell.frame.size];
     UIImageView *imageView =[[UIImageView alloc] initWithImage:thumb];
     
@@ -490,8 +577,8 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIButton *)OrSoButton{
     if (!_OrSoButton) {
         _OrSoButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _OrSoButton.frame = CGRectMake(40 * SCREEN_RATE, 22, 32 * SCREEN_RATE, 32 * SCREEN_RATE);
-        [_OrSoButton setBackgroundImage:[UIImage imageNamed:@"orso"] forState:UIControlStateNormal];
+        _OrSoButton.frame = CGRectMake(30 * SCREEN_RATE, 22 , 32 * SCREEN_RATE, 32 * SCREEN_RATE);
+        [_OrSoButton setBackgroundImage:[UIImage imageNamed:@"OrSo"] forState:UIControlStateNormal];
         [_OrSoButton addTarget:self action:@selector(toucheOrSOButtonValue:) forControlEvents:UIControlEventTouchDown];
         _OrSoButton.userInteractionEnabled = NO;
     }
@@ -502,7 +589,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     if (!_upAndDownButton) {
         _upAndDownButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _upAndDownButton.frame = CGRectMake((SCREEN_WIDTH - (32 * SCREEN_RATE))/2, 22, 32 * SCREEN_RATE, 32 *SCREEN_RATE);
-        [_upAndDownButton setBackgroundImage:[UIImage imageNamed:@"updownGray"] forState:UIControlStateNormal];
+        [_upAndDownButton setBackgroundImage:[UIImage imageNamed:@"upDown_gray"] forState:UIControlStateNormal];
         [_upAndDownButton addTarget:self action:@selector(toucheUpAndDownButton:) forControlEvents:UIControlEventTouchDown];
     }
     return _upAndDownButton;
@@ -512,7 +599,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     if (!_flashButton) {
         _flashButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _flashButton.frame = CGRectMake(SCREEN_WIDTH - (72 * SCREEN_RATE), 22, 32 * SCREEN_RATE, 32 * SCREEN_RATE);
-        [_flashButton setBackgroundImage:[UIImage imageNamed:@"flashOn"] forState:UIControlStateNormal];
+        [_flashButton setBackgroundImage:[UIImage imageNamed:@"flash_off"] forState:UIControlStateNormal];
         [_flashButton addTarget:self action:@selector(toucheFlashButton:) forControlEvents:UIControlEventTouchDown];
     }
     return _flashButton;
@@ -532,9 +619,9 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIButton *)accomplishButton{
     if (!_accomplishButton) {
         _accomplishButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _accomplishButton.frame = CGRectMake(40 * SCREEN_RATE, kTabViewTopMargin, 40, 32 * SCREEN_RATE);
+        _accomplishButton.frame = CGRectMake(10 * SCREEN_RATE, 50 * SCREEN_RATE, 40, 15 * SCREEN_RATE);
         [_accomplishButton setTitle:@"完成" forState:UIControlStateNormal];
-        [_accomplishButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        [_accomplishButton setTitleColor:[UIColor colorWithRed:213 / 255.0 green:43 / 255.0 blue:39 / 255.0 alpha:1] forState:UIControlStateNormal];
         [_accomplishButton addTarget:self action:@selector(toucheAccomoplishButton:) forControlEvents:UIControlEventTouchDown];
     }
     return _accomplishButton;
@@ -543,9 +630,9 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIButton *)takePhotButton{
     if (!_takePhotButton) {
         _takePhotButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _takePhotButton.frame = CGRectMake((SCREEN_WIDTH - 40) / 2, kTabViewTopMargin, 40, 40);
+        _takePhotButton.frame = CGRectMake((SCREEN_WIDTH - 70 * SCREEN_RATE) / 2 , kTabViewTopMargin, 70 * SCREEN_RATE, 70 * SCREEN_RATE);
         _takePhotButton.layer.masksToBounds = YES;
-        _takePhotButton.layer.cornerRadius = 20;
+        _takePhotButton.layer.cornerRadius = 35;
         [_takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto"] forState:UIControlStateNormal];
         [_takePhotButton addTarget:self action:@selector(takePhotoButtonClick:) forControlEvents:UIControlEventTouchDown];
     }
@@ -614,6 +701,23 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     
 }
 
+- (UIImageView *)angleImageView{
+    if (!_angleImageView) {
+        _angleImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 150 * SCREEN_RATE, 100 * SCREEN_RATE)];
+        _angleImageView.center = self.view.center;
+        _angleImageView.image = [UIImage imageNamed:@"equilibristat"];
+    }
+    return _angleImageView;
+}
+
+- (GSProgressView *)progressView{
+    if (!_progressView) {
+        _progressView = [[GSProgressView alloc]initWithFrame:CGRectMake(61 * SCREEN_RATE, SCREEN_HEIGHT - 163 * SCREEN_RATE, 250 * SCREEN_RATE, 50 * SCREEN_RATE)];
+        _progressView.delgegate = self;
+        
+    }
+    return _progressView;
+}
 #pragma mark --Other
 
 - (NSMutableArray *)arrayImages{
@@ -639,5 +743,22 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     }
     return _arrayImages;
 }
+#pragma mark GSPregressViewDelegate
+- (void)camerScaleWithSliderValue:(float)sliderValue{
+    self.effectiveScale = self.beginGestureScale * (sliderValue);
+    if (self.effectiveScale < 1.0) {
+        self.effectiveScale = 1.0;
+    }
 
+    CGFloat maxScaleAndCropFactor = [[self.captureStillImageOutput connectionWithMediaType:AVMediaTypeVideo] videoMaxScaleAndCropFactor];
+    NSLog(@"%f",maxScaleAndCropFactor);
+    if (self.effectiveScale > maxScaleAndCropFactor) {
+        self.effectiveScale = maxScaleAndCropFactor;
+    }
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:0.25f];
+    [self.captureVideoPreviewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
+    [CATransaction commit];
+
+}
 @end
