@@ -8,6 +8,10 @@
 
 #import "GoodsShelfModel.h"
 
+GoodsUploadState const GoodsUploadStateUploading = @"Uploading";
+GoodsUploadState const GoodsUploadStateSuccess = @"UploadSuccess";
+GoodsUploadState const GoodsUploadStateFail = @"UploadFail";
+
 @implementation GoodsShelfModel
 
 @end
