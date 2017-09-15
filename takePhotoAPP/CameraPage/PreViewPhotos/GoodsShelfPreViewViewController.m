@@ -77,7 +77,7 @@
                             CGRectMake(kTabViewLeftButtonWidth + kTabViewMargin,
                                        kTabViewMargin,
                                        tabViewW - kTabViewLeftButtonWidth - 2 * kTabViewMargin - kTabViewRightBuffonWidth - kTabViewMargin , tabViewH - 2 * kTabViewMargin) collectionViewLayout:self.selectPhotosLayout];
-        _imageChooseView.backgroundColor = [UIColor blueColor];
+        _imageChooseView.backgroundColor = [UIColor whiteColor];
     }
     
     return _imageChooseView;
