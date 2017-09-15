@@ -18,6 +18,7 @@
 #import <CoreMotion/CoreMotion.h>
 #import "GSProgressView.h"
 #import "ImageModel.h"
+
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 typedef NS_ENUM(NSInteger, kImageDataType) {
     kImageDataVerticallyType = 1, //竖直方向
@@ -303,12 +304,12 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
         if (_isorSo) {
             self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
-            self.imageViewOverlap.alpha = 0.5;
+            self.imageViewOverlap.alpha = ALPHA;
         }
         if (_isUpDown) {
             self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
-            self.imageViewOverlap.alpha = 0.5;
+            self.imageViewOverlap.alpha = ALPHA;
         }
     }
 }
@@ -420,7 +421,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
         self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         UIImage *image = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
         self.imageViewOverlap.image = image;
-        self.imageViewOverlap.alpha = 0.5;
+        self.imageViewOverlap.alpha = ALPHA;
     }
 
 }
@@ -442,7 +443,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
         self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
         UIImage *image = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
         self.imageViewOverlap.image = image;
-        self.imageViewOverlap.alpha = 0.5;
+        self.imageViewOverlap.alpha = ALPHA;
     }
     
 }
@@ -512,6 +513,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (void)toucheRephotgraphButton{
     self.rephotographButton.alpha = 0;
     [self goBackBtnClick:nil];
+    
     if (_isSingleModel) {
         
     }
