@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#define TOPVIEW_HEIGHT 64
+#define TABVIEW_HEIGHT 113
 #define kTabViewTopMargin 20
+#define kCollectionViewTopMargin 24
 #define kTabViewLeftMargin 10
 #define kTabViewRightMargin 10
 

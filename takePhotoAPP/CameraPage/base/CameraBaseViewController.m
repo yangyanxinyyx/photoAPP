@@ -30,7 +30,7 @@
 
 #pragma mark - Init Method
 - (void)initBaseUI {
- 
+    self.navigationController.navigationBarHidden = YES;
     [self.view addSubview:self.topView];
     [self.view addSubview:self.tabView];
     
@@ -56,21 +56,20 @@
 
 - (UIView *)topView{
     if (!_topView) {
-        _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+        _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, TOPVIEW_HEIGHT)];
         _topView.backgroundColor = [UIColor whiteColor];
 //        UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
 //        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
 //        effectView.frame = _topView.frame;
 //        [_topView addSubview:effectView];
-//        
+        
     }
     return _topView;
 }
 
 - (UIView *)tabView{
     if (!_tabView) {
-        CGFloat height = 113;
-        _tabView = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT - height, SCREEN_WIDTH,height)];
+        _tabView = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT - TABVIEW_HEIGHT, SCREEN_WIDTH,TABVIEW_HEIGHT)];
         _tabView.backgroundColor = [UIColor whiteColor];
     }
     return _tabView;

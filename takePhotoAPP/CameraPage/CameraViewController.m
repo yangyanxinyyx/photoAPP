@@ -18,12 +18,10 @@
 #import <CoreMotion/CoreMotion.h>
 #import "GSProgressView.h"
 #import "ImageModel.h"
+#import "GSPrewViewController.h"
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
-typedef NS_ENUM(NSInteger, kImageDataType) {
-    kImageDataVerticallyType = 1, //竖直方向
-    kImageDataHorizontalType, //横向方向
-};
+
 @interface CameraViewController ()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,GSProgressViewDelegate>
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureDeviceInput *captureDeviceInput;
@@ -50,6 +48,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 @property (nonatomic, strong) UIButton *goBackBtn;
 @property (nonatomic, strong) GSChoosePhotosView * imageChooseView ;
 @property (nonatomic, strong) CustomCollectionViewLayout * imageChooseViewLayout ;
+@property (nonatomic, strong) UIButton * preViewBtn ;
 
 @property (nonatomic, strong) UIView *segmentView1;
 @property (nonatomic, strong) UIView *segmentView2;
@@ -91,7 +90,6 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     _isFlash = NO;
     _isSingleModel = NO;
     _numberOrSos = 0;
-    [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];//模拟数据
     
     [self setupUI];
     [self setInitMotionMangager];
@@ -341,6 +339,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     [self.tabScrollView addSubview:self.showImageView];
     [self.tabScrollView addSubview:self.goBackBtn];
     [self.tabScrollView addSubview:self.imageChooseView];
+    [self.tabScrollView addSubview:self.preViewBtn];
     
     [self.view addSubview:self.rephotographTopView];
     [self.rephotographTopView addSubview:self.cancleButton];
@@ -477,7 +476,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 }
 
 - (void)goForWardBtnClick:(UIButton *)button {
-    [self.tabScrollView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:YES];
+    [self.tabScrollView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:NO];
     [self.imageChooseView reloadData];
     
     
@@ -494,6 +493,14 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     for (ImageModel *model in self.arrayImages) {
         model.isSelect = NO;
     }
+}
+
+- (void)priViewBtnClick:(UIButton *)button {
+    
+    GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
+    
+    [self.navigationController pushViewController:GSPreView animated:YES];
+    
 }
 
 - (void)touchCancleButton{
@@ -522,65 +529,13 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 
 #pragma mark - Privacy Method
 
-- (NSArray *)getImageDataWithType:(kImageDataType)imageType imageArray:(NSArray *)imageArray {
-    
-    switch (imageType) {
-        case kImageDataVerticallyType: {
-            NSMutableArray *imageDataArr = [[NSMutableArray alloc] init];
-
-            for (NSArray *sectionArr in imageArray) {
-                for (UIImage *image in sectionArr) {
-                    
-                    [imageDataArr addObject:image];
-                }
-            }
-            return imageDataArr;
-        }
-            break;
-        case kImageDataHorizontalType: {
-            NSMutableArray *imageDataArr = [[NSMutableArray alloc] init];
-            NSMutableArray *upArrM = [[NSMutableArray alloc] init];
-            
-            for (NSArray *sectionArr in imageArray) {
-                
-                if (sectionArr.count == 1) {
-                    [upArrM addObject:[sectionArr objectAtIndex:0]];
-                }
-            }
-            [imageDataArr addObject:upArrM];
-            return imageDataArr;
-        }
-        default:
-            break;
-    }
-    NSAssert(YES, @"imageData 数据错误");
-    
-}
 
 #pragma mark - UICollectionViewDelegate&UICollectionViewDataSource
 
-//- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-//    
-////    int sectionCount = 0;
-////    if (_isorSo) {
-////        sectionCount = 1;
-////    }
-////    if (_isUpDown) {
-////        sectionCount = 2;
-////    }
-////    if (_isSingleModel) {
-////        return 1;
-////    } else {
-////        return 2;
-////    }
-//    
-//    
-//}
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     
-//    NSArray *imageData = [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];
     
     return self.arrayImages.count;
 }
@@ -588,7 +543,6 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-//NSArray *imageData = [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];
 
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     
@@ -601,16 +555,17 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGFloat width =  collectionView.frame.size.width;
+//    CGFloat width =  collectionView.frame.size.width;
     CGFloat height = collectionView.frame.size.height;
     
-    CGFloat itemsWidth = width / 5.0;
+    CGFloat itemsWidth = 90 * 0.5;
     CGFloat itemsHeight ;
     
     if (!_isSingleModel) {
-        itemsHeight = height - 2 * kTabViewTopMargin  ;
+        CGFloat ktopMargin = 64 * 0.5 - 48 * 0.5;
+        itemsHeight = height - 2 * ktopMargin  ;
     }else {
-        itemsHeight = height / 2.0 - 2 * kTabViewTopMargin;
+        itemsHeight = (height - 5 )/ 2.0 ;
     }
    
     return CGSizeMake(itemsWidth, itemsHeight);
@@ -758,6 +713,10 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     return _takePhotButton;
 }
 
+- (SEL)extracted {
+    return @selector(goForWardBtnClick:);
+}
+
 - (UIButton *)goForwardBtn {
     if (!_goForwardBtn) {
         _goForwardBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -765,7 +724,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
         [_goForwardBtn setBackgroundImage:[UIImage imageNamed:@"leftArrow"] forState:UIControlStateNormal];
         
         [_goForwardBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [_goForwardBtn addTarget:self action:@selector(goForWardBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_goForwardBtn addTarget:self action:[self extracted] forControlEvents:UIControlEventTouchUpInside];
     }
     return _goForwardBtn;
 }
@@ -779,6 +738,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     return _showImageView;
 }
 
+#pragma mark -- 第二条
 - (UIButton *)goBackBtn {
     if (!_goBackBtn) {
         _goBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -797,19 +757,19 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
         CGFloat tabViewW = self.tabView.frame.size.width;
         CGFloat tabViewH = self.tabView.frame.size.height;
         CGFloat goBackBtnW = self.goBackBtn.frame.size.width;
-        CGFloat preViewBtnW = 65;
-        
+        CGFloat preViewBtnW = 50;
+
         self.imageChooseViewLayout = [[CustomCollectionViewLayout alloc] init];
-        self.imageChooseViewLayout.minimumLineSpacing = 8;
-        self.imageChooseViewLayout.minimumInteritemSpacing = 8;
-        self.imageChooseViewLayout.sectionInset = UIEdgeInsetsMake(12, 8, 12, 8);
+//        self.imageChooseViewLayout.minimumLineSpacing = 5;
+        self.imageChooseViewLayout.minimumInteritemSpacing = 5;
+//        self.imageChooseViewLayout.sectionInset = UIEdgeInsetsMake(0,0,4,5);
         
         _imageChooseView = [[GSChoosePhotosView alloc] initWithFrame:
-                            CGRectMake(SCREEN_WIDTH + goBackBtnW + kTabViewLeftMargin,
-                                       kTabViewTopMargin,
-                                       tabViewW - goBackBtnW - 2 * kTabViewLeftMargin - preViewBtnW - kTabViewRightMargin , tabViewH - 2 * kTabViewTopMargin) collectionViewLayout:self.imageChooseViewLayout];
+                            CGRectMake(SCREEN_WIDTH + goBackBtnW + 2 * kTabViewLeftMargin ,
+                                       kCollectionViewTopMargin,
+                                       tabViewW - goBackBtnW - 2 * kTabViewLeftMargin - preViewBtnW - 2 * kTabViewRightMargin , tabViewH - 2 * kCollectionViewTopMargin ) collectionViewLayout:self.imageChooseViewLayout];
         
-      _imageChooseView.backgroundColor = [UIColor whiteColor];
+      _imageChooseView.backgroundColor = [UIColor blueColor];
         _imageChooseView.dataSource = self;
         _imageChooseView.delegate = self;
 
@@ -817,6 +777,26 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     
     return _imageChooseView;
     
+}
+
+- (UIButton *)preViewBtn {
+    
+    if (!_preViewBtn) {
+        CGFloat preViewBtnW = 50;
+        CGFloat preViewBtnH = 25;
+        _preViewBtn = [UIButton buttonWithType:0];
+        _preViewBtn.layer.cornerRadius = 5;
+
+        _preViewBtn.frame = CGRectMake(SCREEN_WIDTH +  SCREEN_WIDTH - (preViewBtnW + 10 ) , (self.tabScrollView.frame.size.height - preViewBtnH) * 0.5, preViewBtnW, preViewBtnH);
+        _preViewBtn.backgroundColor = [UIColor colorWithRed:246/255.0 green:188/255.0 blue:1.0/255.0 alpha:1.0];
+        [_preViewBtn.titleLabel setFrame:CGRectMake(6, 11, preViewBtnW - 6 * 2, preViewBtnH - 11 * 2)];
+        [_preViewBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
+        [_preViewBtn setTitle:@"预览" forState:UIControlStateNormal];
+        [_preViewBtn addTarget:self
+                        action:@selector(priViewBtnClick:)
+              forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _preViewBtn;
 }
 
 - (UIImageView *)angleImageView{

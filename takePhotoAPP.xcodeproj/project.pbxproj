@@ -29,6 +29,8 @@
 		A7676DE91F6553BB004859D0 /* UIImage+imageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DE81F6553BB004859D0 /* UIImage+imageHelper.m */; };
 		A7676DEC1F657FE3004859D0 /* GSThumbnailViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */; };
 		A7676DEF1F65814E004859D0 /* GSImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DEE1F65814E004859D0 /* GSImage.m */; };
+		A7C303371F6CF1EF0000D8C0 /* GSPrewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */; };
+		A7C3033A1F6D0FF90000D8C0 /* GSAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303391F6D0FF90000D8C0 /* GSAlertView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +97,10 @@
 		A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSThumbnailViewCell.m; sourceTree = "<group>"; };
 		A7676DED1F65814E004859D0 /* GSImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSImage.h; sourceTree = "<group>"; };
 		A7676DEE1F65814E004859D0 /* GSImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSImage.m; sourceTree = "<group>"; };
+		A7C303351F6CF1EF0000D8C0 /* GSPrewViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GSPrewViewController.h; sourceTree = "<group>"; };
+		A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GSPrewViewController.m; sourceTree = "<group>"; };
+		A7C303381F6D0FF90000D8C0 /* GSAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GSAlertView.h; sourceTree = "<group>"; };
+		A7C303391F6D0FF90000D8C0 /* GSAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GSAlertView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,6 +242,8 @@
 				A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */,
 				843A89911F663713007B7496 /* GSProgressView.h */,
 				843A89921F663713007B7496 /* GSProgressView.m */,
+				A7C303381F6D0FF90000D8C0 /* GSAlertView.h */,
+				A7C303391F6D0FF90000D8C0 /* GSAlertView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -266,6 +274,8 @@
 				A7676DD21F64EAB9004859D0 /* PreViewPhotos */,
 				A75803F31F63DE8D00DADBE1 /* CameraViewController.h */,
 				A75803F41F63DE8D00DADBE1 /* CameraViewController.m */,
+				A7C303351F6CF1EF0000D8C0 /* GSPrewViewController.h */,
+				A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */,
 			);
 			path = CameraPage;
 			sourceTree = "<group>";
@@ -411,9 +421,11 @@
 				843A89931F663713007B7496 /* GSProgressView.m in Sources */,
 				849943871F6A9CF900F76836 /* ImageModel.m in Sources */,
 				A7676DEF1F65814E004859D0 /* GSImage.m in Sources */,
+				A7C3033A1F6D0FF90000D8C0 /* GSAlertView.m in Sources */,
 				8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */,
 				A7676DE11F64EAD3004859D0 /* CameraBaseViewController.m in Sources */,
 				A7676DE91F6553BB004859D0 /* UIImage+imageHelper.m in Sources */,
+				A7C303371F6CF1EF0000D8C0 /* GSPrewViewController.m in Sources */,
 				A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */,
 				8363E9831F4C4C24004B7ACA /* AppDelegate.m in Sources */,
 				A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */,
