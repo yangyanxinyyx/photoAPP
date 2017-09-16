@@ -31,6 +31,17 @@
 		A7676DEF1F65814E004859D0 /* GSImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DEE1F65814E004859D0 /* GSImage.m */; };
 		A7C303371F6CF1EF0000D8C0 /* GSPrewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */; };
 		A7C3033A1F6D0FF90000D8C0 /* GSAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303391F6D0FF90000D8C0 /* GSAlertView.m */; };
+		A7C303801F6D13770000D8C0 /* DataBaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C3036C1F6D13770000D8C0 /* DataBaseManager.m */; };
+		A7C303811F6D13770000D8C0 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C3036F1F6D13770000D8C0 /* FMDatabase.m */; };
+		A7C303821F6D13770000D8C0 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303711F6D13770000D8C0 /* FMDatabaseAdditions.m */; };
+		A7C303831F6D13770000D8C0 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303731F6D13770000D8C0 /* FMDatabasePool.m */; };
+		A7C303841F6D13770000D8C0 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303751F6D13770000D8C0 /* FMDatabaseQueue.m */; };
+		A7C303851F6D13770000D8C0 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303781F6D13770000D8C0 /* FMResultSet.m */; };
+		A7C303871F6D13770000D8C0 /* NetworkKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C3037D1F6D13770000D8C0 /* NetworkKit.m */; };
+		A7C303881F6D13770000D8C0 /* UploadModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C3037F1F6D13770000D8C0 /* UploadModel.m */; };
+		A7C3038B1F6D13810000D8C0 /* GoodsShelfDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C3038A1F6D13810000D8C0 /* GoodsShelfDataManager.m */; };
+		A7C3038E1F6D14EE0000D8C0 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A7C3038D1F6D14EE0000D8C0 /* libresolv.tbd */; };
+		A7C303901F6D14F70000D8C0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7C3038F1F6D14F60000D8C0 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +112,69 @@
 		A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GSPrewViewController.m; sourceTree = "<group>"; };
 		A7C303381F6D0FF90000D8C0 /* GSAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GSAlertView.h; sourceTree = "<group>"; };
 		A7C303391F6D0FF90000D8C0 /* GSAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GSAlertView.m; sourceTree = "<group>"; };
+		A7C3033D1F6D116C0000D8C0 /* libOSS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOSS.a; sourceTree = "<group>"; };
+		A7C3033E1F6D116C0000D8C0 /* AliyunOSS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AliyunOSS.h; sourceTree = "<group>"; };
+		A7C3033F1F6D117C0000D8C0 /* TempOSS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TempOSS.h; sourceTree = "<group>"; };
+		A7C303411F6D117D0000D8C0 /* OSSClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSClient.h; sourceTree = "<group>"; };
+		A7C303421F6D117D0000D8C0 /* OSSClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSClient.m; sourceTree = "<group>"; };
+		A7C303431F6D117D0000D8C0 /* OSSCompat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSCompat.h; sourceTree = "<group>"; };
+		A7C303441F6D117D0000D8C0 /* OSSCompat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSCompat.m; sourceTree = "<group>"; };
+		A7C303451F6D117D0000D8C0 /* OSSDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSDefine.h; sourceTree = "<group>"; };
+		A7C303461F6D117D0000D8C0 /* OSSHttpdns.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSHttpdns.h; sourceTree = "<group>"; };
+		A7C303471F6D117D0000D8C0 /* OSSHttpdns.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSHttpdns.m; sourceTree = "<group>"; };
+		A7C303491F6D117D0000D8C0 /* OSSIPv6Adapter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSIPv6Adapter.h; sourceTree = "<group>"; };
+		A7C3034A1F6D117D0000D8C0 /* OSSIPv6Adapter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSIPv6Adapter.m; sourceTree = "<group>"; };
+		A7C3034B1F6D117D0000D8C0 /* OSSIPv6PrefixResolver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSIPv6PrefixResolver.h; sourceTree = "<group>"; };
+		A7C3034C1F6D117D0000D8C0 /* OSSIPv6PrefixResolver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSIPv6PrefixResolver.m; sourceTree = "<group>"; };
+		A7C3034D1F6D117D0000D8C0 /* OSSReachabilityManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSReachabilityManager.h; sourceTree = "<group>"; };
+		A7C3034E1F6D117D0000D8C0 /* OSSReachabilityManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSReachabilityManager.m; sourceTree = "<group>"; };
+		A7C3034F1F6D117D0000D8C0 /* OSSLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSLog.h; sourceTree = "<group>"; };
+		A7C303501F6D117D0000D8C0 /* OSSLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSLog.m; sourceTree = "<group>"; };
+		A7C303511F6D117D0000D8C0 /* OSSModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSModel.h; sourceTree = "<group>"; };
+		A7C303521F6D117D0000D8C0 /* OSSModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSModel.m; sourceTree = "<group>"; };
+		A7C303531F6D117D0000D8C0 /* OSSNetworking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSNetworking.h; sourceTree = "<group>"; };
+		A7C303541F6D117D0000D8C0 /* OSSNetworking.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSNetworking.m; sourceTree = "<group>"; };
+		A7C303551F6D117D0000D8C0 /* OSSService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSService.h; sourceTree = "<group>"; };
+		A7C303571F6D117D0000D8C0 /* OSSBolts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSBolts.h; sourceTree = "<group>"; };
+		A7C303581F6D117D0000D8C0 /* OSSBolts.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSBolts.m; sourceTree = "<group>"; };
+		A7C303591F6D117D0000D8C0 /* OSSCancellationToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSCancellationToken.h; sourceTree = "<group>"; };
+		A7C3035A1F6D117D0000D8C0 /* OSSCancellationToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSCancellationToken.m; sourceTree = "<group>"; };
+		A7C3035B1F6D117D0000D8C0 /* OSSCancellationTokenRegistration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSCancellationTokenRegistration.h; sourceTree = "<group>"; };
+		A7C3035C1F6D117D0000D8C0 /* OSSCancellationTokenRegistration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSCancellationTokenRegistration.m; sourceTree = "<group>"; };
+		A7C3035D1F6D117D0000D8C0 /* OSSCancellationTokenSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSCancellationTokenSource.h; sourceTree = "<group>"; };
+		A7C3035E1F6D117D0000D8C0 /* OSSCancellationTokenSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSCancellationTokenSource.m; sourceTree = "<group>"; };
+		A7C3035F1F6D117D0000D8C0 /* OSSExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSExecutor.h; sourceTree = "<group>"; };
+		A7C303601F6D117D0000D8C0 /* OSSExecutor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSExecutor.m; sourceTree = "<group>"; };
+		A7C303611F6D117D0000D8C0 /* OSSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSTask.h; sourceTree = "<group>"; };
+		A7C303621F6D117D0000D8C0 /* OSSTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSTask.m; sourceTree = "<group>"; };
+		A7C303631F6D117D0000D8C0 /* OSSTaskCompletionSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSTaskCompletionSource.h; sourceTree = "<group>"; };
+		A7C303641F6D117D0000D8C0 /* OSSTaskCompletionSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSTaskCompletionSource.m; sourceTree = "<group>"; };
+		A7C303651F6D117D0000D8C0 /* OSSUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSUtil.h; sourceTree = "<group>"; };
+		A7C303661F6D117D0000D8C0 /* OSSUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSUtil.m; sourceTree = "<group>"; };
+		A7C303671F6D117D0000D8C0 /* OSSXMLDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSXMLDictionary.h; sourceTree = "<group>"; };
+		A7C303681F6D117D0000D8C0 /* OSSXMLDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSXMLDictionary.m; sourceTree = "<group>"; };
+		A7C303691F6D117D0000D8C0 /* TempOSS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TempOSS.m; sourceTree = "<group>"; };
+		A7C3036B1F6D13770000D8C0 /* DataBaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataBaseManager.h; sourceTree = "<group>"; };
+		A7C3036C1F6D13770000D8C0 /* DataBaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataBaseManager.m; sourceTree = "<group>"; };
+		A7C3036E1F6D13770000D8C0 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		A7C3036F1F6D13770000D8C0 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		A7C303701F6D13770000D8C0 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		A7C303711F6D13770000D8C0 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		A7C303721F6D13770000D8C0 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		A7C303731F6D13770000D8C0 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		A7C303741F6D13770000D8C0 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		A7C303751F6D13770000D8C0 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		A7C303761F6D13770000D8C0 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+		A7C303771F6D13770000D8C0 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		A7C303781F6D13770000D8C0 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		A7C3037C1F6D13770000D8C0 /* NetworkKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkKit.h; sourceTree = "<group>"; };
+		A7C3037D1F6D13770000D8C0 /* NetworkKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkKit.m; sourceTree = "<group>"; };
+		A7C3037E1F6D13770000D8C0 /* UploadModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadModel.h; sourceTree = "<group>"; };
+		A7C3037F1F6D13770000D8C0 /* UploadModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadModel.m; sourceTree = "<group>"; };
+		A7C303891F6D13810000D8C0 /* GoodsShelfDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfDataManager.h; sourceTree = "<group>"; };
+		A7C3038A1F6D13810000D8C0 /* GoodsShelfDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfDataManager.m; sourceTree = "<group>"; };
+		A7C3038D1F6D14EE0000D8C0 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		A7C3038F1F6D14F60000D8C0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +182,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7C303901F6D14F70000D8C0 /* SystemConfiguration.framework in Frameworks */,
+				A7C3038E1F6D14EE0000D8C0 /* libresolv.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +211,7 @@
 				8363E9971F4C4C24004B7ACA /* takePhotoAPPTests */,
 				8363E9A21F4C4C24004B7ACA /* takePhotoAPPUITests */,
 				8363E97C1F4C4C24004B7ACA /* Products */,
+				A7C3038C1F6D14EE0000D8C0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -151,6 +228,9 @@
 		8363E97D1F4C4C24004B7ACA /* takePhotoAPP */ = {
 			isa = PBXGroup;
 			children = (
+				A7C3036A1F6D13770000D8C0 /* database */,
+				A7C303791F6D13770000D8C0 /* Network */,
+				A7C3033C1F6D11650000D8C0 /* lib */,
 				A7676DE61F655380004859D0 /* Category */,
 				A7676DE21F651F01004859D0 /* 000.JPG */,
 				8363E9811F4C4C24004B7ACA /* AppDelegate.h */,
@@ -197,6 +277,8 @@
 		8363E9B51F4C4E30004B7ACA /* GoodsShelfPage */ = {
 			isa = PBXGroup;
 			children = (
+				A7C303891F6D13810000D8C0 /* GoodsShelfDataManager.h */,
+				A7C3038A1F6D13810000D8C0 /* GoodsShelfDataManager.m */,
 				8363E9B61F4C4E30004B7ACA /* GoodsShelfViewController.h */,
 				8363E9B71F4C4E30004B7ACA /* GoodsShelfViewController.m */,
 				8363E9B91F4D1708004B7ACA /* GoodsShelfTableViewCell.h */,
@@ -265,6 +347,127 @@
 				A7676DE81F6553BB004859D0 /* UIImage+imageHelper.m */,
 			);
 			name = Category;
+			sourceTree = "<group>";
+		};
+		A7C3033C1F6D11650000D8C0 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				A7C303401F6D117D0000D8C0 /* AliyunOSSiOS */,
+				A7C3033F1F6D117C0000D8C0 /* TempOSS.h */,
+				A7C303691F6D117D0000D8C0 /* TempOSS.m */,
+				A7C3033E1F6D116C0000D8C0 /* AliyunOSS.h */,
+				A7C3033D1F6D116C0000D8C0 /* libOSS.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		A7C303401F6D117D0000D8C0 /* AliyunOSSiOS */ = {
+			isa = PBXGroup;
+			children = (
+				A7C303411F6D117D0000D8C0 /* OSSClient.h */,
+				A7C303421F6D117D0000D8C0 /* OSSClient.m */,
+				A7C303431F6D117D0000D8C0 /* OSSCompat.h */,
+				A7C303441F6D117D0000D8C0 /* OSSCompat.m */,
+				A7C303451F6D117D0000D8C0 /* OSSDefine.h */,
+				A7C303461F6D117D0000D8C0 /* OSSHttpdns.h */,
+				A7C303471F6D117D0000D8C0 /* OSSHttpdns.m */,
+				A7C303481F6D117D0000D8C0 /* OSSIPv6 */,
+				A7C3034F1F6D117D0000D8C0 /* OSSLog.h */,
+				A7C303501F6D117D0000D8C0 /* OSSLog.m */,
+				A7C303511F6D117D0000D8C0 /* OSSModel.h */,
+				A7C303521F6D117D0000D8C0 /* OSSModel.m */,
+				A7C303531F6D117D0000D8C0 /* OSSNetworking.h */,
+				A7C303541F6D117D0000D8C0 /* OSSNetworking.m */,
+				A7C303551F6D117D0000D8C0 /* OSSService.h */,
+				A7C303561F6D117D0000D8C0 /* OSSTask */,
+				A7C303651F6D117D0000D8C0 /* OSSUtil.h */,
+				A7C303661F6D117D0000D8C0 /* OSSUtil.m */,
+				A7C303671F6D117D0000D8C0 /* OSSXMLDictionary.h */,
+				A7C303681F6D117D0000D8C0 /* OSSXMLDictionary.m */,
+			);
+			path = AliyunOSSiOS;
+			sourceTree = "<group>";
+		};
+		A7C303481F6D117D0000D8C0 /* OSSIPv6 */ = {
+			isa = PBXGroup;
+			children = (
+				A7C303491F6D117D0000D8C0 /* OSSIPv6Adapter.h */,
+				A7C3034A1F6D117D0000D8C0 /* OSSIPv6Adapter.m */,
+				A7C3034B1F6D117D0000D8C0 /* OSSIPv6PrefixResolver.h */,
+				A7C3034C1F6D117D0000D8C0 /* OSSIPv6PrefixResolver.m */,
+				A7C3034D1F6D117D0000D8C0 /* OSSReachabilityManager.h */,
+				A7C3034E1F6D117D0000D8C0 /* OSSReachabilityManager.m */,
+			);
+			path = OSSIPv6;
+			sourceTree = "<group>";
+		};
+		A7C303561F6D117D0000D8C0 /* OSSTask */ = {
+			isa = PBXGroup;
+			children = (
+				A7C303571F6D117D0000D8C0 /* OSSBolts.h */,
+				A7C303581F6D117D0000D8C0 /* OSSBolts.m */,
+				A7C303591F6D117D0000D8C0 /* OSSCancellationToken.h */,
+				A7C3035A1F6D117D0000D8C0 /* OSSCancellationToken.m */,
+				A7C3035B1F6D117D0000D8C0 /* OSSCancellationTokenRegistration.h */,
+				A7C3035C1F6D117D0000D8C0 /* OSSCancellationTokenRegistration.m */,
+				A7C3035D1F6D117D0000D8C0 /* OSSCancellationTokenSource.h */,
+				A7C3035E1F6D117D0000D8C0 /* OSSCancellationTokenSource.m */,
+				A7C3035F1F6D117D0000D8C0 /* OSSExecutor.h */,
+				A7C303601F6D117D0000D8C0 /* OSSExecutor.m */,
+				A7C303611F6D117D0000D8C0 /* OSSTask.h */,
+				A7C303621F6D117D0000D8C0 /* OSSTask.m */,
+				A7C303631F6D117D0000D8C0 /* OSSTaskCompletionSource.h */,
+				A7C303641F6D117D0000D8C0 /* OSSTaskCompletionSource.m */,
+			);
+			path = OSSTask;
+			sourceTree = "<group>";
+		};
+		A7C3036A1F6D13770000D8C0 /* database */ = {
+			isa = PBXGroup;
+			children = (
+				A7C3036B1F6D13770000D8C0 /* DataBaseManager.h */,
+				A7C3036C1F6D13770000D8C0 /* DataBaseManager.m */,
+				A7C3036D1F6D13770000D8C0 /* fmdb */,
+			);
+			path = database;
+			sourceTree = "<group>";
+		};
+		A7C3036D1F6D13770000D8C0 /* fmdb */ = {
+			isa = PBXGroup;
+			children = (
+				A7C3036E1F6D13770000D8C0 /* FMDatabase.h */,
+				A7C3036F1F6D13770000D8C0 /* FMDatabase.m */,
+				A7C303701F6D13770000D8C0 /* FMDatabaseAdditions.h */,
+				A7C303711F6D13770000D8C0 /* FMDatabaseAdditions.m */,
+				A7C303721F6D13770000D8C0 /* FMDatabasePool.h */,
+				A7C303731F6D13770000D8C0 /* FMDatabasePool.m */,
+				A7C303741F6D13770000D8C0 /* FMDatabaseQueue.h */,
+				A7C303751F6D13770000D8C0 /* FMDatabaseQueue.m */,
+				A7C303761F6D13770000D8C0 /* FMDB.h */,
+				A7C303771F6D13770000D8C0 /* FMResultSet.h */,
+				A7C303781F6D13770000D8C0 /* FMResultSet.m */,
+			);
+			path = fmdb;
+			sourceTree = "<group>";
+		};
+		A7C303791F6D13770000D8C0 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				A7C3037C1F6D13770000D8C0 /* NetworkKit.h */,
+				A7C3037D1F6D13770000D8C0 /* NetworkKit.m */,
+				A7C3037E1F6D13770000D8C0 /* UploadModel.h */,
+				A7C3037F1F6D13770000D8C0 /* UploadModel.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		A7C3038C1F6D14EE0000D8C0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A7C3038F1F6D14F60000D8C0 /* SystemConfiguration.framework */,
+				A7C3038D1F6D14EE0000D8C0 /* libresolv.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A7C931CC1F63B0A600EC1AD9 /* CameraPage */ = {
@@ -418,9 +621,16 @@
 			files = (
 				838ACB211F67D1B400D19ACE /* GoodsShelfTopBar.m in Sources */,
 				8363E9861F4C4C24004B7ACA /* ViewController.m in Sources */,
+				A7C3038B1F6D13810000D8C0 /* GoodsShelfDataManager.m in Sources */,
+				A7C303881F6D13770000D8C0 /* UploadModel.m in Sources */,
+				A7C303871F6D13770000D8C0 /* NetworkKit.m in Sources */,
 				843A89931F663713007B7496 /* GSProgressView.m in Sources */,
+				A7C303831F6D13770000D8C0 /* FMDatabasePool.m in Sources */,
+				A7C303811F6D13770000D8C0 /* FMDatabase.m in Sources */,
 				849943871F6A9CF900F76836 /* ImageModel.m in Sources */,
+				A7C303801F6D13770000D8C0 /* DataBaseManager.m in Sources */,
 				A7676DEF1F65814E004859D0 /* GSImage.m in Sources */,
+				A7C303821F6D13770000D8C0 /* FMDatabaseAdditions.m in Sources */,
 				A7C3033A1F6D0FF90000D8C0 /* GSAlertView.m in Sources */,
 				8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */,
 				A7676DE11F64EAD3004859D0 /* CameraBaseViewController.m in Sources */,
@@ -429,7 +639,9 @@
 				A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */,
 				8363E9831F4C4C24004B7ACA /* AppDelegate.m in Sources */,
 				A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */,
+				A7C303841F6D13770000D8C0 /* FMDatabaseQueue.m in Sources */,
 				8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */,
+				A7C303851F6D13770000D8C0 /* FMResultSet.m in Sources */,
 				8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */,
 				A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */,
 				A7676DEC1F657FE3004859D0 /* GSThumbnailViewCell.m in Sources */,

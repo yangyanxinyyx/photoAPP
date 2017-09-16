@@ -10,6 +10,7 @@
 #import "CameraViewController.h"
 #import "GoodsShelfPreViewViewController.h"
 #import "GoodsShelfViewController.h"
+
 @interface ViewController ()
 
 @end
