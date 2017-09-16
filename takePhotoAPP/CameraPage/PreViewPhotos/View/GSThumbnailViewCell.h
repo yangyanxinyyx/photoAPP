@@ -10,6 +10,6 @@
 
 @interface GSThumbnailViewCell : UICollectionViewCell
 
-
-
+@property (nonatomic, assign) BOOL isSelect;
+@property (nonatomic, strong) UIImageView *itemImageView;
 @end

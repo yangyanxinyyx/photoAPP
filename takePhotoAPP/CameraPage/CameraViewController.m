@@ -17,6 +17,8 @@
 #import "GSImage.h"
 #import <CoreMotion/CoreMotion.h>
 #import "GSProgressView.h"
+#import "ImageModel.h"
+
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 typedef NS_ENUM(NSInteger, kImageDataType) {
     kImageDataVerticallyType = 1, //竖直方向
@@ -66,6 +68,15 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 @property (nonatomic, strong) UIImageView *angleImageView;
 @property (nonatomic, strong) GSProgressView *progressView;
 
+@property (nonatomic, assign) NSInteger numberOrSos;
+@property (nonatomic) BOOL isSingleModel;
+
+@property (nonatomic, strong) UIView *rephotographTopView;
+@property (nonatomic, strong) UIButton *cancleButton;
+@property (nonatomic, strong) UIImageView *rephotographImageView;
+@property (nonatomic, strong) UIButton *rephotographButton;
+@property (nonatomic, assign) NSUInteger selectImageIndex;
+
 @end
 
 @implementation CameraViewController
@@ -73,10 +84,13 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor yellowColor];
+    _selectImageIndex = 0;
     _isorSo = YES;
     _isUpDown = NO;
     _isAngle = YES;
     _isFlash = NO;
+    _isSingleModel = NO;
+    _numberOrSos = 0;
     [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];//模拟数据
     
     [self setupUI];
@@ -208,13 +222,23 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     [stillImageConnection setVideoScaleAndCropFactor:self.effectiveScale];
     
     [self.captureStillImageOutput captureStillImageAsynchronouslyFromConnection:stillImageConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+        if (imageDataSampleBuffer == nil) {
+            return ;
+        }
         NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         UIImage *image = [UIImage imageWithData:jpegData];
         self.imageOverlap = image;
-        NSMutableArray *array = [self.arrayImages lastObject];
-        [array addObject:image];
-       
         
+        ImageModel *model = [[ImageModel alloc] init];
+        model.image = image;
+        [self.arrayImages addObject:model];
+        if (_isUpDown) {
+            _numberOrSos ++;
+            if (_numberOrSos == 2) {
+                _isSingleModel = YES;
+            }
+        }
+        _showImageView.image = self.imageOverlap;
         
         
         [self setImageOverlapFrame];
@@ -224,10 +248,19 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
             NSLog(@"无权限");
             return ;
         }
-        [self.captureSession stopRunning];
+       
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.captureSession stopRunning];
+            self.takePhotButton.userInteractionEnabled = NO;
+        });
+        
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
         [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-            [self.captureSession startRunning];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.captureSession startRunning];
+                self.takePhotButton.userInteractionEnabled = YES;
+            });
         }];
     }];
     
@@ -271,12 +304,12 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
         if (_isorSo) {
             self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
-            self.imageViewOverlap.alpha = 0.5;
+            self.imageViewOverlap.alpha = ALPHA;
         }
         if (_isUpDown) {
             self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
-            self.imageViewOverlap.alpha = 0.5;
+            self.imageViewOverlap.alpha = ALPHA;
         }
     }
 }
@@ -289,6 +322,11 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     [self.view addSubview:self.segmentView2];
     [self.view addSubview:self.segmentView3];
     [self.view addSubview:self.segmentView4];
+    [self.view addSubview:self.angleImageView];
+    [self.view addSubview:self.progressView];
+    
+
+    [self.view addSubview:self.rephotographImageView];
     
     [self.view addSubview:self.topView];
     [self.topView addSubview:self.OrSoButton];
@@ -304,12 +342,13 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     [self.tabScrollView addSubview:self.goBackBtn];
     [self.tabScrollView addSubview:self.imageChooseView];
     
-    [self.view addSubview:self.angleImageView];
-    [self.view addSubview:self.progressView];
-    
+    [self.view addSubview:self.rephotographTopView];
+    [self.rephotographTopView addSubview:self.cancleButton];
+    [self.rephotographImageView addSubview:self.rephotographButton];
     
 }
 
+//水平仪
 - (void)setInitMotionMangager{
     CMMotionManager *motionManager = [[CMMotionManager alloc]init];
     
@@ -375,13 +414,16 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     _isorSo = !_isorSo;
     _isUpDown = !_isUpDown;
     
-    NSMutableArray *arrayImage = [self.arrayImages lastObject];
-    if (arrayImage.count >0) {
-        NSMutableArray *array = [NSMutableArray array];
-        [self.arrayImages addObject:array];
-    }
-    self.imageOverlap = nil;
     self.imageViewOverlap.alpha = 0;
+    _numberOrSos = 0;
+    
+    if (self.imageOverlap && _isSingleModel) {
+        self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        UIImage *image = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
+        self.imageViewOverlap.image = image;
+        self.imageViewOverlap.alpha = ALPHA;
+    }
+
 }
 
 //上下
@@ -395,8 +437,15 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     }
     _isUpDown = !_isUpDown;
     _isorSo = !_isorSo;
-    self.imageOverlap = nil;
+    
     self.imageViewOverlap.alpha = 0;
+    if (self.imageOverlap && _isSingleModel) {
+        self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
+        UIImage *image = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
+        self.imageViewOverlap.image = image;
+        self.imageViewOverlap.alpha = ALPHA;
+    }
+    
 }
 
 //闪光灯
@@ -429,11 +478,48 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 
 - (void)goForWardBtnClick:(UIButton *)button {
     [self.tabScrollView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:YES];
+    [self.imageChooseView reloadData];
+    
+    
 }
 
 - (void)goBackBtnClick:(UIButton *)button {
     [self.tabScrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 64);
+        self.rephotographTopView.frame = CGRectMake(0, -64, SCREEN_WIDTH, 64);
+        self.rephotographImageView.alpha = 0;
+        self.rephotographButton.alpha = 0;
+    }];
+    for (ImageModel *model in self.arrayImages) {
+        model.isSelect = NO;
+    }
 }
+
+- (void)touchCancleButton{
+    [UIView animateWithDuration:0.3 animations:^{
+        self.topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 64);
+        self.rephotographTopView.frame = CGRectMake(0, -64, SCREEN_WIDTH, 64);
+        self.rephotographImageView.alpha = 0;
+        self.rephotographButton.alpha = 0;
+    }];
+    for (ImageModel *model in self.arrayImages) {
+        model.isSelect = NO;
+    }
+    [self.imageChooseView reloadData];
+    
+}
+
+- (void)toucheRephotgraphButton{
+    self.rephotographButton.alpha = 0;
+    [self goBackBtnClick:nil];
+    
+    if (_isSingleModel) {
+        
+    }
+    
+}
+
 #pragma mark - Privacy Method
 
 - (NSArray *)getImageDataWithType:(kImageDataType)imageType imageArray:(NSArray *)imageArray {
@@ -475,39 +561,40 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 
 //- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
 //    
-//    int sectionCount = 0;
+////    int sectionCount = 0;
 ////    if (_isorSo) {
 ////        sectionCount = 1;
 ////    }
 ////    if (_isUpDown) {
 ////        sectionCount = 2;
 ////    }
+////    if (_isSingleModel) {
+////        return 1;
+////    } else {
+////        return 2;
+////    }
 //    
-//    return sec;
+//    
 //}
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     
-    NSArray *imageData = [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];
+//    NSArray *imageData = [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];
     
-    return imageData.count;
+    return self.arrayImages.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSArray *imageData = [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];
+//NSArray *imageData = [self getImageDataWithType:kImageDataVerticallyType imageArray:self.arrayImages];
 
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     
-    GSImage *image = [imageData objectAtIndex:indexPath.row];
-//    image.imageID = indexPath.row;
-    UIImage *thumb = [UIImage getThumbnailWidthImage:image size:cell.frame.size];
-    UIImageView *imageView =[[UIImageView alloc] initWithImage:thumb];
-    
-    [cell.contentView addSubview:imageView];
-
+    ImageModel *model = [self.arrayImages objectAtIndex:indexPath.row];
+    cell.itemImageView.image = model.image;
+    cell.isSelect = model.isSelect;
     
     return cell;
 }
@@ -520,7 +607,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     CGFloat itemsWidth = width / 5.0;
     CGFloat itemsHeight ;
     
-    if (_isorSo) {
+    if (!_isSingleModel) {
         itemsHeight = height - 2 * kTabViewTopMargin  ;
     }else {
         itemsHeight = height / 2.0 - 2 * kTabViewTopMargin;
@@ -530,10 +617,26 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     NSLog(@"====>%ld===>%ld",(long)indexPath.section,(long)indexPath.row);
+    ImageModel *model = [self.arrayImages objectAtIndex:indexPath.row];
+    for (ImageModel *model in self.arrayImages) {
+        model.isSelect = NO;
+    }
     
     
+    model.isSelect = YES;
+    
+    [self.imageChooseView reloadData];
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        self.topView.frame = CGRectMake(0, -64, SCREEN_WIDTH, 64);
+        self.rephotographTopView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 64);
+        _rephotographImageView.alpha = 1;
+        _rephotographImageView.image = model.image;
+        _rephotographButton.alpha = 1;
+    }];
+    _selectImageIndex = indexPath.section * 2 + indexPath.row;
+
 }
 
 #pragma mark - Setter&Getter
@@ -658,7 +761,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIButton *)goForwardBtn {
     if (!_goForwardBtn) {
         _goForwardBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _goForwardBtn.frame = CGRectMake(SCREEN_WIDTH - 86 , 0, 38, 113 - 10);
+        _goForwardBtn.frame = CGRectMake(SCREEN_WIDTH - 73 , 0, 20, 113);
         [_goForwardBtn setBackgroundImage:[UIImage imageNamed:@"leftArrow"] forState:UIControlStateNormal];
         
         [_goForwardBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -670,7 +773,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIImageView *)showImageView{
     if (!_showImageView) {
         _showImageView = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 48, (113 - 50 ) / 2, 38 , 50 )];
-        _showImageView.image = [UIImage imageNamed:@"thumbnail"];
+        _showImageView.contentMode = UIViewContentModeScaleAspectFill;
         
     }
     return _showImageView;
@@ -679,8 +782,8 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
 - (UIButton *)goBackBtn {
     if (!_goBackBtn) {
         _goBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGFloat width = 50;
-        _goBackBtn.frame = CGRectMake(SCREEN_WIDTH + kTabViewLeftMargin, kTabViewTopMargin, width, self.tabScrollView.frame.size.height - 2 * kTabViewTopMargin);
+        CGFloat width = 20;
+        _goBackBtn.frame = CGRectMake(SCREEN_WIDTH + kTabViewLeftMargin, 0, width, 113);
         [_goBackBtn setBackgroundImage:[UIImage imageNamed:@"rightArrow"] forState:UIControlStateNormal];
         [_goBackBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_goBackBtn addTarget:self action:@selector(goBackBtnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -706,7 +809,7 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
                                        kTabViewTopMargin,
                                        tabViewW - goBackBtnW - 2 * kTabViewLeftMargin - preViewBtnW - kTabViewRightMargin , tabViewH - 2 * kTabViewTopMargin) collectionViewLayout:self.imageChooseViewLayout];
         
-        _imageChooseView.backgroundColor = [UIColor blueColor];
+      _imageChooseView.backgroundColor = [UIColor whiteColor];
         _imageChooseView.dataSource = self;
         _imageChooseView.delegate = self;
 
@@ -733,31 +836,57 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     }
     return _progressView;
 }
+
+- (UIView *)rephotographTopView{
+    if (!_rephotographTopView) {
+        _rephotographTopView = [[UIView alloc]initWithFrame:CGRectMake(0, -64, SCREEN_WIDTH, 64)];
+        _rephotographTopView.backgroundColor =  ORANGECOLOR;
+    }
+    return _rephotographTopView;
+}
+
+- (UIButton *)cancleButton{
+    if (!_cancleButton) {
+        _cancleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _cancleButton.frame = CGRectMake(SCREEN_WIDTH - 30 * SCREEN_RATE, 0, 20 * SCREEN_RATE, 64);
+        [_cancleButton setBackgroundImage:[UIImage imageNamed:@"cancle"] forState:UIControlStateNormal];
+        [_cancleButton addTarget:self action:@selector(touchCancleButton) forControlEvents:UIControlEventTouchDown];
+    }
+    return _cancleButton;
+}
+- (UIImageView *)rephotographImageView{
+    if (!_rephotographImageView) {
+        _rephotographImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _rephotographImageView.alpha = 0;
+        _rephotographImageView.userInteractionEnabled = YES;
+        
+    }
+    return _rephotographImageView;
+}
+
+- (UIButton *)rephotographButton{
+    if (!_rephotographButton) {
+        _rephotographButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _rephotographButton.frame = CGRectMake((SCREEN_WIDTH - 80 * SCREEN_RATE) / 2, SCREEN_HEIGHT - 60 * SCREEN_RATE - 113, 80 * SCREEN_RATE, 30 * SCREEN_RATE);
+        _rephotographButton.backgroundColor = [UIColor colorWithRed:213 / 255.0 green:41 / 255.0 blue:39 / 255.0 alpha:1];
+        [_rephotographButton setTitle:@"重拍" forState:UIControlStateNormal];
+        [_rephotographButton setTitleColor:[UIColor colorWithRed:255 / 255.0 green:255 / 255.0 blue:255 / 255.0 alpha:1] forState:UIControlStateNormal];
+        _rephotographButton.layer.masksToBounds = YES;
+        _rephotographButton.layer.cornerRadius = 10 * SCREEN_RATE;
+        _rephotographButton.alpha = 0;
+        [_rephotographButton addTarget:self action:@selector(toucheRephotgraphButton) forControlEvents:UIControlEventTouchDown];
+    }
+    return _rephotographButton;
+}
 #pragma mark --Other
 
 - (NSMutableArray *)arrayImages{
     if (!_arrayImages) {
         _arrayImages = [NSMutableArray array];
-        
-        int photosCount = 10;
-//        int sectionCount = 2;
-        int rowCount = 2;
-
-        for (int i = 1 ; i <= photosCount/rowCount ; i++) {
-            
-            NSMutableArray *array = [NSMutableArray array];
-
-            for (int row = 1 ; row <= rowCount; row++) {
-                
-                UIImage *image = [UIImage imageNamed:@"000.JPG"];
-                [array addObject:image];
-            }
-            [_arrayImages addObject:array];
-        }
-        
     }
     return _arrayImages;
 }
+
 #pragma mark GSPregressViewDelegate
 - (void)camerScaleWithSliderValue:(float)sliderValue{
     self.effectiveScale = self.beginGestureScale * (sliderValue);
@@ -766,7 +895,6 @@ typedef NS_ENUM(NSInteger, kImageDataType) {
     }
 
     CGFloat maxScaleAndCropFactor = [[self.captureStillImageOutput connectionWithMediaType:AVMediaTypeVideo] videoMaxScaleAndCropFactor];
-    NSLog(@"%f",maxScaleAndCropFactor);
     if (self.effectiveScale > maxScaleAndCropFactor) {
         self.effectiveScale = maxScaleAndCropFactor;
     }
