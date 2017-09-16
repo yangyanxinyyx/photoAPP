@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		835415541F6D16F400CB7B77 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 835415531F6D16F400CB7B77 /* libsqlite3.tbd */; };
+		835415551F6D1C6800CB7B77 /* libOSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7C3033D1F6D116C0000D8C0 /* libOSS.a */; };
+		835415561F6D207900CB7B77 /* TempOSS.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303691F6D117D0000D8C0 /* TempOSS.m */; };
 		8363E9801F4C4C24004B7ACA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E97F1F4C4C24004B7ACA /* main.m */; };
 		8363E9831F4C4C24004B7ACA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9821F4C4C24004B7ACA /* AppDelegate.m */; };
 		8363E9861F4C4C24004B7ACA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9851F4C4C24004B7ACA /* ViewController.m */; };
@@ -62,6 +65,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		835415531F6D16F400CB7B77 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		8363E97B1F4C4C24004B7ACA /* takePhotoAPP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = takePhotoAPP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8363E97F1F4C4C24004B7ACA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8363E9811F4C4C24004B7ACA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -182,6 +186,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				835415551F6D1C6800CB7B77 /* libOSS.a in Frameworks */,
+				835415541F6D16F400CB7B77 /* libsqlite3.tbd in Frameworks */,
 				A7C303901F6D14F70000D8C0 /* SystemConfiguration.framework in Frameworks */,
 				A7C3038E1F6D14EE0000D8C0 /* libresolv.tbd in Frameworks */,
 			);
@@ -464,6 +470,7 @@
 		A7C3038C1F6D14EE0000D8C0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				835415531F6D16F400CB7B77 /* libsqlite3.tbd */,
 				A7C3038F1F6D14F60000D8C0 /* SystemConfiguration.framework */,
 				A7C3038D1F6D14EE0000D8C0 /* libresolv.tbd */,
 			);
@@ -619,6 +626,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				835415561F6D207900CB7B77 /* TempOSS.m in Sources */,
 				838ACB211F67D1B400D19ACE /* GoodsShelfTopBar.m in Sources */,
 				8363E9861F4C4C24004B7ACA /* ViewController.m in Sources */,
 				A7C3038B1F6D13810000D8C0 /* GoodsShelfDataManager.m in Sources */,
@@ -792,6 +800,11 @@
 				INFOPLIST_FILE = takePhotoAPP/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/takePhotoAPP/lib",
+				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = takePhotoAPP.takePhotoAPP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -808,6 +821,11 @@
 				INFOPLIST_FILE = takePhotoAPP/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/takePhotoAPP/lib",
+				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = takePhotoAPP.takePhotoAPP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

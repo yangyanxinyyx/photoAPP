@@ -30,6 +30,78 @@
 #import "TempOSS.h"
 @implementation TempOSS
 
++ (TempOSS *)shareInstance
+{
+    static TempOSS *aliyunOSSManager;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        aliyunOSSManager = [[TempOSS alloc] init];
+    });
+    
+    return aliyunOSSManager;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        [OSSLog enableLog];
+        [self setupEnvironment];
+    }
+    return self;
+}
+
+- (void)putImageAsyncWithObject:(NSDictionary *)object
+                           file:(NSString *)file
+                        process:(void (^)(NSDictionary *))process
+                      finishURL:(void (^)(NSString *))finishURL
+{
+    NSString *bucketName = [object objectForKey:@"bucket_name"];
+    NSString *objectKey = [object objectForKey:@"file_name"];
+    NSString *file_url = [object objectForKey:@"file_url"];
+    
+    NSLog(@"bucketName=%@", bucketName);
+    NSLog(@"file=%@", file);
+    OSSPutObjectRequest * put = [OSSPutObjectRequest new];
+    put.bucketName = bucketName;
+    put.objectKey = objectKey;
+    put.uploadingFileURL = [NSURL URLWithString:file];
+    put.uploadProgress = ^(int64_t bytesSent, int64_t totalByteSent, int64_t totalBytesExpectedToSend) {
+        if (process) {
+            NSDictionary *obj = @{
+                                  @"bytesSent": @(bytesSent),
+                                  @"totalByteSent": @(totalByteSent),
+                                  @"totalBytesExpectedToSend": @(totalBytesExpectedToSend)
+                                  };
+            process(obj);
+        }
+    };
+    
+    OSSTask * putTask = [self.client putObject:put];
+    [putTask continueWithBlock:^id(OSSTask *task) {
+        
+        if (!task.error) {
+            if (finishURL) {
+                finishURL(file_url);
+            }
+        }
+        else {
+            NSLog(@"upload image failed, error: %@" , task.error);
+            if (finishURL) {
+                finishURL(nil);
+            }
+        }
+        
+        
+        
+        return nil;
+    }];
+    
+    [NSNotificationCenter.defaultCenter addObserverForName:@"cancelUploadImage" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification){
+        if (!putTask.completed) {
+            [put cancel];
+        }
+    }];
+}
+
 // 异步上传
 - (void)uploadObjectAsyncWithImageData:(NSData *)data {
     OSSPutObjectRequest * put = [OSSPutObjectRequest new];

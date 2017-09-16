@@ -12,6 +12,8 @@
 #import "GoodsShelfModel.h"
 #import "NetworkKit.h"
 
+
+
 @implementation GoodsShelfDataManager
 
 + (GoodsShelfDataManager *)shareInstance {
@@ -60,7 +62,9 @@
          [NetworkKit sendImageWithObject:uploadModel process:^(NSDictionary *object) {
              
          } response:^(NSDictionary *urlObject, id responseObject, NSError *error) {
-             
+             if (error ) {
+                 [failArray addObject:@(i)];
+             }
          }];
     }
     if (failArray.count == 0) {
@@ -80,12 +84,57 @@
     
 }
 
+- (void)reSendImagewithModel:(GoodsShelfModel *)model
+{
+    NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:model.failArrays];
+    NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];
+    NSMutableArray *resendArray = [NSMutableArray array];
+    for (int i=0; i<imagePaths.count; i++) {
+        for (int j=0 ; i< failArrays.count; j++) {
+            NSInteger index = [failArrays[j] integerValue];
+            [resendArray addObject:imagePaths[index]];
+        }
+    }
+    
+    NSMutableArray *failArray = [NSMutableArray array];
+    for (NSInteger i=0; i<resendArray.count; i++) {
+        UploadModel *uploadModel = [[UploadModel alloc] init];
+        uploadModel.imagePath = resendArray[i];
+        
+        [NetworkKit sendImageWithObject:uploadModel process:^(NSDictionary *object) {
+            
+        } response:^(NSDictionary *urlObject, id responseObject, NSError *error) {
+            if (error ) {
+                [failArray addObject:@(i)];
+            }
+        }];
+    }
+    
+    if (failArray.count == 0) {
+        //全部成功
+        model.goodUploadState = GoodsUploadStateSuccess;
+        [self updateModel:model];
+        
+        //删除临时文件
+        
+    } else {
+        //有失败的
+        model.goodUploadState = GoodsUploadStateFail;
+        model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArray];
+        model.imagePaths = [GoodsShelfDataManager changeNSArrayToNSString:imagePaths];
+        [self updateModel:model];
+    }
+}
+
 - (void)addModel:(GoodsShelfModel*)model {
     BOOL flag = [[DataBaseManager shareDataBase] insertInToTableWithModel:model];
     if (flag) {
         [self.datas addObject:model];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kAddModelNotify object:@{@"model": model, @"index": @(0)}];
     }
+    
 }
+
 
 - (void)updateModel:(GoodsShelfModel*)model {
     BOOL flag = [[DataBaseManager shareDataBase] updateInTableWithModel:model];
@@ -93,8 +142,9 @@
         NSInteger index = [self indexOfModel:model];
         if (index < self.datas.count && index > 0) {
             [self.datas replaceObjectAtIndex:index withObject:model];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateModelNotify object:@{@"model": model, @"index": @(0)}];
         }
-        NSAssert(index >= 0, @"找不到对用的model");
+       // NSAssert(index >= 0, @"找不到对用的model");
     }
 }
 

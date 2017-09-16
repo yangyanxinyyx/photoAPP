@@ -10,6 +10,7 @@
 #import "GoodsShelfTableViewCell.h"
 #import "GoodsShelfTopBar.h"
 #import "DataBaseManager.h"
+#import "GoodsShelfDataManager.h"
 
 @interface GoodsShelfViewController ()<UITableViewDelegate,UITableViewDataSource,GoodsShelfTopBarDelegate>
 @property (nonatomic,strong) UITableView *tableViewList;
@@ -22,8 +23,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addModelNotify:) name:kAddModelNotify object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uodateModelNotify:) name:kUpdateModelNotify object:nil];
     [self creatUI];
     [self requestData];
+    [self.tableViewList scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataSource.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    
+}
+
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kAddModelNotify object:nil];
 }
 
 -(void)creatUI
@@ -57,7 +66,7 @@
 
 - (void)requestData
 {
-    NSArray *array = [[DataBaseManager shareDataBase] selectTable];
+    NSArray *array = [[GoodsShelfDataManager shareInstance] datas];
     self.dataSource  = [NSMutableArray arrayWithArray:array];
     [self.tableViewList reloadData];
 }
@@ -81,8 +90,29 @@
     GoodsShelfTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (cell == nil) {
         cell = [[GoodsShelfTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+
     }
     return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    GoodsShelfModel *model = _dataSource[indexPath.row];
+    if (model.goodUploadState == GoodsUploadStateFail) {
+        NSLog(@"重发");
+        [[GoodsShelfDataManager shareInstance] reSendImagewithModel:model];
+    }
+}
+
+- (void)addModelNotify:(NSNotification *)notify
+{
+    [self requestData];
+    [self.tableViewList scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataSource.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
+
+- (void)uodateModelNotify:(NSNotification *)notify
+{
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -102,6 +132,10 @@
 
 - (void)pressToFinish
 {
+    NSDictionary *param = @{@"thumbLink":@"123",
+                            @"imagePaths":@[@"1",@"2",@"3"]};
+    [[GoodsShelfDataManager shareInstance] sendImageWithParam:param];
+    
     NSLog(@"完成 跳转微信");
 }
 

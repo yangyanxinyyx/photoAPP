@@ -7,8 +7,6 @@
 //
 
 #import "NetworkKit.h"
-//#import "AliyunOSSManager.h"
-//#import "TempOSS.h"
 
 
 @implementation NetworkKit
@@ -62,13 +60,14 @@
     NSDictionary *accreditInfos = @{};
     NSString *originalURL = accreditInfos[@"file_url"];
     NSString *thumbnailURL = accreditInfos[@"file_url_thumbnail"];
-//    [[TempOSS shareInstance] putImageAsyncWithObject:accreditInfos file:filePath process:process finishURL:^(NSString *finishURL) {
-//        if ([finishURL hasPrefix:@"http://"]) {
-//            successBlock(@{@"origin": originalURL, @"thumbnail": thumbnailURL, @"result": @(YES)});
-//        } else {
-//            successBlock(@{@"result": @(NO)});
-//        }
-//    }];
+    [[TempOSS shareInstance] putImageAsyncWithObject:accreditInfos file:filePath process:process finishURL:^(NSString *finishURL) {
+        if ([finishURL hasPrefix:@"http://"]) {
+            successBlock(@{@"origin": originalURL, @"thumbnail": thumbnailURL, @"result": @(YES)});
+        } else {
+            successBlock(@{@"result": @(NO)});
+        }
+    }];
+  
 }
 
 //文件是否存在

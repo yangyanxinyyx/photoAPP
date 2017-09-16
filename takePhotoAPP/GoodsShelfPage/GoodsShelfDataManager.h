@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "GoodsShelfModel.h"
+#define kAddModelNotify @"addModeNotify"
+#define kUpdateModelNotify @"UpdateModeNotify"
 
 @interface GoodsShelfDataManager : NSObject
 
@@ -16,6 +18,7 @@
 + (GoodsShelfDataManager *)shareInstance;
 
 - (void)sendImageWithParam:(NSDictionary *)param;
+- (void)reSendImagewithModel:(GoodsShelfModel *)model;
 
 + (NSString *)changeNSArrayToNSString:(NSArray *)array;
 + (NSArray *)changeNSStringToNSArray:(NSString *)string;

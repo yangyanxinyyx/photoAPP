@@ -32,4 +32,12 @@
 @interface TempOSS : AliyunOSS
 
 - (void)uploadObjectAsyncWithImageData:(NSData *)data;
+
++ (TempOSS *)shareInstance;
+
+//图片上传
+- (void)putImageAsyncWithObject:(NSDictionary *)object
+                           file:(NSString *)file
+                        process:(void (^)(NSDictionary *))process
+                      finishURL:(void (^)(NSString *))finishURL;
 @end

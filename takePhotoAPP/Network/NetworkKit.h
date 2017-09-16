@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "UploadModel.h"
 
+#import "TempOSS.h"
 
 typedef void (^NetworkSendBlock)(NSDictionary *object);
 typedef void (^NetworkSendResponseBlock)(NSDictionary *urlObject, id responseObject, NSError *error);
