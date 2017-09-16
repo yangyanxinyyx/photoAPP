@@ -9,6 +9,7 @@
 #import "GoodsShelfViewController.h"
 #import "GoodsShelfTableViewCell.h"
 #import "GoodsShelfTopBar.h"
+#import "DataBaseManager.h"
 
 @interface GoodsShelfViewController ()<UITableViewDelegate,UITableViewDataSource,GoodsShelfTopBarDelegate>
 @property (nonatomic,strong) UITableView *tableViewList;
@@ -22,7 +23,7 @@
     [super viewDidLoad];
     
     [self creatUI];
-    
+    [self requestData];
 }
 
 -(void)creatUI
@@ -54,6 +55,13 @@
     
 }
 
+- (void)requestData
+{
+    NSArray *array = [[DataBaseManager shareDataBase] selectTable];
+    self.dataSource  = [NSMutableArray arrayWithArray:array];
+    [self.tableViewList reloadData];
+}
+
 #pragma mark- tableviewDelegate
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -63,8 +71,8 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 20;
-    //return self.dataSource.count;
+    //return 20;
+    return self.dataSource.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

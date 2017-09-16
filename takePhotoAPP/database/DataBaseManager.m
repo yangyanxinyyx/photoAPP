@@ -107,7 +107,7 @@ static DataBaseManager *dataBase = nil;
 {
     model.goodUploadState = model.goodUploadState?model.goodUploadState:@"null";
     if ([_db open]) {
-        NSString *sql = [NSString stringWithFormat:@"update movies set state = '%@' where id = '%d'",model.goodUploadState,[model.dbid intValue]];
+        NSString *sql = [NSString stringWithFormat:@"update goodsShelf set state = '%@',thumbLink = '%@',photoCount = '%@',failArray = '%@',imagePaths = '%@' where id = '%d'",model.goodUploadState,model.thumbLink,model.imageCount,model.failArrays,model.imagePaths,[model.dbid intValue]];
         BOOL result = [_db executeUpdate:sql];
         [_db close];
         return result;
