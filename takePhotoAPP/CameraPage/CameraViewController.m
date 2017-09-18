@@ -572,7 +572,6 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"====>%ld===>%ld",(long)indexPath.section,(long)indexPath.row);
     ImageModel *model = [self.arrayImages objectAtIndex:indexPath.row];
     for (ImageModel *model in self.arrayImages) {
         model.isSelect = NO;
@@ -590,7 +589,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         _rephotographImageView.image = model.image;
         _rephotographButton.alpha = 1;
     }];
-    _selectImageIndex = indexPath.section * 2 + indexPath.row;
+    _selectImageIndex = indexPath.row;
 
 }
 
