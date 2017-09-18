@@ -9,7 +9,8 @@
 #import "GSAlertView.h"
 
 @interface GSAlertView ()
-
+/** <# 注释 #> */
+@property (nonatomic, strong) UIView * alertView ;
 
 @end
 

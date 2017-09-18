@@ -27,7 +27,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uodateModelNotify:) name:kUpdateModelNotify object:nil];
     [self creatUI];
     [self requestData];
-    [self.tableViewList scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataSource.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    if (_tableViewList && self.dataSource.count >0) {
+        [self.tableViewList scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataSource.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    }
+    
     
 }
 

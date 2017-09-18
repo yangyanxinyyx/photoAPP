@@ -498,7 +498,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)priViewBtnClick:(UIButton *)button {
     
     GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
-    
+    GSPreView.imageDateArrM = self.arrayImages;
     [self.navigationController pushViewController:GSPreView animated:YES];
     
 }

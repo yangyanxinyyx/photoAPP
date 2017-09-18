@@ -66,16 +66,17 @@
     [self.tabView addSubview:self.imageChooseView];
     [self.tabView addSubview:self.leftPreViewBtn];
     [self.tabView addSubview:self.rightPreViewBtn];
-    
+    [self.view insertSubview:self.preView atIndex:0];
 }
 
 #pragma mark - Action Method
 
 - (void)dismissbtnClick:(UIButton *)button {
-    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)submitbtnClick:(UIButton *)button {
+    
     
     
 }
@@ -98,9 +99,9 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    
+
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
-    
+    cell.selected = NO ;
     ImageModel *model = [self.imageDateArrM objectAtIndex:indexPath.row];
     cell.itemImageView.image = model.image;
     cell.isSelect = model.isSelect;
@@ -123,23 +124,8 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"====>%ld===>%ld",(long)indexPath.section,(long)indexPath.row);
-    ImageModel *model = [self.imageDateArrM objectAtIndex:indexPath.row];
-    for (ImageModel *model in self.imageDateArrM) {
-        model.isSelect = NO;
-    }
-    
-    model.isSelect = YES;
-    
-    [self.imageChooseView reloadData];
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        self.topView.frame = CGRectMake(0, -64, SCREEN_WIDTH, 64);
-        self.preView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 64);
-        _preView.alpha = 1;
-        _preView.image = model.image;
-        _preView.alpha = 1;
-    }];
-    _selectImageIndex = indexPath.section * 2 + indexPath.row;
+
+    self.selectImageIndex =  indexPath.row;
     
 }
 
@@ -218,6 +204,34 @@
         [_rightPreViewBtn addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchDown];
     }
     return _rightPreViewBtn;
+}
+
+- (UIImageView *)preView {
+    if (!_preView) {
+        _preView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _preView.alpha = 0;
+        _preView.userInteractionEnabled = YES;
+    }
+    return _preView;
+}
+
+- (void)setSelectImageIndex:(NSInteger)selectImageIndex {
+    
+    if (_selectImageIndex != selectImageIndex) {
+        _selectImageIndex = selectImageIndex;
+        ImageModel *model = [self.imageDateArrM objectAtIndex:selectImageIndex];
+        for (ImageModel *model in self.imageDateArrM) {
+            model.isSelect = NO;
+        }
+        model.isSelect = YES;
+        [self.imageChooseView reloadData];
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            _preView.alpha = 1;
+            _preView.image = model.image;
+        }];
+    }
+    
 }
 
 @end
