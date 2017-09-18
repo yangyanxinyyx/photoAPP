@@ -45,6 +45,7 @@
 		A7C3038B1F6D13810000D8C0 /* GoodsShelfDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C3038A1F6D13810000D8C0 /* GoodsShelfDataManager.m */; };
 		A7C3038E1F6D14EE0000D8C0 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A7C3038D1F6D14EE0000D8C0 /* libresolv.tbd */; };
 		A7C303901F6D14F70000D8C0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7C3038F1F6D14F60000D8C0 /* SystemConfiguration.framework */; };
+		A7C34CC61F6EDD5100774857 /* BIAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C34CC51F6EDD5100774857 /* BIAlertViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +180,8 @@
 		A7C3038A1F6D13810000D8C0 /* GoodsShelfDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfDataManager.m; sourceTree = "<group>"; };
 		A7C3038D1F6D14EE0000D8C0 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		A7C3038F1F6D14F60000D8C0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A7C34CC41F6EDD5100774857 /* BIAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BIAlertViewController.h; path = ../../../../../Downloads/BIAlertViewController.h; sourceTree = "<group>"; };
+		A7C34CC51F6EDD5100774857 /* BIAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BIAlertViewController.m; path = ../../../../../Downloads/BIAlertViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -339,6 +342,8 @@
 		A7676DDD1F64EAD3004859D0 /* base */ = {
 			isa = PBXGroup;
 			children = (
+				A7C34CC41F6EDD5100774857 /* BIAlertViewController.h */,
+				A7C34CC51F6EDD5100774857 /* BIAlertViewController.m */,
 				A7676DDE1F64EAD3004859D0 /* CameraBaseViewController.h */,
 				A7676DDF1F64EAD3004859D0 /* CameraBaseViewController.m */,
 				A7676DE01F64EAD3004859D0 /* CameraUIConstant.h */,
@@ -650,6 +655,7 @@
 				A7C303841F6D13770000D8C0 /* FMDatabaseQueue.m in Sources */,
 				8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */,
 				A7C303851F6D13770000D8C0 /* FMResultSet.m in Sources */,
+				A7C34CC61F6EDD5100774857 /* BIAlertViewController.m in Sources */,
 				8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */,
 				A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */,
 				A7676DEC1F657FE3004859D0 /* GSThumbnailViewCell.m in Sources */,
