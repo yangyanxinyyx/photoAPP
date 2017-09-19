@@ -26,7 +26,6 @@
 		A75425BB1F6F5FF0002E4D80 /* BIAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A75425BA1F6F5FF0002E4D80 /* BIAlertViewController.m */; };
 		A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A75803F41F63DE8D00DADBE1 /* CameraViewController.m */; };
 		A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */; };
-		A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD61F64EAB9004859D0 /* GoodsShelfPreViewViewController.m */; };
 		A7676DDC1F64EAB9004859D0 /* GSChoosePhotosView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD91F64EAB9004859D0 /* GSChoosePhotosView.m */; };
 		A7676DE11F64EAD3004859D0 /* CameraBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DDF1F64EAD3004859D0 /* CameraBaseViewController.m */; };
 		A7676DE31F651F01004859D0 /* 000.JPG in Resources */ = {isa = PBXBuildFile; fileRef = A7676DE21F651F01004859D0 /* 000.JPG */; };
@@ -34,7 +33,6 @@
 		A7676DEC1F657FE3004859D0 /* GSThumbnailViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */; };
 		A7676DEF1F65814E004859D0 /* GSImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DEE1F65814E004859D0 /* GSImage.m */; };
 		A7C303371F6CF1EF0000D8C0 /* GSPrewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */; };
-		A7C3033A1F6D0FF90000D8C0 /* GSAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303391F6D0FF90000D8C0 /* GSAlertView.m */; };
 		A7C303801F6D13770000D8C0 /* DataBaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C3036C1F6D13770000D8C0 /* DataBaseManager.m */; };
 		A7C303811F6D13770000D8C0 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C3036F1F6D13770000D8C0 /* FMDatabase.m */; };
 		A7C303821F6D13770000D8C0 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303711F6D13770000D8C0 /* FMDatabaseAdditions.m */; };
@@ -101,8 +99,6 @@
 		A75803F41F63DE8D00DADBE1 /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraViewController.m; sourceTree = "<group>"; };
 		A7676DD31F64EAB9004859D0 /* CustomCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCollectionViewLayout.h; sourceTree = "<group>"; };
 		A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCollectionViewLayout.m; sourceTree = "<group>"; };
-		A7676DD51F64EAB9004859D0 /* GoodsShelfPreViewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfPreViewViewController.h; sourceTree = "<group>"; };
-		A7676DD61F64EAB9004859D0 /* GoodsShelfPreViewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfPreViewViewController.m; sourceTree = "<group>"; };
 		A7676DD81F64EAB9004859D0 /* GSChoosePhotosView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSChoosePhotosView.h; sourceTree = "<group>"; };
 		A7676DD91F64EAB9004859D0 /* GSChoosePhotosView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSChoosePhotosView.m; sourceTree = "<group>"; };
 		A7676DDE1F64EAD3004859D0 /* CameraBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraBaseViewController.h; sourceTree = "<group>"; };
@@ -115,10 +111,8 @@
 		A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSThumbnailViewCell.m; sourceTree = "<group>"; };
 		A7676DED1F65814E004859D0 /* GSImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSImage.h; sourceTree = "<group>"; };
 		A7676DEE1F65814E004859D0 /* GSImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSImage.m; sourceTree = "<group>"; };
-		A7C303351F6CF1EF0000D8C0 /* GSPrewViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GSPrewViewController.h; sourceTree = "<group>"; };
-		A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GSPrewViewController.m; sourceTree = "<group>"; };
-		A7C303381F6D0FF90000D8C0 /* GSAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GSAlertView.h; sourceTree = "<group>"; };
-		A7C303391F6D0FF90000D8C0 /* GSAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GSAlertView.m; sourceTree = "<group>"; };
+		A7C303351F6CF1EF0000D8C0 /* GSPrewViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GSPrewViewController.h; path = ../GSPrewViewController.h; sourceTree = "<group>"; };
+		A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GSPrewViewController.m; path = ../GSPrewViewController.m; sourceTree = "<group>"; };
 		A7C3033D1F6D116C0000D8C0 /* libOSS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOSS.a; sourceTree = "<group>"; };
 		A7C3033E1F6D116C0000D8C0 /* AliyunOSS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AliyunOSS.h; sourceTree = "<group>"; };
 		A7C3033F1F6D117C0000D8C0 /* TempOSS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TempOSS.h; sourceTree = "<group>"; };
@@ -316,8 +310,8 @@
 				A7676DD71F64EAB9004859D0 /* View */,
 				A7676DD31F64EAB9004859D0 /* CustomCollectionViewLayout.h */,
 				A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */,
-				A7676DD51F64EAB9004859D0 /* GoodsShelfPreViewViewController.h */,
-				A7676DD61F64EAB9004859D0 /* GoodsShelfPreViewViewController.m */,
+				A7C303351F6CF1EF0000D8C0 /* GSPrewViewController.h */,
+				A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */,
 			);
 			path = PreViewPhotos;
 			sourceTree = "<group>";
@@ -333,8 +327,6 @@
 				A7676DEB1F657FE3004859D0 /* GSThumbnailViewCell.m */,
 				843A89911F663713007B7496 /* GSProgressView.h */,
 				843A89921F663713007B7496 /* GSProgressView.m */,
-				A7C303381F6D0FF90000D8C0 /* GSAlertView.h */,
-				A7C303391F6D0FF90000D8C0 /* GSAlertView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -489,8 +481,6 @@
 				A7676DD21F64EAB9004859D0 /* PreViewPhotos */,
 				A75803F31F63DE8D00DADBE1 /* CameraViewController.h */,
 				A75803F41F63DE8D00DADBE1 /* CameraViewController.m */,
-				A7C303351F6CF1EF0000D8C0 /* GSPrewViewController.h */,
-				A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */,
 			);
 			path = CameraPage;
 			sourceTree = "<group>";
@@ -644,14 +634,12 @@
 				A7C303801F6D13770000D8C0 /* DataBaseManager.m in Sources */,
 				A7676DEF1F65814E004859D0 /* GSImage.m in Sources */,
 				A7C303821F6D13770000D8C0 /* FMDatabaseAdditions.m in Sources */,
-				A7C3033A1F6D0FF90000D8C0 /* GSAlertView.m in Sources */,
 				8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */,
 				A7676DE11F64EAD3004859D0 /* CameraBaseViewController.m in Sources */,
 				A7676DE91F6553BB004859D0 /* UIImage+imageHelper.m in Sources */,
 				A7C303371F6CF1EF0000D8C0 /* GSPrewViewController.m in Sources */,
 				A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */,
 				8363E9831F4C4C24004B7ACA /* AppDelegate.m in Sources */,
-				A7676DDB1F64EAB9004859D0 /* GoodsShelfPreViewViewController.m in Sources */,
 				A7C303841F6D13770000D8C0 /* FMDatabaseQueue.m in Sources */,
 				8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */,
 				A7C303851F6D13770000D8C0 /* FMResultSet.m in Sources */,
