@@ -14,6 +14,7 @@
 @property (nonatomic,strong) UIView *viewBackground;
 @property (nonatomic,strong) UIImageView *thumbImageView;
 @property (nonatomic,strong) UILabel *uploadStateLabel;
+@property (nonatomic,strong) UIImageView *iconImageView;
 
 @property (nonatomic,assign) GoodsUploadState state;
 

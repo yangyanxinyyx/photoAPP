@@ -95,13 +95,18 @@
         cell = [[GoodsShelfTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
 
     }
+    GoodsShelfModel *model = _dataSource[indexPath.row];
+    cell.thumbImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",model.thumbLink]];
+    cell.state = model.goodUploadState;
+    
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO]; 
     GoodsShelfModel *model = _dataSource[indexPath.row];
-    if (model.goodUploadState == GoodsUploadStateFail) {
+    if ([model.goodUploadState isEqualToString: GoodsUploadStateFail]) {
         NSLog(@"重发");
         [[GoodsShelfDataManager shareInstance] reSendImagewithModel:model];
     }
@@ -115,7 +120,13 @@
 
 - (void)uodateModelNotify:(NSNotification *)notify
 {
-    
+    NSInteger index = [notify.object[@"index"] integerValue];
+    NSArray *array = [[GoodsShelfDataManager shareInstance] datas];
+    self.dataSource  = [NSMutableArray arrayWithArray:array];
+    if (index>0 && index < self.dataSource.count) {
+            [self.tableViewList reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:YES];
+    }
+
 }
 
 - (void)didReceiveMemoryWarning {

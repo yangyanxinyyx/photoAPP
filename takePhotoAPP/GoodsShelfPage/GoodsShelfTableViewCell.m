@@ -24,7 +24,11 @@
         [self.viewBackground addSubview:_thumbImageView];
         
         self.uploadStateLabel = [[UILabel alloc] init];
+        _uploadStateLabel.font = [UIFont systemFontOfSize:16];
         [self.viewBackground addSubview:_uploadStateLabel];
+        
+        self.iconImageView = [[UIImageView alloc] init];
+        [self.viewBackground addSubview:_iconImageView];
         
     }
     return self;
@@ -42,11 +46,37 @@
     
     _thumbImageView.frame = CGRectMake(10, 10, 160, 90);
     _thumbImageView.backgroundColor = [UIColor redColor];
-    
-    _uploadStateLabel.frame  = CGRectMake(SCREEN_WIDTH - 80 * SCREEN_RATE - 10, 50, 80 * SCREEN_RATE, 16);
-    _uploadStateLabel.backgroundColor = [UIColor greenColor];
 
+    if ([_state isEqualToString: GoodsUploadStateSuccess]) {
+        _uploadStateLabel.text = @"已上传";
+        _uploadStateLabel.textColor = UICOLOR(246, 188, 1, 1);
+        [_uploadStateLabel sizeToFit];
+        _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
+        UIImage *image = [UIImage imageNamed:@"upload_succes"];
+        self.iconImageView.image = image;
+        self.iconImageView.frame = CGRectMake(_uploadStateLabel.frame.origin.x - 8 - image.size.width, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, image.size.width, image.size.height);
+        
+    }else if ([_state isEqualToString: GoodsUploadStateUploading]){
+        _uploadStateLabel.text = @"正在上传...";
+        _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
+        [_uploadStateLabel sizeToFit];
+        _uploadStateLabel.frame = CGRectMake(185, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
+        
+    }else if ([_state isEqualToString: GoodsUploadStateFail]){
+        _uploadStateLabel.text = @"上传失败";
+        _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
+        [_uploadStateLabel sizeToFit];
+        _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
+    }
     
+    
+}
+
+- (void)setState:(GoodsUploadState)state
+{
+    _state = state;
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
 }
 
 - (void)awakeFromNib {

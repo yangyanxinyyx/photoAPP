@@ -39,7 +39,6 @@
 
 - (void)sendImageWithParam:(NSDictionary *)param {
     
-    NSString *photoCount = param[@"photoCount"];
     NSString *thumbLink = param[@"thumbLink"];
     NSArray *imagePaths = param[@"imagePaths"];
     
@@ -51,6 +50,8 @@
     goodModel.imagePaths = [GoodsShelfDataManager changeNSArrayToNSString:imagePaths];
     goodModel.failArrays = @"";
     goodModel.thumbLink = thumbLink;
+    NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
+    goodModel.addTime = [NSString stringWithFormat:@"%@", @(time)];
     [self addModel:goodModel];
     
     //上传
@@ -65,21 +66,25 @@
              if (error ) {
                  [failArray addObject:@(i)];
              }
+             if (i == imagePaths.count - 1) {
+                 if (failArray.count == 0) {
+                     //全部成功
+                     goodModel.goodUploadState = GoodsUploadStateSuccess;
+                     [self updateModel:goodModel];
+                     
+                     //删除临时文件
+                     
+                 } else {
+                     //有失败的
+                     goodModel.goodUploadState = GoodsUploadStateFail;
+                     goodModel.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArray];
+                     [self updateModel:goodModel];
+                 }
+             }
          }];
-    }
-    if (failArray.count == 0) {
-        //全部成功
-        goodModel.goodUploadState = GoodsUploadStateSuccess;
-        [self updateModel:goodModel];
         
-        //删除临时文件
-        
-    } else {
-        //有失败的
-        goodModel.goodUploadState = GoodsUploadStateFail;
-        goodModel.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArray];
-        [self updateModel:goodModel];
     }
+    
     
     
 }
@@ -89,12 +94,14 @@
     NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:model.failArrays];
     NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];
     NSMutableArray *resendArray = [NSMutableArray array];
-    for (int i=0; i<imagePaths.count; i++) {
-        for (int j=0 ; i< failArrays.count; j++) {
-            NSInteger index = [failArrays[j] integerValue];
-            [resendArray addObject:imagePaths[index]];
-        }
+    for (int j=0 ; j< failArrays.count; j++) {
+        NSInteger index = [failArrays[j] integerValue];
+        [resendArray addObject:imagePaths[index]
+         ];
     }
+    
+    model.goodUploadState = GoodsUploadStateUploading;
+    [self updateModel:model];
     
     NSMutableArray *failArray = [NSMutableArray array];
     for (NSInteger i=0; i<resendArray.count; i++) {
@@ -107,23 +114,27 @@
             if (error ) {
                 [failArray addObject:@(i)];
             }
+            if (i == resendArray.count - 1) {
+                if (failArray.count == 0) {
+                    //全部成功
+                    model.goodUploadState = GoodsUploadStateSuccess;
+                    [self updateModel:model];
+                    
+                    //删除临时文件
+                    
+                } else {
+                    //有失败的
+                    model.goodUploadState = GoodsUploadStateFail;
+                    model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArray];
+                    model.imagePaths = [GoodsShelfDataManager changeNSArrayToNSString:imagePaths];
+                    [self updateModel:model];
+                }
+            }
         }];
+        
     }
     
-    if (failArray.count == 0) {
-        //全部成功
-        model.goodUploadState = GoodsUploadStateSuccess;
-        [self updateModel:model];
-        
-        //删除临时文件
-        
-    } else {
-        //有失败的
-        model.goodUploadState = GoodsUploadStateFail;
-        model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArray];
-        model.imagePaths = [GoodsShelfDataManager changeNSArrayToNSString:imagePaths];
-        [self updateModel:model];
-    }
+    
 }
 
 - (void)addModel:(GoodsShelfModel*)model {
@@ -142,9 +153,9 @@
         NSInteger index = [self indexOfModel:model];
         if (index < self.datas.count && index > 0) {
             [self.datas replaceObjectAtIndex:index withObject:model];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateModelNotify object:@{@"model": model, @"index": @(0)}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateModelNotify object:@{@"model": model, @"index": @(index)}];
         }
-       // NSAssert(index >= 0, @"找不到对用的model");
+        NSAssert(index >= 0, @"找不到对用的model");
     }
 }
 
@@ -154,7 +165,7 @@
 - (NSInteger)indexOfModel:(GoodsShelfModel *)model {
     for (NSInteger i = 0; i < self.datas.count; i++) {
         GoodsShelfModel *tmpModel = self.datas[i];
-        if ([tmpModel.dbid isEqualToString:model.dbid]) {
+        if ([tmpModel.addTime isEqualToString:model.addTime]) {
             return i;
         }
     }

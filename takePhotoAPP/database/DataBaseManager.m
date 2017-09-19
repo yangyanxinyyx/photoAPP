@@ -39,7 +39,7 @@ static DataBaseManager *dataBase = nil;
 -(BOOL)creatTable
 {
     if ([_db open]) {
-        NSString *sql = [NSString stringWithFormat:@"create table if not exists goodsShelf (id  integer primary key autoincrement,state text,thumbLink text,photoCount text,failArray text,imagePaths text)"];
+        NSString *sql = [NSString stringWithFormat:@"create table if not exists goodsShelf (id  integer primary key autoincrement,state text,thumbLink text,photoCount text,failArray text,imagePaths text,addTime text)"];
         BOOL result = [_db executeUpdate:sql];
         return result;
         
@@ -55,9 +55,10 @@ static DataBaseManager *dataBase = nil;
     model.imageCount = model.imageCount?model.imageCount:@"null";
     model.failArrays = model.failArrays?model.failArrays:@"null";
     model.imagePaths = model.imagePaths?model.imagePaths:@"null";
+    model.addTime = model.addTime?model.addTime:@"null";
     
     if ([_db open]) {
-        NSString *sql = [NSString stringWithFormat:@"insert into goodsShelf (state,thumbLink,photoCount,failArray,imagePaths) values ('%@','%@','%@','%@','%@')",model.goodUploadState,model.thumbLink,model.imageCount,model.failArrays,model.imagePaths];
+        NSString *sql = [NSString stringWithFormat:@"insert into goodsShelf (state,thumbLink,photoCount,failArray,imagePaths,addTime) values ('%@','%@','%@','%@','%@','%@')",model.goodUploadState,model.thumbLink,model.imageCount,model.failArrays,model.imagePaths,model.addTime];
         BOOL result = [_db executeUpdate:sql];
         return result;
     }
@@ -77,6 +78,7 @@ static DataBaseManager *dataBase = nil;
             NSString *photoCount = [set stringForColumn:@"photoCount"];
             NSString *failArray = [set stringForColumn:@"failArray"];
             NSString *imagePaths = [set stringForColumn:@"imagePaths"];
+            NSString *addTime = [set stringForColumn:@"addTime"];
             int dbid = [set intForColumn:@"id"];
             GoodsShelfModel *model = [[GoodsShelfModel alloc] init];
             model.dbid = [NSString stringWithFormat:@"%d",dbid];
@@ -85,6 +87,7 @@ static DataBaseManager *dataBase = nil;
             model.imageCount = photoCount;
             model.failArrays = failArray;
             model.imagePaths = imagePaths;
+            model.addTime = addTime;
             [array addObject:model];
         }
         [_db close];
@@ -107,7 +110,7 @@ static DataBaseManager *dataBase = nil;
 {
     model.goodUploadState = model.goodUploadState?model.goodUploadState:@"null";
     if ([_db open]) {
-        NSString *sql = [NSString stringWithFormat:@"update goodsShelf set state = '%@',thumbLink = '%@',photoCount = '%@',failArray = '%@',imagePaths = '%@' where id = '%d'",model.goodUploadState,model.thumbLink,model.imageCount,model.failArrays,model.imagePaths,[model.dbid intValue]];
+        NSString *sql = [NSString stringWithFormat:@"update goodsShelf set state = '%@',thumbLink = '%@',photoCount = '%@',failArray = '%@',imagePaths = '%@' where addTime = '%@'",model.goodUploadState,model.thumbLink,model.imageCount,model.failArrays,model.imagePaths,model.addTime];
         BOOL result = [_db executeUpdate:sql];
         [_db close];
         return result;

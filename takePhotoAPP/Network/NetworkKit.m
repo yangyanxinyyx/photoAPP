@@ -15,7 +15,9 @@
 + (void)sendImageWithObject:(UploadModel *)object
                     process:(NetworkSendBlock)process
                    response:(NetworkSendResponseBlock)response {
-    
+    for (int i=0; i<10000000; i++) {
+        
+    }
     if (![[self class] isFileExistWithFilePath:object.imagePath]) {
         if (response) {
             response(nil, nil, [NSError errorWithDomain:@"找不到图片路径" code:1002 userInfo:nil]);

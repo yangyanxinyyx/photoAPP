@@ -27,5 +27,6 @@ extern GoodsUploadState const GoodsUploadStateFail;
 @property (nonatomic,strong) NSString *imagePaths;
 @property (nonatomic,strong) NSString *failArrays;
 @property (nonatomic,strong) GoodsUploadState goodUploadState;
+@property (nonatomic,strong) NSString *addTime;
 
 @end
