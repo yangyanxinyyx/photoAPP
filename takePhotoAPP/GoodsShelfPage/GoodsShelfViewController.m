@@ -11,6 +11,7 @@
 #import "GoodsShelfTopBar.h"
 #import "DataBaseManager.h"
 #import "GoodsShelfDataManager.h"
+#import "CameraViewController.h"
 
 @interface GoodsShelfViewController ()<UITableViewDelegate,UITableViewDataSource,GoodsShelfTopBarDelegate>
 @property (nonatomic,strong) UITableView *tableViewList;
@@ -142,6 +143,13 @@
 - (void)pressToAddShelf
 {
     NSLog(@"添加货架");
+    
+    NSArray *array = self.navigationController.viewControllers;
+    for (int i=0; i<array.count; i++) {
+        if ([array[i] isKindOfClass:[CameraViewController class]]) {
+            [self.navigationController popToViewController:array[i] animated:YES];
+        }
+    }
 }
 
 - (void)pressToFinish

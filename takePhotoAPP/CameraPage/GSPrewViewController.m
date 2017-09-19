@@ -11,6 +11,8 @@
 #import "CustomCollectionViewLayout.h"
 #import "GSThumbnailViewCell.h"
 #import "ImageModel.h"
+#import "GoodsShelfViewController.h"
+#import "GoodsShelfDataManager.h"
 #define kNormalButtonWidth 20
 
 @interface GSPrewViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
@@ -77,8 +79,11 @@
 
 - (void)submitbtnClick:(UIButton *)button {
     
-    
-    
+    NSDictionary *param = @{@"thumbLink":@"123",
+                            @"imagePaths":@[@"1",@"2",@"3"]};
+    [[GoodsShelfDataManager shareInstance] sendImageWithParam:param];
+    GoodsShelfViewController *VC = [[GoodsShelfViewController alloc] init];
+    [self.navigationController pushViewController:VC animated:YES];
 }
 
 - (void)leftBtnClick:(UIButton *)button {

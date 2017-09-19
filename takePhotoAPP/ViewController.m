@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "CameraViewController.h"
-#import "GoodsShelfPreViewViewController.h"
+//#import "GoodsShelfPreViewViewController.h"
 #import "GoodsShelfViewController.h"
 
 @interface ViewController ()
@@ -54,9 +54,9 @@
 
 - (void)goGoodsShelfViewController:(UIButton *)button {
     
-    GoodsShelfPreViewViewController *goodShelfVC = [[GoodsShelfPreViewViewController alloc] init];
+   // GoodsShelfPreViewViewController *goodShelfVC = [[GoodsShelfPreViewViewController alloc] init];
     
-    [self.navigationController pushViewController:goodShelfVC animated:YES];
+   // [self.navigationController pushViewController:goodShelfVC animated:YES];
     
 }
 
