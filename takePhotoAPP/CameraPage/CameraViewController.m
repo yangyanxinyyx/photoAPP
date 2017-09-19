@@ -122,6 +122,22 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)clearData{
+    [self.arrayImages removeAllObjects];
+    [self.imageFileArray removeAllObjects];
+    [self goBackBtnClick:nil];
+    _selectImageIndex = -1;
+    _isorSo = YES;
+    _isUpDown = NO;
+    _isAngle = YES;
+    _isFlash = NO;
+    _isSingleModel = YES;
+    _isRephotograph = NO;
+    _numberOrSos = 0;
+    self.imageOverlap = nil;
+    self.imageViewOverlap.alpha = 0;
+}
+
 #pragma makr - Camera
 - (void)initCamera{
     
