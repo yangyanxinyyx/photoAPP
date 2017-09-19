@@ -10,6 +10,7 @@
 #import "ViewController.h"
 #import "DataBaseManager.h"
 #import "GoodsShelfModel.h"
+#import "CameraViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -21,7 +22,7 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    ViewController *VC = [[ViewController alloc] init];
+    CameraViewController *VC = [[CameraViewController alloc] init];
     UINavigationController *Nav = [[UINavigationController alloc] initWithRootViewController:VC];
     
     self.window.rootViewController = Nav;

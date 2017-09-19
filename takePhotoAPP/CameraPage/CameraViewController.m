@@ -101,13 +101,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [self setInitMotionMangager];
     [self initCamera];
     [self setUpGesture];
-    [self.captureSession startRunning];
+//    [self.captureSession startRunning];
     self.effectiveScale = self.beginGestureScale = 1.0f;
     
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    [self.captureSession startRunning];
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
@@ -451,7 +452,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                         [self.takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_gray"] forState:UIControlStateNormal];
                         self.takePhotButton.userInteractionEnabled = NO;
                         self.angleImageView.image = [UIImage imageNamed:@"equilibristat_red"];
-                        self.focusCursorImageView.image = [UIImage imageNamed:@"focusCursor_white"];
+                        self.focusCursorImageView.image = [UIImage imageNamed:@"focusCursor_whiter"];
                         self.contentView.userInteractionEnabled = NO;
                         
                     });

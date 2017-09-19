@@ -23,6 +23,7 @@
 		838ACB211F67D1B400D19ACE /* GoodsShelfTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB201F67D1B400D19ACE /* GoodsShelfTopBar.m */; };
 		843A89931F663713007B7496 /* GSProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 843A89921F663713007B7496 /* GSProgressView.m */; };
 		849943871F6A9CF900F76836 /* ImageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 849943861F6A9CF900F76836 /* ImageModel.m */; };
+		84F29A861F70EABB0033BEF7 /* GoodsShelfPreViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F29A851F70EABB0033BEF7 /* GoodsShelfPreViewViewController.m */; };
 		A75425BB1F6F5FF0002E4D80 /* BIAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A75425BA1F6F5FF0002E4D80 /* BIAlertViewController.m */; };
 		A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A75803F41F63DE8D00DADBE1 /* CameraViewController.m */; };
 		A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */; };
@@ -93,6 +94,8 @@
 		843A89921F663713007B7496 /* GSProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSProgressView.m; sourceTree = "<group>"; };
 		849943851F6A9CF900F76836 /* ImageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageModel.h; sourceTree = "<group>"; };
 		849943861F6A9CF900F76836 /* ImageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageModel.m; sourceTree = "<group>"; };
+		84F29A841F70EABB0033BEF7 /* GoodsShelfPreViewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfPreViewViewController.h; sourceTree = "<group>"; };
+		84F29A851F70EABB0033BEF7 /* GoodsShelfPreViewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfPreViewViewController.m; sourceTree = "<group>"; };
 		A75425B91F6F5FF0002E4D80 /* BIAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIAlertViewController.h; sourceTree = "<group>"; };
 		A75425BA1F6F5FF0002E4D80 /* BIAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BIAlertViewController.m; sourceTree = "<group>"; };
 		A75803F31F63DE8D00DADBE1 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraViewController.h; sourceTree = "<group>"; };
@@ -312,6 +315,8 @@
 				A7676DD41F64EAB9004859D0 /* CustomCollectionViewLayout.m */,
 				A7C303351F6CF1EF0000D8C0 /* GSPrewViewController.h */,
 				A7C303361F6CF1EF0000D8C0 /* GSPrewViewController.m */,
+				84F29A841F70EABB0033BEF7 /* GoodsShelfPreViewViewController.h */,
+				84F29A851F70EABB0033BEF7 /* GoodsShelfPreViewViewController.m */,
 			);
 			path = PreViewPhotos;
 			sourceTree = "<group>";
@@ -641,6 +646,7 @@
 				A7676DDA1F64EAB9004859D0 /* CustomCollectionViewLayout.m in Sources */,
 				8363E9831F4C4C24004B7ACA /* AppDelegate.m in Sources */,
 				A7C303841F6D13770000D8C0 /* FMDatabaseQueue.m in Sources */,
+				84F29A861F70EABB0033BEF7 /* GoodsShelfPreViewViewController.m in Sources */,
 				8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */,
 				A7C303851F6D13770000D8C0 /* FMResultSet.m in Sources */,
 				A75425BB1F6F5FF0002E4D80 /* BIAlertViewController.m in Sources */,
