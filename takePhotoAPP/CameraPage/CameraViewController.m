@@ -543,6 +543,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 //完成
 - (void)toucheAccomoplishButton:(UIButton *)sender{
+    
+    [self saveImageFile];
+    NSLog(@"%@",self.imageFileArray);
+    
+}
+
+
+- (void)saveImageFile{
     NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *novelPath =  [docPath stringByAppendingPathComponent:@"tmp"];
     
@@ -553,7 +561,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         NSLog(@"不存在");
         [manager createFileAtPath:novelPath contents:nil attributes:nil];
     }
-    
+    [self.imageFileArray removeAllObjects];
     for (ImageModel *model  in self.arrayImages) {
         NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
         NSTimeInterval a=[dat timeIntervalSince1970]*1000;
@@ -567,12 +575,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             NSLog(@"写入失败");
         }
     }
-    
-    NSLog(@"%@",self.imageFileArray);
-    
-    
-    
 }
+
 
 - (void)goForWardBtnClick:(UIButton *)button {
     [self.tabScrollView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:NO];
@@ -596,9 +600,11 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)priViewBtnClick:(UIButton *)button {
     
+    [self saveImageFile]; //保存 成文件路径
     GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
     
     [self.navigationController pushViewController:GSPreView animated:YES];
+    
     
 }
 
