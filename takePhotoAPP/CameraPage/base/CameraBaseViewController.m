@@ -41,15 +41,15 @@
 //}
 #pragma mark - Action Method
 
-- (void)toucheOrSOButtonValue:(UIButton *)button {
-    
-}
-- (void)toucheUpAndDownButton:(UIButton *)button {
-    
-}
-- (void)toucheFlashButton:(UIButton *)button {
-    
-}
+//- (void)toucheOrSOButtonValue:(UIButton *)button {
+//    
+//}
+//- (void)toucheUpAndDownButton:(UIButton *)button {
+//    
+//}
+//- (void)toucheFlashButton:(UIButton *)button {
+//    
+//}
 #pragma mark - Privacy Method
 
 #pragma mark - Setter&Getter
