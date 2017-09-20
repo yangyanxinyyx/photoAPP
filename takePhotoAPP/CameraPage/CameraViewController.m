@@ -628,7 +628,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for (ImageModel *model in self.arrayImages) {
         [images addObject:model.image];
-    }
+    }
 
     UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
   
