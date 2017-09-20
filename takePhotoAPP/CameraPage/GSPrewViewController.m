@@ -197,7 +197,7 @@
                                        kCollectionViewTopMargin,
                                        tabViewW - lefBtnW - 2 * kTabViewLeftMargin - rightBtnW - 2 * kTabViewRightMargin , tabViewH - 2 * kCollectionViewTopMargin ) collectionViewLayout:flowLayout];
         
-        _imageChooseView.backgroundColor = [UIColor blueColor];
+        _imageChooseView.backgroundColor = [UIColor whiteColor];
         _imageChooseView.dataSource = self;
         _imageChooseView.delegate = self;
     }

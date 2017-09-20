@@ -619,7 +619,6 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     [self saveImageFile]; //保存 成文件路径
     GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
-    
     [self.navigationController pushViewController:GSPreView animated:YES];
     
     
@@ -939,7 +938,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                                        kCollectionViewTopMargin,
                                        tabViewW - goBackBtnW - 2 * kTabViewLeftMargin - preViewBtnW - 2 * kTabViewRightMargin , tabViewH - 2 * kCollectionViewTopMargin ) collectionViewLayout:self.imageChooseViewLayout];
         
-        _imageChooseView.backgroundColor = [UIColor blueColor];
+        _imageChooseView.backgroundColor = [UIColor whiteColor];
         _imageChooseView.dataSource = self;
         _imageChooseView.delegate = self;
         
