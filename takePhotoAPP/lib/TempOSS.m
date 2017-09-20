@@ -54,15 +54,9 @@
                         process:(void (^)(NSDictionary *))process
                       finishURL:(void (^)(NSString *))finishURL
 {
-    NSString *bucketName = [object objectForKey:@"bucket_name"];
-    NSString *objectKey = [object objectForKey:@"file_name"];
-    NSString *file_url = [object objectForKey:@"file_url"];
-    NSInteger x = arc4random() % 100;
-    NSLog(@"bucketName=%@", bucketName);
-    NSLog(@"file=%@", file);
     OSSPutObjectRequest * put = [OSSPutObjectRequest new];
     put.bucketName = @"inno-sss";
-    put.objectKey = [NSString stringWithFormat:@"hgz/photo/%@/%@.jpg",@"2017-09-20",[NSString stringWithFormat:@"%ld",x]];
+    put.objectKey = [NSString stringWithFormat:@"hgz/photo/%@/%@.jpg",[self getTimeNow],[self getRandom]];
     put.uploadingFileURL = [NSURL URLWithString:file];
     put.uploadProgress = ^(int64_t bytesSent, int64_t totalByteSent, int64_t totalBytesExpectedToSend) {
         if (process) {
@@ -80,7 +74,7 @@
         
         if (!task.error) {
             if (finishURL) {
-                finishURL(file_url);
+                finishURL(put.objectKey);
             }
         }
         else {
@@ -135,6 +129,23 @@
         }
         return nil;
     }];
+}
+
+- (NSString *)getTimeNow
+{
+    NSString* date;
+    NSDateFormatter * formatter = [[NSDateFormatter alloc ] init];
+    [formatter setDateFormat:@"YYYYMMddhhmmssSSS"];
+    date = [formatter stringFromDate:[NSDate date]];
+    NSString *timeNow = [NSString stringWithFormat:@"%@",date];
+    return timeNow;
+}
+
+- (NSString *)getRandom
+{
+    int x = arc4random() % 10000;
+    NSString *string = [NSString stringWithFormat:@"%d",x];
+    return string;
 }
 
 @end

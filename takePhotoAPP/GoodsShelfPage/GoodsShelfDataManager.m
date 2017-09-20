@@ -63,7 +63,7 @@
          [NetworkKit sendImageWithObject:uploadModel process:^(NSDictionary *object) {
              
          } response:^(NSDictionary *urlObject, id responseObject, NSError *error) {
-             if (error ) {
+             if (error || responseObject == nil ) {
                  [failArray addObject:@(i)];
              }
              if (i == imagePaths.count - 1) {

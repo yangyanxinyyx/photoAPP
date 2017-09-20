@@ -28,6 +28,13 @@
                 response(nil, nil, [NSError errorWithDomain:@"上传图片失败" code:1001 userInfo:nil]);
             }
             
+            if ([imageUrls[@"result"] boolValue] == 1) {
+                if (response) {
+                    response(nil, imageUrls[@"finishURL"], nil);
+                }
+            } else {
+                response(nil, nil, [NSError errorWithDomain:@"上传图片失败" code:1001 userInfo:nil]);
+            }
            
         } @catch (NSException *exception) {
             NSLog(@"sendImageWithObject: error! %@", exception.description);
@@ -39,9 +46,6 @@
  * 上传图片
  */
 + (void)uploadImageToAliyunWithFilePath:(NSString *)filePath process:(void (^)(NSDictionary *))process successBlock:(void (^)(NSDictionary *))successBlock{
-    NSString *fileExtend = [[[filePath lastPathComponent] pathExtension] lowercaseString];
-    
-    NSDictionary *params = @{                             };
     
 //    [FCHNetworking requestAPI:@"/public/index.php?r=Common/AliyunOSSToken" withParams:params callback:^(NSDictionary * _Nullable result, NSError * _Nullable error) {
 //        NSDictionary *accreditInfos = result[@"data"][@"result"];
@@ -58,11 +62,9 @@
 //    }];
    
     NSDictionary *accreditInfos = @{};
-    NSString *originalURL = accreditInfos[@"file_url"];
-    NSString *thumbnailURL = accreditInfos[@"file_url_thumbnail"];
     [[TempOSS shareInstance] putImageAsyncWithObject:accreditInfos file:filePath process:process finishURL:^(NSString *finishURL) {
-        if ([finishURL hasPrefix:@"http://"]) {
-            successBlock(@{@"origin": originalURL, @"thumbnail": thumbnailURL, @"result": @(YES)});
+        if (finishURL) {
+            successBlock(@{@"finishURL": finishURL, @"result": @(YES)});
         } else {
             successBlock(@{@"result": @(NO)});
         }
