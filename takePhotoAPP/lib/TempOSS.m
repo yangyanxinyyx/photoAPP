@@ -57,12 +57,12 @@
     NSString *bucketName = [object objectForKey:@"bucket_name"];
     NSString *objectKey = [object objectForKey:@"file_name"];
     NSString *file_url = [object objectForKey:@"file_url"];
-    
+    NSInteger x = arc4random() % 100;
     NSLog(@"bucketName=%@", bucketName);
     NSLog(@"file=%@", file);
     OSSPutObjectRequest * put = [OSSPutObjectRequest new];
-    put.bucketName = bucketName;
-    put.objectKey = objectKey;
+    put.bucketName = @"inno-sss";
+    put.objectKey = [NSString stringWithFormat:@"hgz/photo/%@/%@.jpg",@"2017-09-20",[NSString stringWithFormat:@"%ld",x]];
     put.uploadingFileURL = [NSURL URLWithString:file];
     put.uploadProgress = ^(int64_t bytesSent, int64_t totalByteSent, int64_t totalBytesExpectedToSend) {
         if (process) {

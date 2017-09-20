@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "CameraBaseViewController.h"
 @interface CameraViewController :CameraBaseViewController
-
+- (void)clearData;
 @end

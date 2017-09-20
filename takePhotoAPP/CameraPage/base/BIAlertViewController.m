@@ -1,6 +1,6 @@
 //
 //  BIAlertViewController.m
-//  PocoCamera
+//  
 //
 //  Created by yanxin_yang on 13/9/17.
 //  Copyright © 2017年 yanxin_yang. All rights reserved.
@@ -122,6 +122,8 @@ typedef NS_ENUM(NSUInteger, BIAlertViewControllerAnimationType) {
 
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UILabel *messageLabel;
+@property (nonatomic, strong) UILabel *messageTitle;
+@property (nonatomic, strong) UIView *sepView;
 
 @property (nonatomic, strong) NSMutableArray<UIButton *> *buttons;
 
@@ -143,13 +145,30 @@ typedef NS_ENUM(NSUInteger, BIAlertViewControllerAnimationType) {
         self.transitioningDelegate = self;
         
         [self commonInit];
+        
+        
     }
     return self;
 }
 
+- (void)tapView{
+    [UIView animateWithDuration:0.3f animations:^{
+        self.contentView.transform = CGAffineTransformMakeTranslation(0, CGRectGetHeight(self.view.bounds));
+        self.contentView.alpha = 0.0f;
+        
+    } completion:^(BOOL finished) {
+            [self dismissViewControllerAnimated:YES completion:^{
+            
+            }];
+    }];
+    
+}
+
 - (void)commonInit {
     _contentView = [[UIView alloc] init];
-    _contentView.backgroundColor = [UIColor colorWithRed:245.0/255 green:245.0/255 blue:245.0/255 alpha:1.0f];
+    _contentView.layer.cornerRadius = 10;
+    _contentView.layer.masksToBounds = YES;
+    _contentView.backgroundColor = [UIColor whiteColor];
     
     _innerActions = [NSMutableArray array];
     _buttons = [NSMutableArray array];
@@ -164,17 +183,26 @@ typedef NS_ENUM(NSUInteger, BIAlertViewControllerAnimationType) {
     [super viewDidLayoutSubviews];
     
     CGFloat messageLabelH = 0.0f;
-    CGFloat messageLabelW = 544/2.f;
+    CGFloat messageLabelW = 550/2.f;
+    
+    if (self.messageTitle) {
+       
+        
+        self.messageTitle.frame = CGRectMake(0, 17, messageLabelW, 20);
+    }
     
     if (self.messageLabel) {
-        messageLabelH = 205/2.f;
+
+        [self.messageLabel sizeToFit];
+        self.messageLabel.frame = CGRectMake((275-self.messageLabel.frame.size.width )/2, 65, self.messageLabel.frame.size.width, self.messageLabel.frame.size.height);
         
-        self.messageLabel.frame = CGRectMake(0, 0, messageLabelW, messageLabelH);
     }
+    
+    
     
     CGFloat buttonH = 110/2.f;
     CGFloat addtionH = 0.0f;
-    
+     messageLabelH = 112.5;
     if (self.buttons.count == 1) {
         [self.buttons firstObject].frame = CGRectMake(0, messageLabelH, messageLabelW, buttonH);
         
@@ -192,26 +220,46 @@ typedef NS_ENUM(NSUInteger, BIAlertViewControllerAnimationType) {
             addtionH += buttonH;
         }
     }
-    
+    if (self.sepView) {
+        self.sepView.frame  = CGRectMake(0, 111.5, 550/2, 1);
+    }
     // update
-    self.contentView.frame = CGRectMake(0, 0, messageLabelW, messageLabelH + addtionH);
+    self.contentView.frame = CGRectMake(0, 0, 550/2, 320/2);
     self.contentView.center = self.view.center;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.8f];
+    self.view.backgroundColor = UICOLOR(0, 0, 0, 0.5);
     [self.view addSubview:self.contentView];
     
     // set Message
     if ((self.message.length != 0) && self.message) {
+        self.messageTitle = [[UILabel alloc] init];
+        self.messageTitle.text = @"提醒";
+        self.messageTitle.font = [UIFont systemFontOfSize:18];
+        self.messageTitle.textAlignment = NSTextAlignmentCenter;
+        self.messageTitle.textColor = UICOLOR(51, 51, 51, 1);
+        [self.contentView addSubview:self.messageTitle];
+        
         self.messageLabel = [[UILabel alloc] init];
         self.messageLabel.text = self.message;
         self.messageLabel.textAlignment = NSTextAlignmentCenter;
-        self.messageLabel.font = [UIFont systemFontOfSize:16.0f];
-        self.messageLabel.textColor = [UIColor blackColor];
+        self.messageLabel.font = [UIFont systemFontOfSize:15.0f];
+        self.messageLabel.textColor = UICOLOR(102, 102, 102, 1);
+        self.messageLabel.numberOfLines = 0;
         [self.contentView addSubview:self.messageLabel];
+        
+        self.sepView = [[UIView alloc] init];
+        self.sepView.backgroundColor = UICOLOR(221, 221, 221, 1);
+        [self.contentView addSubview:_sepView];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapView)];
+        self.view.userInteractionEnabled = YES;
+        [self.view addGestureRecognizer:tap];
+        
+        
     }
     
 }
@@ -228,19 +276,21 @@ typedef NS_ENUM(NSUInteger, BIAlertViewControllerAnimationType) {
             UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
             button.tag = index;
             //            button.backgroundColor = (action.style == FCHAlertActionStyleCancel) ? k_cancelButtonColor : k_defaultButtonColor;
-            button.titleLabel.font = [UIFont systemFontOfSize:14.0f];
             
             [button setTitle:action.title forState:UIControlStateNormal];
             
             [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [button setTitleColor:[UIColor colorWithWhite:1.0f alpha:1.f] forState:UIControlStateHighlighted];
             
-            UIColor *backgroundColor = (action.style == BIAlertActionStyleCancel) ? k_cancelButtonColor : k_defaultButtonColor;
-            UIColor *lightBackgroundColor = (action.style == BIAlertActionStyleCancel) ? k_cancelButtonLightColor : k_defaultButtonLightColor;
+            button.titleLabel.font = [UIFont systemFontOfSize:20];
+            button.backgroundColor = [UIColor clearColor];
+            if (action.style == BIAlertActionStyleCancel) {
+                [button setTitleColor:[UIColor colorWithRed:102/255.0 green:102/255.0 blue:102/255.0 alpha:1] forState:UIControlStateNormal];
+            } else {
+                [button setTitleColor:[UIColor colorWithRed:246/255.0 green:188/255.0 blue:1/255.0 alpha:1] forState:UIControlStateNormal];
+            }
             
-            [button setBackgroundImage:[self imageWithColor:backgroundColor] forState:UIControlStateNormal];
-            [button setBackgroundImage:[self imageWithColor:lightBackgroundColor] forState:UIControlStateHighlighted];
-            
+             
             // add targer
             [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
             

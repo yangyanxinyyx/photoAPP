@@ -123,6 +123,22 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)clearData{
+    [self.arrayImages removeAllObjects];
+    [self.imageFileArray removeAllObjects];
+    [self goBackBtnClick:nil];
+    _selectImageIndex = -1;
+    _isorSo = YES;
+    _isUpDown = NO;
+    _isAngle = YES;
+    _isFlash = NO;
+    _isSingleModel = YES;
+    _isRephotograph = NO;
+    _numberOrSos = 0;
+    self.imageOverlap = nil;
+    self.imageViewOverlap.alpha = 0;
+}
+
 #pragma makr - Camera
 - (void)initCamera{
     
@@ -488,9 +504,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     if (self.imageOverlap && !_isSingleModel) {
         self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        UIImage *image = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
-        if (image) {
-            self.imageViewOverlap.image = image;
+        ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
+        if (model) {
+            self.imageViewOverlap.image = model.image;
             self.imageViewOverlap.alpha = ALPHA;
         }
         
@@ -513,8 +529,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     self.imageViewOverlap.alpha = 0;
     if (self.imageOverlap && !_isSingleModel) {
         self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
-        UIImage *image = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
-        self.imageViewOverlap.image = image;
+        ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
+        self.imageViewOverlap.image = model.image;
         self.imageViewOverlap.alpha = ALPHA;
     }
     
@@ -646,9 +662,17 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             self.imageViewOverlap.alpha = 0;
             return;
         }
-        ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex];
+        if (_selectImageIndex == 0) {
+            ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
+            self.imageOverlap = model.image;
+            self.imageViewOverlap.frame = CGRectMake(SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            self.imageViewOverlap.image = self.imageOverlap;
+            self.imageViewOverlap.alpha = ALPHA;
+            return;
+        }
+        ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
         self.imageOverlap = model.image;
-        self.imageViewOverlap.frame = CGRectMake(SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        self.imageViewOverlap.frame = CGRectMake(-SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         self.imageViewOverlap.image = self.imageOverlap;
         self.imageViewOverlap.alpha = ALPHA;
         

@@ -1,6 +1,6 @@
 //
 //  BIAlertViewController.h
-//  PocoCamera
+//  
 //
 //  Created by yanxin_yang on 13/9/17.
 //  Copyright © 2017年 yanxin_yang. All rights reserved.
