@@ -11,6 +11,133 @@
 @implementation UIImage (imageHelper)
 
 #pragma mark - 图片压缩
+- (UIImage *)fixOrientation {
+    
+    // No-op if the orientation is already correct
+    if (self.imageOrientation == UIImageOrientationUp) return self;
+    
+    // We need to calculate the proper transformation to make the image upright.
+    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    switch (self.imageOrientation) {
+        case UIImageOrientationDown:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, self.size.width, self.size.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+            transform = CGAffineTransformTranslate(transform, self.size.width, 0);
+            transform = CGAffineTransformRotate(transform, M_PI_2);
+            break;
+            
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, 0, self.size.height);
+            transform = CGAffineTransformRotate(transform, -M_PI_2);
+            break;
+        case UIImageOrientationUp:
+        case UIImageOrientationUpMirrored:
+            break;
+    }
+    
+    switch (self.imageOrientation) {
+        case UIImageOrientationUpMirrored:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, self.size.width, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+            
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, self.size.height, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+        case UIImageOrientationUp:
+        case UIImageOrientationDown:
+        case UIImageOrientationLeft:
+        case UIImageOrientationRight:
+            break;
+    }
+    
+    // Now we draw the underlying CGImage into a new context, applying the transform
+    // calculated above.
+    CGContextRef ctx = CGBitmapContextCreate(NULL, self.size.width, self.size.height,
+                                             CGImageGetBitsPerComponent(self.CGImage), 0,
+                                             CGImageGetColorSpace(self.CGImage),
+                                             CGImageGetBitmapInfo(self.CGImage));
+    CGContextConcatCTM(ctx, transform);
+    switch (self.imageOrientation) {
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            // Grr...
+            CGContextDrawImage(ctx, CGRectMake(0,0,self.size.height,self.size.width), self.CGImage);
+            break;
+            
+        default:
+            CGContextDrawImage(ctx, CGRectMake(0,0,self.size.width,self.size.height), self.CGImage);
+            break;
+    }
+    
+    // And now we just create a new UIImage from the drawing context
+    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
+    UIImage *img = [UIImage imageWithCGImage:cgimg];
+    CGContextRelease(ctx);
+    CGImageRelease(cgimg);
+    return img;
+}
+
++ (UIImage *)imageMergeImagesWithMergeModel:(BOOL)isvertiacl images:(NSArray *)images {
+    
+    NSMutableArray *newImages = [[NSMutableArray alloc] init];
+    for (UIImage *newImage in images) {
+        [newImages addObject:[newImage fixOrientation]];
+    }
+    CGFloat puzzleWidth = 0.0;
+    CGFloat puzzleHeight = 0.0;
+    NSInteger rowNum = 1;
+    puzzleWidth = SCREEN_WIDTH * (images.count/rowNum);
+    puzzleHeight = SCREEN_HEIGHT * rowNum;
+    if (!isvertiacl) {
+        rowNum = 2;
+    }
+
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(puzzleWidth, puzzleHeight), YES, 0.0);
+
+    if (isvertiacl) {
+        for (NSInteger i = 0 ; i < newImages.count ; i++ ) {
+            UIImage *image =[newImages objectAtIndex: i];
+//            [image drawInRect:CGRectMake( SCREEN_WIDTH * i, SCREEN_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT)];
+                  [image drawInRect:CGRectMake( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT)];
+        }
+    }else {
+    
+        CGFloat row = newImages.count/rowNum - 1;
+        for (NSInteger i = 0 ; i <= row; i++) {
+            for (NSInteger j = 0 ; j <= rowNum - 1 ; j++ ) {
+                UIImage *image =[newImages objectAtIndex: i * 2 + j];
+
+                [image drawInRect:CGRectMake( SCREEN_WIDTH * j, SCREEN_HEIGHT * i/rowNum, SCREEN_WIDTH , SCREEN_HEIGHT)];
+                
+            }
+        }
+    }
+  
+    
+    UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    // 保存图片，需要转换成二进制数据
+    //    [self saveImageToPhotos:resultImage];
+    
+    return resultImage;
+
+}
 
 + (UIImage *)compressImage:(UIImage *)sourceimage newWidth:(CGFloat)newImageWidth
 {

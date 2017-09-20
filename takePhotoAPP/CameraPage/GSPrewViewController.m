@@ -26,6 +26,9 @@
 @property (nonatomic, strong) UIButton * rightPreViewBtn ;
 /** <# 注释 #> */
 @property (nonatomic, assign) NSInteger  selectImageIndex ;
+
+/** <# 注释 #> */
+@property (nonatomic, strong) NSMutableArray * imageDataArrM ;
 @end
 
 
@@ -36,6 +39,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self initUI];
+    if (self.imageDateInfo) {
+        self.imageDataArrM = self.imageDateInfo[@"image"];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -116,7 +122,7 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     
-    return self.imageDateArrM.count;
+    return self.imageDataArrM.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -125,7 +131,7 @@
 
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     cell.selected = NO ;
-    ImageModel *model = [self.imageDateArrM objectAtIndex:indexPath.row];
+    ImageModel *model = [self.imageDataArrM objectAtIndex:indexPath.row];
     cell.itemImageView.image = model.image;
     cell.isSelect = model.isSelect;
     
@@ -242,8 +248,8 @@
     
     if (_selectImageIndex != selectImageIndex) {
         _selectImageIndex = selectImageIndex;
-        ImageModel *model = [self.imageDateArrM objectAtIndex:selectImageIndex];
-        for (ImageModel *model in self.imageDateArrM) {
+        ImageModel *model = [self.imageDataArrM objectAtIndex:selectImageIndex];
+        for (ImageModel *model in self.imageDataArrM) {
             model.isSelect = NO;
         }
         model.isSelect = YES;

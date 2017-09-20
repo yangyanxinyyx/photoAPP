@@ -31,4 +31,5 @@
  */
 + (UIImage*)imageByScalingAndClipForSize:(CGSize)targetSize sourceImage:(UIImage *)sourceImage;
 
++ (UIImage *)imageMergeImagesWithMergeModel:(BOOL)isvertiacl images:(NSArray *)images;
 @end
