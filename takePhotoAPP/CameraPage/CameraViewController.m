@@ -577,7 +577,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         NSLog(@"已存在");
     }else{
         NSLog(@"不存在");
-        [manager createFileAtPath:novelPath contents:nil attributes:nil];
+        [manager createDirectoryAtPath:novelPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     [self.imageFileArray removeAllObjects];
     for (ImageModel *model  in self.arrayImages) {
@@ -619,7 +619,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)priViewBtnClick:(UIButton *)button {
     
     [self saveImageFile]; //保存 成文件路径
-    
+
+    GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
     NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
     NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
     [imageDateInfo setValue:self.imageFileArray forKey:@"image"];
@@ -633,6 +634,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
   
     GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
+
     GSPreView.imageDateInfo = imageDateInfo;
     [self.navigationController pushViewController:GSPreView animated:YES];
     
@@ -953,7 +955,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                                        kCollectionViewTopMargin,
                                        tabViewW - goBackBtnW - 2 * kTabViewLeftMargin - preViewBtnW - 2 * kTabViewRightMargin , tabViewH - 2 * kCollectionViewTopMargin ) collectionViewLayout:self.imageChooseViewLayout];
         
-        _imageChooseView.backgroundColor = [UIColor blueColor];
+        _imageChooseView.backgroundColor = [UIColor whiteColor];
         _imageChooseView.dataSource = self;
         _imageChooseView.delegate = self;
         
