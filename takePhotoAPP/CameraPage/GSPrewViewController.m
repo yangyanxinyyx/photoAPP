@@ -27,8 +27,10 @@
 /** <# 注释 #> */
 @property (nonatomic, assign) NSInteger  selectImageIndex ;
 
+///** <# 注释 #> */
+//@property (nonatomic, strong) NSMutableArray * imageDataArrM ;
 /** <# 注释 #> */
-@property (nonatomic, strong) NSMutableArray * imageDataArrM ;
+@property (nonatomic, strong) NSMutableArray * imageFilePathArrM ;
 @end
 
 
@@ -40,7 +42,7 @@
     // Do any additional setup after loading the view.
     [self initUI];
     if (self.imageDateInfo) {
-        self.imageDataArrM = self.imageDateInfo[@"image"];
+        self.imageFilePathArrM = self.imageDateInfo[@"image"];
     }
 }
 
@@ -57,16 +59,16 @@
 }
 #pragma mark - Init Method
 - (void)initUI {
-    if (SYSTEN_VERION >= 8.0) {
-        UIBlurEffect *effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleDark];
-        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
-        effectView.frame = self.view.frame;
-        [self.view insertSubview:effectView belowSubview:self.topView];
-    }else {
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT)];
-        toolbar.barStyle = UIBlurEffectStyleDark;
-        [self.view insertSubview:toolbar belowSubview:self.topView];
-    }
+//    if (SYSTEN_VERION >= 8.0) {
+//        UIBlurEffect *effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleDark];
+//        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
+//        effectView.frame = self.view.frame;
+//        [self.view insertSubview:effectView belowSubview:self.topView];
+//    }else {
+//        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT)];
+//        toolbar.barStyle = UIBlurEffectStyleDark;
+//        [self.view insertSubview:toolbar belowSubview:self.topView];
+//    }
     self.view.backgroundColor = [UIColor whiteColor];
     self.topView.backgroundColor = [UIColor colorWithRed:246/255.0 green:188/255.0 blue:1/255.0 alpha:1.0];
     [self.topView addSubview:self.dismissBtn];
@@ -91,12 +93,12 @@
     BIAlertAction *confirm = [BIAlertAction actionWithTitle:@"确认" style:BIAlertActionStyleDefault handler:^(BIAlertAction * _Nonnull action) {
         
         NSString *path1 = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
-        NSString *path2 = [[NSBundle mainBundle] pathForResource:@"newsPic2" ofType:@"jpg"];
-        NSString *path3 = [[NSBundle mainBundle] pathForResource:@"newsPic3" ofType:@"jpg"];
-        NSString *path4 = [[NSBundle mainBundle] pathForResource:@"newsPic4" ofType:@"jpg"];
-        
-        NSDictionary *param = @{@"thumbLink":path1,
-                                @"imagePaths":@[path1,path2,path3,path4]};
+//        NSString *path2 = [[NSBundle mainBundle] pathForResource:@"newsPic2" ofType:@"jpg"];
+//        NSString *path3 = [[NSBundle mainBundle] pathForResource:@"newsPic3" ofType:@"jpg"];
+//        NSString *path4 = [[NSBundle mainBundle] pathForResource:@"newsPic4" ofType:@"jpg"];
+//
+        NSDictionary *param = @{@"thumbLink":[self.imageFilePathArrM firstObject],
+                                @"imagePaths":self.imageFilePathArrM};
         [[GoodsShelfDataManager shareInstance] sendImageWithParam:param];
         GoodsShelfViewController *VC = [[GoodsShelfViewController alloc] init];
         [self.navigationController pushViewController:VC animated:YES];
@@ -122,7 +124,7 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     
-    return self.imageDataArrM.count;
+    return self.imageDateArrM.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -131,7 +133,7 @@
 
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     cell.selected = NO ;
-    ImageModel *model = [self.imageDataArrM objectAtIndex:indexPath.row];
+    ImageModel *model = [self.imageDateArrM objectAtIndex:indexPath.row];
     cell.itemImageView.image = model.image;
     cell.isSelect = model.isSelect;
     
@@ -248,8 +250,8 @@
     
     if (_selectImageIndex != selectImageIndex) {
         _selectImageIndex = selectImageIndex;
-        ImageModel *model = [self.imageDataArrM objectAtIndex:selectImageIndex];
-        for (ImageModel *model in self.imageDataArrM) {
+        ImageModel *model = [self.imageDateArrM objectAtIndex:selectImageIndex];
+        for (ImageModel *model in self.imageDateArrM) {
             model.isSelect = NO;
         }
         model.isSelect = YES;

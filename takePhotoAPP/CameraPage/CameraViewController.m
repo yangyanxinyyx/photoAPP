@@ -633,8 +633,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
     UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
   
-    GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
-
+    GSPreView.imageDateArrM = self.arrayImages;
     GSPreView.imageDateInfo = imageDateInfo;
     [self.navigationController pushViewController:GSPreView animated:YES];
     
