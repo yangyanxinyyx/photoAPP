@@ -19,6 +19,7 @@
 #import "GSProgressView.h"
 #import "ImageModel.h"
 #import "GSPrewViewController.h"
+#import "UIImage+imageHelper.h"
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
@@ -602,6 +603,18 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)priViewBtnClick:(UIButton *)button {
     
     [self saveImageFile]; //保存 成文件路径
+    
+    NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
+    NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
+    [imageDateInfo setValue:self.imageFileArray forKey:@"image"];
+    [imageDateInfo setValue:photosModel forKey:@"model"];
+    UIImage *puzzle;
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    for (ImageModel *model in self.arrayImages) {
+        [images addObject:model.image];
+    }
+    puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
+  
     GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
     
     [self.navigationController pushViewController:GSPreView animated:YES];

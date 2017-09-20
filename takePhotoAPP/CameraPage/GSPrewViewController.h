@@ -10,7 +10,8 @@
 
 @interface GSPrewViewController : CameraBaseViewController
 
-@property (nonatomic, strong) NSMutableArray * imageDateArrM ;
-
+//@property (nonatomic, strong) NSMutableArray * imageDateArrM ;
+/** <# 注释 #> */
+@property (nonatomic, strong) NSDictionary * imageDateInfo ;
 
 @end
