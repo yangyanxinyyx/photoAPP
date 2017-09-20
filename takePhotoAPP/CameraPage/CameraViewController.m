@@ -624,15 +624,16 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
     [imageDateInfo setValue:self.imageFileArray forKey:@"image"];
     [imageDateInfo setValue:photosModel forKey:@"model"];
-    UIImage *puzzle;
+    
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for (ImageModel *model in self.arrayImages) {
         [images addObject:model.image];
-    }
-    puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
+    }
+
+    UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
   
     GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
-    
+    GSPreView.imageDateInfo = imageDateInfo;
     [self.navigationController pushViewController:GSPreView animated:YES];
     
     

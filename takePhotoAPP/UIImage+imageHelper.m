@@ -93,34 +93,32 @@
 
 + (UIImage *)imageMergeImagesWithMergeModel:(BOOL)isvertiacl images:(NSArray *)images {
     
-    CGFloat puzzleWidth = 0.0;
-    CGFloat puzzleHeight = 0.0;
-    NSInteger rowNum = 1;
-    if (!isvertiacl) {
-        rowNum = 2;
-    }
-    
-    puzzleWidth = SCREEN_WIDTH * (images.count/rowNum);
-    puzzleHeight = SCREEN_HEIGHT * rowNum;
     NSMutableArray *newImages = [[NSMutableArray alloc] init];
     for (UIImage *newImage in images) {
         [newImages addObject:[newImage fixOrientation]];
-
     }
-    
+    CGFloat puzzleWidth = 0.0;
+    CGFloat puzzleHeight = 0.0;
+    NSInteger rowNum = 1;
+    puzzleWidth = SCREEN_WIDTH * (images.count/rowNum);
+    puzzleHeight = SCREEN_HEIGHT * rowNum;
+    if (!isvertiacl) {
+        rowNum = 2;
+    }
+
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(puzzleWidth, puzzleHeight), YES, 0.0);
+
     if (isvertiacl) {
         for (NSInteger i = 0 ; i < newImages.count ; i++ ) {
             UIImage *image =[newImages objectAtIndex: i];
-            [image drawInRect:CGRectMake( SCREEN_WIDTH * i, SCREEN_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT)];
+//            [image drawInRect:CGRectMake( SCREEN_WIDTH * i, SCREEN_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT)];
+                  [image drawInRect:CGRectMake( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT)];
         }
     }else {
     
         CGFloat row = newImages.count/rowNum - 1;
         for (NSInteger i = 0 ; i <= row; i++) {
-            
             for (NSInteger j = 0 ; j <= rowNum - 1 ; j++ ) {
-                
                 UIImage *image =[newImages objectAtIndex: i * 2 + j];
 
                 [image drawInRect:CGRectMake( SCREEN_WIDTH * j, SCREEN_HEIGHT * i/rowNum, SCREEN_WIDTH , SCREEN_HEIGHT)];
