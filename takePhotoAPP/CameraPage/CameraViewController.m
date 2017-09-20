@@ -577,7 +577,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         NSLog(@"已存在");
     }else{
         NSLog(@"不存在");
-        [manager createFileAtPath:novelPath contents:nil attributes:nil];
+        [manager createDirectoryAtPath:novelPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     [self.imageFileArray removeAllObjects];
     for (ImageModel *model  in self.arrayImages) {
