@@ -149,7 +149,9 @@
     NSArray *array = self.navigationController.viewControllers;
     for (int i=0; i<array.count; i++) {
         if ([array[i] isKindOfClass:[CameraViewController class]]) {
-            [self.navigationController popToViewController:array[i] animated:YES];
+            CameraViewController *vc = array[i];
+            [vc clearData];
+            [self.navigationController popToViewController:vc animated:YES];
         }
     }
 }
