@@ -173,7 +173,8 @@
     BIAlertViewController *alertVC = [BIAlertViewController alertControllerWithMessage:@"即将离开拍照APP \n \"前往微信\""];
     
     BIAlertAction *confirm = [BIAlertAction actionWithTitle:@"前往" style:BIAlertActionStyleDefault handler:^(BIAlertAction * _Nonnull action) {
-  
+          NSString *userName = @"weixin://";
+        [self openUserPage:userName];
         
     }];
     
@@ -188,6 +189,23 @@
     
     [self.tableViewList reloadData];
     NSLog(@"完成 跳转微信");
+}
+
+- (BOOL)isInstagreamInstalled{
+    NSURL *instagramURL = [NSURL URLWithString:@"weixin://"];
+    return [[UIApplication sharedApplication] canOpenURL:instagramURL];
+}
+
+- (void)openUserPage:(NSString *)userName{
+    NSURL *fansPageUrl;
+    if ([self isInstagreamInstalled]) {
+        NSLog(@"本机仪安装微信应用");
+        fansPageUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@",userName]];
+    } else {
+        NSLog(@"本机没有安装微信应用,并自动跳转百度首页");
+        fansPageUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://baidu.com/"]];
+    }
+    [[UIApplication sharedApplication] openURL:fansPageUrl];
 }
 
 /*

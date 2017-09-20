@@ -33,7 +33,7 @@
                     response(nil, imageUrls[@"finishURL"], nil);
                 }
             } else {
-                response(nil, nil, [NSError errorWithDomain:@"上传图片失败" code:1001 userInfo:nil]);
+                response(nil, nil, [NSError errorWithDomain:@"上传图片失败" code:1002 userInfo:nil]);
             }
            
         } @catch (NSException *exception) {

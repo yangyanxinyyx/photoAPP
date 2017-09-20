@@ -61,12 +61,14 @@
         _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
         [_uploadStateLabel sizeToFit];
         _uploadStateLabel.frame = CGRectMake(185, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
+        self.iconImageView.image = nil;
         
     }else if ([_state isEqualToString: GoodsUploadStateFail]){
         _uploadStateLabel.text = @"上传失败";
         _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
         [_uploadStateLabel sizeToFit];
         _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
+        self.iconImageView.image = nil;
     }
     
     
