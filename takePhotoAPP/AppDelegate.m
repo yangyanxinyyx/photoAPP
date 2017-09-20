@@ -11,6 +11,7 @@
 #import "DataBaseManager.h"
 #import "GoodsShelfModel.h"
 #import "CameraViewController.h"
+#import "GoodsShelfDataManager.h"
 @interface AppDelegate ()
 
 @end
@@ -28,28 +29,11 @@
     self.window.rootViewController = Nav;
     [self.window makeKeyAndVisible];
     [[DataBaseManager shareDataBase] creatTable];
-//    GoodsShelfModel *model = [[GoodsShelfModel alloc] init];
-//    model.goodUploadState = @"a";
-//    model.thumbLink = @"b";
-//    model.imageCount = @"c";
-//    model.imagePaths = @"e";
-//    model.failArrays = @"d";
-//    [[DataBaseManager shareDataBase] insertInToTableWithModel:model];
-//    [[DataBaseManager shareDataBase] deleteInTableWithDbid:@"1"];
-//    
-//    GoodsShelfModel *model2 = [[GoodsShelfModel alloc] init];
-//    model2.goodUploadState = @"1";
-//    model2.thumbLink = @"2";
-//    model2.imageCount = @"3";
-//    model2.imagePaths = @"5";
-//    model2.failArrays = @"4";
-//    
-//    [[DataBaseManager shareDataBase] insertInToTableWithModel:model2];
-//    model2.dbid = @"2";
-//    model2.goodUploadState = @"11";
-//    
-//    [[DataBaseManager shareDataBase] updateInTableWithModel:model2];
+    [[GoodsShelfDataManager shareInstance] datas];
+
     
+    
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
     NSLog(@"%@",NSHomeDirectory());
     return YES;
 }

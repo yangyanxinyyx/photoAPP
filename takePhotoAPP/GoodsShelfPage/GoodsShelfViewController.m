@@ -12,6 +12,7 @@
 #import "DataBaseManager.h"
 #import "GoodsShelfDataManager.h"
 #import "CameraViewController.h"
+#import "BIAlertViewController.h"
 
 @interface GoodsShelfViewController ()<UITableViewDelegate,UITableViewDataSource,GoodsShelfTopBarDelegate>
 @property (nonatomic,strong) UITableView *tableViewList;
@@ -97,7 +98,8 @@
 
     }
     GoodsShelfModel *model = _dataSource[indexPath.row];
-    cell.thumbImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",model.thumbLink]];
+    UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",model.thumbLink]];
+    cell.thumbImageView.image = image;
     cell.state = model.goodUploadState;
     
     return cell;
@@ -154,10 +156,25 @@
 
 - (void)pressToFinish
 {
-    NSDictionary *param = @{@"thumbLink":@"123",
-                            @"imagePaths":@[@"1",@"2",@"3"]};
-    [[GoodsShelfDataManager shareInstance] sendImageWithParam:param];
+
+
+    BIAlertViewController *alertVC = [BIAlertViewController alertControllerWithMessage:@"即将离开拍照APP \n \"前往微信\""];
     
+    BIAlertAction *confirm = [BIAlertAction actionWithTitle:@"前往" style:BIAlertActionStyleDefault handler:^(BIAlertAction * _Nonnull action) {
+  
+        
+    }];
+    
+    BIAlertAction *cancel = [BIAlertAction actionWithTitle:@"取消" style:BIAlertActionStyleCancel handler:^(BIAlertAction * _Nonnull action) {
+        
+    }];
+    
+    [alertVC addAction:cancel];
+    [alertVC addAction:confirm];
+    
+    [self presentViewController:alertVC animated:YES completion:NULL];
+    
+    [self.tableViewList reloadData];
     NSLog(@"完成 跳转微信");
 }
 

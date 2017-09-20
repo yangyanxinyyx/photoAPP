@@ -13,6 +13,7 @@
 #import "ImageModel.h"
 #import "GoodsShelfViewController.h"
 #import "GoodsShelfDataManager.h"
+#import "BIAlertViewController.h"
 #define kNormalButtonWidth 20
 
 @interface GSPrewViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
@@ -78,12 +79,29 @@
 }
 
 - (void)submitbtnClick:(UIButton *)button {
+   
+    BIAlertViewController *alertVC = [BIAlertViewController alertControllerWithMessage:@"是否确认提交照片?"];
+   
+    BIAlertAction *confirm = [BIAlertAction actionWithTitle:@"确认" style:BIAlertActionStyleDefault handler:^(BIAlertAction * _Nonnull action) {
+        
+        NSString *path1 = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
+        NSString *path2 = [[NSBundle mainBundle] pathForResource:@"newsPic2" ofType:@"jpg"];
+        NSString *path3 = [[NSBundle mainBundle] pathForResource:@"newsPic3" ofType:@"jpg"];
+        NSString *path4 = [[NSBundle mainBundle] pathForResource:@"newsPic4" ofType:@"jpg"];
+        
+        NSDictionary *param = @{@"thumbLink":path1,
+                                @"imagePaths":@[path1,path2,path3,path4]};
+        [[GoodsShelfDataManager shareInstance] sendImageWithParam:param];
+        GoodsShelfViewController *VC = [[GoodsShelfViewController alloc] init];
+        [self.navigationController pushViewController:VC animated:YES];
+        
+    }];
+ 
+    [alertVC addAction:confirm];
+    [self presentViewController:alertVC animated:YES completion:NULL];
     
-    NSDictionary *param = @{@"thumbLink":@"123",
-                            @"imagePaths":@[@"1",@"2",@"3"]};
-    [[GoodsShelfDataManager shareInstance] sendImageWithParam:param];
-    GoodsShelfViewController *VC = [[GoodsShelfViewController alloc] init];
-    [self.navigationController pushViewController:VC animated:YES];
+    
+   
 }
 
 - (void)leftBtnClick:(UIButton *)button {
