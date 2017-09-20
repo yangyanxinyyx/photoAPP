@@ -87,7 +87,10 @@
 }
 
 - (void)submitbtnClick:(UIButton *)button {
-   
+    if (!self.imageDateArrM || self.imageFilePathArrM.count == 0) {
+        return;
+    }
+    
     BIAlertViewController *alertVC = [BIAlertViewController alertControllerWithMessage:@"是否确认提交照片?"];
    
     BIAlertAction *confirm = [BIAlertAction actionWithTitle:@"确认" style:BIAlertActionStyleDefault handler:^(BIAlertAction * _Nonnull action) {

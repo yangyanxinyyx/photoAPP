@@ -98,11 +98,21 @@
 
     }
     GoodsShelfModel *model = _dataSource[indexPath.row];
-    UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",model.thumbLink]];
+    UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@",[self changePath: model.thumbLink]]];
     cell.thumbImageView.image = image;
     cell.state = model.goodUploadState;
     
     return cell;
+}
+
+- (NSString *)changePath:(NSString *)path
+{
+    NSString *name = [path lastPathComponent];
+    
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *tmpPath = [docPath stringByAppendingPathComponent:@"tmp"];
+    NSString *namePath = [tmpPath stringByAppendingPathComponent:name];
+    return namePath;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
