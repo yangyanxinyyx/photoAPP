@@ -333,16 +333,17 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.captureSession stopRunning];
             self.takePhotButton.userInteractionEnabled = NO;
+            [self.captureSession startRunning];
+            self.takePhotButton.userInteractionEnabled = YES;
         });
         
-        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.captureSession startRunning];
-                self.takePhotButton.userInteractionEnabled = YES;
-            });
-        }];
+//        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+//        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
+//            
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                
+//            });
+//        }];
     }];
     
 }
