@@ -564,7 +564,7 @@
 				TargetAttributes = {
 					8363E97A1F4C4C24004B7ACA = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = G583SJY324;
+						DevelopmentTeam = CM54Q38BZA;
 						ProvisioningStyle = Automatic;
 					};
 					8363E9931F4C4C24004B7ACA = {
@@ -803,7 +803,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = G583SJY324;
+				DEVELOPMENT_TEAM = CM54Q38BZA;
+				ENABLE_BITCODE = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/PrefixHeader.pch";
@@ -815,7 +816,7 @@
 					"$(PROJECT_DIR)/takePhotoAPP/lib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = takePhotoAPP.takePhotoAPP;
+				PRODUCT_BUNDLE_IDENTIFIER = com.innovision.takephoto;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -824,7 +825,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = G583SJY324;
+				DEVELOPMENT_TEAM = CM54Q38BZA;
+				ENABLE_BITCODE = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/PrefixHeader.pch";
@@ -836,7 +838,7 @@
 					"$(PROJECT_DIR)/takePhotoAPP/lib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = takePhotoAPP.takePhotoAPP;
+				PRODUCT_BUNDLE_IDENTIFIER = com.innovision.takephoto;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
