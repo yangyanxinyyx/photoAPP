@@ -20,6 +20,7 @@
 #import "ImageModel.h"
 #import "GSPrewViewController.h"
 #import "UIImage+imageHelper.h"
+#import "GoodsShelfViewController.h"
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
@@ -81,6 +82,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 @property (nonatomic, strong) NSMutableArray *imageFileArray;
 
+@property (nonatomic, strong) UIButton *rephotographTakePhotoButton;
+
 
 @end
 
@@ -90,8 +93,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     _selectImageIndex = -1;
-    _isorSo = YES;
-    _isUpDown = NO;
+    _isorSo = NO;
+    _isUpDown = YES;
     _isAngle = YES;
     _isFlash = NO;
     _isSingleModel = YES;
@@ -117,9 +120,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-    if (self.captureSession) {
-        [self.captureSession stopRunning];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (self.captureSession) {
+           [self.captureSession stopRunning];
+        }
+    });
+//    if (self.captureSession) {
+//        [self.captureSession stopRunning];
+//    }
 }
 
 - (void)dealloc {
@@ -302,14 +310,15 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         }
         NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         UIImage *image = [UIImage imageWithData:jpegData];
-        
+        self.imageOverlap = image;
+        //重拍
         if (_isRephotograph) {
             ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex];
-            model.image = image;
+            [self saveImageFilewithIndex:_selectImageIndex];
+            model.image = self.imageOverlap;
             [self goForWardBtnClick:nil];
             _isRephotograph = NO;
         } else {
-            self.imageOverlap = image;
             ImageModel *model = [[ImageModel alloc] init];
             model.image = image;
             [self.arrayImages addObject:model];
@@ -321,15 +330,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             }
             _showImageView.image = self.imageOverlap;
             [self setImageOverlapFrame];
+            [self saveImageFilewithIndex:-1];
         }
         
-        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
-        ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
-        if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
-            NSLog(@"无权限");
-            return ;
-        }
-        
+        [self.imageChooseView reloadData];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.captureSession stopRunning];
             self.takePhotButton.userInteractionEnabled = NO;
@@ -337,11 +341,18 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             self.takePhotButton.userInteractionEnabled = YES;
         });
         
+        
+//        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
+//        ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
+//        if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
+//            NSLog(@"无权限");
+//            return ;
+//        }
 //        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
 //        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
 //            
 //            dispatch_async(dispatch_get_main_queue(), ^{
-//                
+//
 //            });
 //        }];
     }];
@@ -404,6 +415,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [self.view addSubview:self.segmentView2];
     [self.view addSubview:self.segmentView3];
     [self.view addSubview:self.segmentView4];
+    [self.view addSubview:self.rephotographTakePhotoButton];
     [self.view addSubview:self.angleImageView];
     [self.view addSubview:self.focusCursorImageView];
     [self.view addSubview:self.progressView];
@@ -567,16 +579,17 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
 }
 
-//完成
+#pragma maark- 完成
 - (void)toucheAccomoplishButton:(UIButton *)sender{
     
-    [self saveImageFile];
-    NSLog(@"%@",self.imageFileArray);
+//    [self saveImageFile];
     
+    GoodsShelfViewController *goodSVC = [[GoodsShelfViewController alloc] init];
+    [self.navigationController pushViewController:goodSVC animated:YES];
 }
 
 
-- (void)saveImageFile{
+- (void)saveImageFilewithIndex:(NSInteger)index{
     NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *novelPath =  [docPath stringByAppendingPathComponent:@"tmp"];
     
@@ -587,24 +600,41 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         NSLog(@"不存在");
         [manager createDirectoryAtPath:novelPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    [self.imageFileArray removeAllObjects];
-    for (ImageModel *model  in self.arrayImages) {
+    if (index == -1) {
         NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
         NSTimeInterval a=[dat timeIntervalSince1970]*1000;
         NSString *timeString = [NSString stringWithFormat:@"%f", a];
         NSString *imageFile = [novelPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeString]];
-        NSData *imageData = UIImageJPEGRepresentation(model.image, 1);
+        NSData *imageData = UIImageJPEGRepresentation(self.imageOverlap, 1);
         BOOL result = [imageData writeToFile:imageFile atomically:YES];
         if (result) {
             [self.imageFileArray addObject:imageFile];
         } else {
             NSLog(@"写入失败");
         }
+    } else {
+        NSString *imageFile =  [self.imageFileArray objectAtIndex:index];
+        BOOL result = [manager removeItemAtPath:imageFile error:nil];
+        if (result) {
+            NSLog(@"删除成功");
+        } else {
+            NSLog(@"删除失败");
+        }
+        NSData *imageData = UIImageJPEGRepresentation(self.imageOverlap, 1);
+        BOOL resultWrite = [imageData writeToFile:imageFile atomically:YES];
+        if (resultWrite) {
+            [self.imageFileArray insertObject:imageFile atIndex:index];
+        } else {
+            NSLog(@"写入失败");
+        }
     }
+ 
 }
 
 
 - (void)goForWardBtnClick:(UIButton *)button {
+    self.rephotographTakePhotoButton.alpha = 1;
+    self.progressView.alpha = 0;
     [self.tabScrollView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:NO];
     [self.imageChooseView reloadData];
     
@@ -612,6 +642,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 }
 
 - (void)goBackBtnClick:(UIButton *)button {
+    self.rephotographTakePhotoButton.alpha = 0;
+    self.progressView.alpha = 1;
     [self.tabScrollView setContentOffset:CGPointMake(0, 0) animated:YES];
     [UIView animateWithDuration:0.3 animations:^{
         self.topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 64);
@@ -626,7 +658,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)priViewBtnClick:(UIButton *)button {
     
-    [self saveImageFile]; //保存 成文件路径
+//    [self saveImageFile]; //保存 成文件路径
 
     GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
     NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
@@ -640,7 +672,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     }
 
     UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
-  
+    if (self.arrayImages.count == 0) {
+        return;
+    }
     GSPreView.imageDateArrM = self.arrayImages;
     GSPreView.imageDateInfo = imageDateInfo;
     [self.navigationController pushViewController:GSPreView animated:YES];
@@ -666,6 +700,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)toucheRephotgraphButton{
     self.isRephotograph = YES;
     self.rephotographButton.alpha = 0;
+    self.rephotographTakePhotoButton.alpha = 0;
+    self.progressView.alpha = 1;
     [self goBackBtnClick:nil];
     if (_isSingleModel) {
         if (self.arrayImages.count == 1) {
@@ -714,9 +750,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             }
         }
     }
-    
-    
-    
+}
+
+- (void)toucheRephotographTakePhotoButtonValue:(UIButton *)send{
     
 }
 
@@ -844,10 +880,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (UIButton *)OrSoButton{
     if (!_OrSoButton) {
         _OrSoButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _OrSoButton.frame = CGRectMake(30 * SCREEN_RATE, 22 , 32 * SCREEN_RATE, 32 * SCREEN_RATE);
-        [_OrSoButton setBackgroundImage:[UIImage imageNamed:@"OrSo"] forState:UIControlStateNormal];
+        _OrSoButton.frame = CGRectMake((SCREEN_WIDTH - (32 * SCREEN_RATE))/2, 22, 32 * SCREEN_RATE, 32 *SCREEN_RATE);
+        [_OrSoButton setBackgroundImage:[UIImage imageNamed:@"OrSo_gray"] forState:UIControlStateNormal];
         [_OrSoButton addTarget:self action:@selector(toucheOrSOButtonValue:) forControlEvents:UIControlEventTouchDown];
-        _OrSoButton.userInteractionEnabled = NO;
+        
     }
     return _OrSoButton;
 }
@@ -855,9 +891,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (UIButton *)upAndDownButton{
     if (!_upAndDownButton) {
         _upAndDownButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _upAndDownButton.frame = CGRectMake((SCREEN_WIDTH - (32 * SCREEN_RATE))/2, 22, 32 * SCREEN_RATE, 32 *SCREEN_RATE);
-        [_upAndDownButton setBackgroundImage:[UIImage imageNamed:@"upDown_gray"] forState:UIControlStateNormal];
+        _upAndDownButton.frame = CGRectMake(30 * SCREEN_RATE, 22 , 32 * SCREEN_RATE, 32 * SCREEN_RATE);
+        [_upAndDownButton setBackgroundImage:[UIImage imageNamed:@"upDown"] forState:UIControlStateNormal];
         [_upAndDownButton addTarget:self action:@selector(toucheUpAndDownButton:) forControlEvents:UIControlEventTouchDown];
+        _upAndDownButton.userInteractionEnabled = NO;
     }
     return _upAndDownButton;
 }
@@ -1021,7 +1058,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (UIView *)rephotographTopView{
     if (!_rephotographTopView) {
         _rephotographTopView = [[UIView alloc]initWithFrame:CGRectMake(0, -64, SCREEN_WIDTH, 64)];
-
+        _rephotographTopView.backgroundColor = ORANGECOLOR;
     }
     return _rephotographTopView;
 }
@@ -1040,7 +1077,6 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         _rephotographImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
         _rephotographImageView.alpha = 0;
         _rephotographImageView.userInteractionEnabled = YES;
-        
     }
     return _rephotographImageView;
 }
@@ -1066,6 +1102,18 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     }
     return _imageFileArray;
 }
+
+- (UIButton *)rephotographTakePhotoButton{
+    if (!_rephotographTakePhotoButton) {
+        _rephotographTakePhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_rephotographTakePhotoButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_white"] forState:UIControlStateNormal];
+        _rephotographTakePhotoButton.frame = CGRectMake((SCREEN_WIDTH - 43 * SCREEN_RATE) / 2, SCREEN_HEIGHT - 113 - 63 * SCREEN_RATE, 43 * SCREEN_RATE, SCREEN_RATE * 43);
+        _rephotographTakePhotoButton.alpha = 0;
+        [_rephotographTakePhotoButton addTarget:self action:@selector(takePhotoButtonClick:) forControlEvents:UIControlEventTouchDown];
+    }
+    return _rephotographTakePhotoButton;
+}
+
 #pragma mark --Other
 
 - (NSMutableArray *)arrayImages{

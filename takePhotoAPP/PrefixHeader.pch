@@ -18,10 +18,10 @@
 #define SCREEN_WIDTH        ([[UIScreen mainScreen] bounds].size.width)
 #define SCREEN_HEIGHT       ([[UIScreen mainScreen] bounds].size.height)
 #define SCREEN_RATE         ([[UIScreen mainScreen] bounds].size.width)/375 
-#define UICOLOR(r,g,b,a)        [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a];
-
+#define UICOLOR(r,g,b,a)    [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a];
+#define ORANGECOLOR         [UIColor colorWithRed:246/255.0 green:188/255.0 blue:1/255.0 alpha:1]
 #define ALPHA   0.7
-#define SYSTEN_VERION     [[UIDevice currentDevice].systemVersion floatValue]
+#define SYSTEN_VERION       [[UIDevice currentDevice].systemVersion floatValue]
 
 
 // Include any system framework and library headers here that should be included in all compilation units.
