@@ -34,10 +34,7 @@
 /** <# 注释 #> */
 @property (nonatomic, strong) NSMutableArray * imageDataArrM ;
 
-
 @end
-
-
 
 @implementation GSPrewViewController
 
@@ -77,7 +74,7 @@
 
 - (void)initUI {
     
-
+    
     self.bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     if (self.imageDataArrM) {
         UIImage *bgImage =[self.imageDataArrM firstObject];
@@ -88,26 +85,20 @@
         UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
         effectView.frame = self.view.frame;
         [self.view insertSubview:effectView aboveSubview:self.bgImageView];
-    }else {
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT)];
-        toolbar.barStyle = UIBlurEffectStyleDark;
-        [self.view insertSubview:toolbar aboveSubview:self.bgImageView];
     }
     
     self.clipView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT - TABVIEW_HEIGHT- TOPVIEW_HEIGHT)];
     self.preView = [[UIImageView alloc] initWithFrame:self.clipView.frame];
-    
     UIImage *puzzle = [UIImage imageWithContentsOfFile:self.imageDateInfo[kpuzzlePath]];
-    puzzle = [UIImage compressImage:puzzle newSize:[self resetPuzzleSize:puzzle.size clipViewSize:self.clipView.frame.size]];
-    
+//    puzzle = [UIImage compressImage:puzzle newSize:[self resetPuzzleSize:puzzle.size clipViewSize:self.clipView.frame.size]];
     [self.preView setUserInteractionEnabled:YES];
     [self.preView setImage:puzzle];
     [self addGestureRecognizerToView];
     
+    
     [self.view addSubview:self.bgImageView];
     [self.view addSubview:self.clipView];
     [self.clipView addSubview:self.preView];
-
     [self.view addSubview:self.topView];
     [self.view addSubview:self.tabView];
     
@@ -396,7 +387,7 @@
             _preView.image = [UIImage imageWithContentsOfFile:model.imageFile];
         }];
     }
-    
 }
+
 
 @end

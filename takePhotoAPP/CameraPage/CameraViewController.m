@@ -591,7 +591,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         self.showImageView.image = nil;
         return;
     }
-    if (self.imageOverlap && !_isSingleModel) {
+    if (!self.arrayImages) {
+        return;
+    }
+    if (self.imageOverlap && !_isSingleModel ) {
         self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 1];
         self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
