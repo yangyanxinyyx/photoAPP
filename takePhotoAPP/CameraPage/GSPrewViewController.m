@@ -288,7 +288,7 @@
         
         [UIView animateWithDuration:0.3 animations:^{
             _preView.alpha = 1;
-            _preView.image = model.image;
+            _preView.image = [UIImage imageWithContentsOfFile:model.imageFile];
         }];
     }
     

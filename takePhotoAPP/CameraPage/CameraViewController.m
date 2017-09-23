@@ -317,12 +317,13 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         if (_isRephotograph) {
             ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex];
             [self saveImageFilewithIndex:_selectImageIndex];
-            model.image = self.imageOverlap;
+            model.imageFile = [self.imageFileArray objectAtIndex:_selectImageIndex];
             [self goForWardBtnClick:nil];
             _isRephotograph = NO;
         } else {
+            [self saveImageFilewithIndex:-1];
             ImageModel *model = [[ImageModel alloc] init];
-            model.image = image;
+            model.imageFile = [self.imageFileArray lastObject];
             [self.arrayImages addObject:model];
             if (_isorSo && _numberOrSos < 2) {
                 _isSingleModel = YES;
@@ -352,7 +353,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                 [self setImageOverlapFrame];
             }];
             
-            [self saveImageFilewithIndex:-1];
+            
         }
         
         
@@ -558,7 +559,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
         if (model) {
-            self.imageViewOverlap.image = model.image;
+            self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
             self.imageViewOverlap.alpha = ALPHA;
         }
         
@@ -588,7 +589,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     if (self.imageOverlap && !_isSingleModel) {
         self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 1];
-        self.imageViewOverlap.image = model.image;
+        self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
         self.imageViewOverlap.alpha = ALPHA;
     }
     
@@ -680,7 +681,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             
         }
         ImageModel *model = [self.arrayImages lastObject];
-        self.imageOverlap = model.image;
+        self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
         [self setImageOverlapFrame];
     }
     
@@ -710,8 +711,11 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for (ImageModel *model in self.arrayImages) {
-        [images addObject:model.image];
+        [images addObject:[UIImage imageWithContentsOfFile:model.imageFile]];
     }
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        
+    });
     NSArray *puzzleArr = [self savePuzzlePhotos:images];
     NSString *puzzlePath = [puzzleArr firstObject];
     NSString *puzzleThumbPath = [puzzleArr lastObject];
@@ -760,14 +764,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         }
         if (_selectImageIndex == 0) {
             ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
-            self.imageOverlap = model.image;
+            self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
             self.imageViewOverlap.frame = CGRectMake(SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
             return;
         }
         ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
-        self.imageOverlap = model.image;
+        self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
         self.imageViewOverlap.frame = CGRectMake(-SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         self.imageViewOverlap.image = self.imageOverlap;
         self.imageViewOverlap.alpha = ALPHA;
@@ -779,20 +783,20 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         } else {
             if (_selectImageIndex == 0) {
                 ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
-                self.imageOverlap = model.image;
+                self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
                 self.imageViewOverlap.frame = CGRectMake(0, SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
                 self.imageViewOverlap.image = self.imageOverlap;
                 self.imageViewOverlap.alpha = ALPHA;
             } else{
                 if (_selectImageIndex % 2 != 0) {
                     ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
-                    self.imageOverlap = model.image;
+                    self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
                     self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
                     self.imageViewOverlap.image = self.imageOverlap;
                     self.imageViewOverlap.alpha = ALPHA;
                 } else {
                     ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 2];
-                    self.imageOverlap = model.image;
+                    self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
                     self.imageViewOverlap.frame = CGRectMake( - SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
                     self.imageViewOverlap.image = self.imageOverlap;
                     self.imageViewOverlap.alpha = ALPHA;
@@ -862,7 +866,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     
     ImageModel *model = [self.arrayImages objectAtIndex:indexPath.row];
-    cell.itemImageView.image = model.image;
+    cell.itemImageView.image = [UIImage imageWithContentsOfFile:model.imageFile];
     cell.isSelect = model.isSelect;
     
     return cell;
@@ -902,7 +906,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         self.topView.frame = CGRectMake(0, -64, SCREEN_WIDTH, 64);
         self.rephotographTopView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 64);
         _rephotographImageView.alpha = 1;
-        _rephotographImageView.image = model.image;
+        _rephotographImageView.image = [UIImage imageWithContentsOfFile:model.imageFile];
         _rephotographButton.alpha = 1;
     }];
     _selectImageIndex = indexPath.row;
