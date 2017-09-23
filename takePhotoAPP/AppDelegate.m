@@ -29,6 +29,7 @@
     self.window.rootViewController = Nav;
     [self.window makeKeyAndVisible];
     [[DataBaseManager shareDataBase] creatTable];
+    [[GoodsShelfDataManager shareInstance] setSendFail];
     [[GoodsShelfDataManager shareInstance] datas];
 
     

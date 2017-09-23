@@ -47,36 +47,39 @@
     _thumbImageView.frame = CGRectMake(10, 10, 160, 90);
     _thumbImageView.backgroundColor = [UIColor redColor];
 
-    if ([_state isEqualToString: GoodsUploadStateSuccess]) {
-        _uploadStateLabel.text = @"已上传";
-        _uploadStateLabel.textColor = UICOLOR(246, 188, 1, 1);
-        [_uploadStateLabel sizeToFit];
-        _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
-        UIImage *image = [UIImage imageNamed:@"upload_succes"];
-        self.iconImageView.image = image;
-        self.iconImageView.frame = CGRectMake(_uploadStateLabel.frame.origin.x - 8 - image.size.width, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, image.size.width, image.size.height);
-        
-    }else if ([_state isEqualToString: GoodsUploadStateUploading]){
-        _uploadStateLabel.text = @"正在上传...";
-        _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
-        [_uploadStateLabel sizeToFit];
-        _uploadStateLabel.frame = CGRectMake(185, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
-        self.iconImageView.image = nil;
-        
-    }else if ([_state isEqualToString: GoodsUploadStateFail]){
-        _uploadStateLabel.text = @"上传失败";
-        _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
-        [_uploadStateLabel sizeToFit];
-        _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
-        self.iconImageView.image = nil;
+    if ([self.uploadState isKindOfClass:[NSString class]]) {
+        if ([self.uploadState isEqualToString: GoodsUploadStateSuccess]) {
+            _uploadStateLabel.text = @"已上传";
+            _uploadStateLabel.textColor = UICOLOR(246, 188, 1, 1);
+            [_uploadStateLabel sizeToFit];
+            _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
+            UIImage *image = [UIImage imageNamed:@"upload_succes"];
+            self.iconImageView.image = image;
+            self.iconImageView.frame = CGRectMake(_uploadStateLabel.frame.origin.x - 8 - image.size.width, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, image.size.width, image.size.height);
+            
+        }else if ([self.uploadState isEqualToString: GoodsUploadStateUploading]){
+            _uploadStateLabel.text = @"正在上传...";
+            _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
+            [_uploadStateLabel sizeToFit];
+            _uploadStateLabel.frame = CGRectMake(185, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
+            self.iconImageView.image = nil;
+            
+        }else if ([self.uploadState isEqualToString: GoodsUploadStateFail]){
+            _uploadStateLabel.text = @"上传失败";
+            _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
+            [_uploadStateLabel sizeToFit];
+            _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
+            self.iconImageView.image = nil;
+        }
     }
+    
     
     
 }
 
-- (void)setState:(GoodsUploadState)state
+- (void)setUploadState:(GoodsUploadState)uploadState
 {
-    _state = state;
+    _uploadState = uploadState;
     [self setNeedsLayout];
     [self layoutIfNeeded];
 }

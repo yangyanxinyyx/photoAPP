@@ -73,6 +73,11 @@
                      [self updateModel:goodModel];
                      
                      //删除临时文件
+                     for (NSString *path in imagePaths) {
+                         if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                             [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+                         }
+                     }
                      
                  } else {
                      //有失败的
@@ -103,24 +108,29 @@
     model.goodUploadState = GoodsUploadStateUploading;
     [self updateModel:model];
     
-    NSMutableArray *failArray = [NSMutableArray array];
-    for (NSInteger i=0; i<resendArray.count; i++) {
+    NSMutableArray *failArray = [NSMutableArray arrayWithArray:failArrays];
+    for (NSInteger i= resendArray.count - 1; i == 0; i--) {
         UploadModel *uploadModel = [[UploadModel alloc] init];
         uploadModel.imagePath = resendArray[i];
-        
+        uploadModel.imagePath = [self changePath:uploadModel.imagePath];
         [NetworkKit sendImageWithObject:uploadModel process:^(NSDictionary *object) {
             
         } response:^(NSDictionary *urlObject, id responseObject, NSError *error) {
-            if (error ) {
-                [failArray addObject:@(i)];
+            if (responseObject && !error) {
+                [failArray removeObjectAtIndex:i];
             }
-            if (i == resendArray.count - 1) {
+            if (i == 0) {
                 if (failArray.count == 0) {
                     //全部成功
                     model.goodUploadState = GoodsUploadStateSuccess;
                     [self updateModel:model];
                     
                     //删除临时文件
+                    for (NSString *path in imagePaths) {
+                        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                            [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+                        }
+                    }
                     
                 } else {
                     //有失败的
@@ -134,7 +144,26 @@
         
     }
     
-    
+}
+
+- (void)setSendFail
+{
+        NSArray *allModels = [[DataBaseManager shareDataBase] selectTable];
+        for (GoodsShelfModel *model in allModels) {
+            if ([model.goodUploadState isEqualToString:GoodsUploadStateUploading]) {
+                model.goodUploadState = GoodsUploadStateFail;
+                NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];
+                NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:model.failArrays];
+                NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                for (NSInteger i =0; i<imagePaths.count; i++) {
+                    [temp addObject:[NSNumber numberWithInteger:i]];
+                }
+                failArrays = [NSArray arrayWithArray:temp];
+                model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                [[DataBaseManager shareDataBase] updateInTableWithModel:model];
+            }
+        }
+   
 }
 
 - (void)addModel:(GoodsShelfModel*)model {
@@ -151,7 +180,7 @@
     BOOL flag = [[DataBaseManager shareDataBase] updateInTableWithModel:model];
     if (flag) {
         NSInteger index = [self indexOfModel:model];
-        if (index < self.datas.count && index > 0) {
+        if (index < self.datas.count && index >= 0) {
             [self.datas replaceObjectAtIndex:index withObject:model];
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateModelNotify object:@{@"model": model, @"index": @(index)}];
         }
@@ -202,6 +231,16 @@
     NSData *data = [[NSData alloc] initWithData:[string dataUsingEncoding:NSUTF8StringEncoding]];
     NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil]];
     return dic;
+}
+
+- (NSString *)changePath:(NSString *)path
+{
+    NSString *name = [path lastPathComponent];
+    
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *tmpPath = [docPath stringByAppendingPathComponent:@"tmp"];
+    NSString *namePath = [tmpPath stringByAppendingPathComponent:name];
+    return namePath;
 }
 
 @end

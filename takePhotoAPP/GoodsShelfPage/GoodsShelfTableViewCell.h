@@ -16,6 +16,6 @@
 @property (nonatomic,strong) UILabel *uploadStateLabel;
 @property (nonatomic,strong) UIImageView *iconImageView;
 
-@property (nonatomic,assign) GoodsUploadState state;
+@property (nonatomic,assign) GoodsUploadState uploadState;
 
 @end
