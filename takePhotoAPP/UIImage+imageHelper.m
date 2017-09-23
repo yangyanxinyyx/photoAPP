@@ -96,44 +96,53 @@
     NSMutableArray *newImages = [[NSMutableArray alloc] init];
     for (UIImage *newImage in images) {
         [newImages addObject:[newImage fixOrientation]];
+        [newImages addObject:newImage];
     }
-    CGFloat puzzleWidth = 0.0;
-    CGFloat puzzleHeight = 0.0;
+    CGSize size;
     NSInteger rowNum = 1;
-    puzzleWidth = SCREEN_WIDTH * (images.count/rowNum);
-    puzzleHeight = SCREEN_HEIGHT * rowNum;
     if (!isvertiacl) {
         rowNum = 2;
     }
-
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(puzzleWidth, puzzleHeight), YES, 0.0);
-
+    
+    size.width = SCREEN_WIDTH * (images.count/rowNum);
+    size.height = SCREEN_HEIGHT * rowNum;
+    
+    
+    UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+    
     if (isvertiacl) {
         for (NSInteger i = 0 ; i < newImages.count ; i++ ) {
             UIImage *image =[newImages objectAtIndex: i];
-//            [image drawInRect:CGRectMake( SCREEN_WIDTH * i, SCREEN_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT)];
-                  [image drawInRect:CGRectMake( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT)];
+           [image drawInRect:CGRectMake( SCREEN_WIDTH * i, 0, SCREEN_WIDTH , SCREEN_HEIGHT)];
         }
     }else {
-    
-        CGFloat row = newImages.count/rowNum - 1;
-        for (NSInteger i = 0 ; i <= row; i++) {
-            for (NSInteger j = 0 ; j <= rowNum - 1 ; j++ ) {
-                UIImage *image =[newImages objectAtIndex: i * 2 + j];
-
-                [image drawInRect:CGRectMake( SCREEN_WIDTH * j, SCREEN_HEIGHT * i/rowNum, SCREEN_WIDTH , SCREEN_HEIGHT)];
-                
+        NSMutableArray *upImageArrM = [[NSMutableArray alloc] init];
+        NSMutableArray *downImageArrM = [[NSMutableArray alloc] init];
+        for (NSInteger i = 1 ; i <= newImages.count; i++) {
+            UIImage * image = newImages[i - 1];
+            if (i/2 == 0) {
+                [upImageArrM addObject:image];
+            }else {
+                [downImageArrM addObject:image];
             }
         }
+        
+        for (NSInteger i = 0 ; i < upImageArrM.count; i ++) {
+            UIImage *upImage =[newImages objectAtIndex: i];
+            [upImage drawInRect:CGRectMake( SCREEN_WIDTH * i, 0, SCREEN_WIDTH , SCREEN_HEIGHT)];
+        }
+        for (NSInteger i = 0 ; i < downImageArrM.count ; i++) {
+            UIImage *downImage =[newImages objectAtIndex: i];
+            [downImage drawInRect:CGRectMake( SCREEN_WIDTH * i, SCREEN_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT)];
+        }
+        
     }
   
     
     UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
     
     UIGraphicsEndImageContext();
-    
-    // 保存图片，需要转换成二进制数据
-    //    [self saveImageToPhotos:resultImage];
+
     
     return resultImage;
 

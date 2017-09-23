@@ -637,7 +637,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     for (ImageModel *model in self.arrayImages) {
         [images addObject:model.image];
     }
-
+    
     UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
   
     GSPreView.imageDateArrM = self.arrayImages;
