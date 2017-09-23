@@ -19,7 +19,6 @@
 #import "GSProgressView.h"
 #import "ImageModel.h"
 #import "GSPrewViewController.h"
-#import "UIImage+imageHelper.h"
 #import "GoodsShelfViewController.h"
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
@@ -709,20 +708,24 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
     GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
     NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
-    NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
-    [imageDateInfo setValue:self.imageFileArray forKey:@"image"];
-    [imageDateInfo setValue:photosModel forKey:@"model"];
     
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for (ImageModel *model in self.arrayImages) {
         [images addObject:model.image];
     }
+    NSArray *puzzleArr = [self savePuzzlePhotos:images];
+    NSString *puzzlePath = [puzzleArr firstObject];
+    NSString *puzzleThumbPath = [puzzleArr lastObject];
+    
+    NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
+    [imageDateInfo setValue:self.imageFileArray forKey:kpuzzleImagePath];
+    [imageDateInfo setValue:photosModel forKey:kpuzzleMode];
+    [imageDateInfo setValue:puzzlePath forKey:kpuzzlePath];
+    [imageDateInfo setValue:puzzleThumbPath forKey:kpuzzleThumbPath];
 
-    UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
     if (self.arrayImages.count == 0) {
         return;
     }
-    GSPreView.imageDateArrM = self.arrayImages;
     GSPreView.imageDateInfo = imageDateInfo;
     [self.navigationController pushViewController:GSPreView animated:YES];
     
@@ -805,6 +808,42 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 #pragma mark - Privacy Method
 
+- (NSArray *)savePuzzlePhotos:(NSArray *)images {
+    
+    UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:self.isSingleModel images:images];
+    UIImage *puzzleThumb = [UIImage compressImage:puzzle newSize:kGoodsShelfPuzzleSize];
+    
+    NSString *puzzlePath =  [self imageSaveToTmp:puzzle];
+    NSString *puzzleThumbPath = [self imageSaveToTmp:puzzleThumb];
+    
+    if (puzzlePath && puzzleThumbPath) {
+        return @[puzzlePath,puzzleThumbPath];
+    }
+    NSAssert(YES, @"savePuzzlePhotoPathError");
+    return nil;
+}
+
+- (NSString *)imageSaveToTmp:(UIImage *)image {
+    
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *novelPath =  [docPath stringByAppendingPathComponent:@"tmp"];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:novelPath]) {
+    }else{
+        [manager createDirectoryAtPath:novelPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSTimeInterval a=[dat timeIntervalSince1970]*1000;
+    NSString *timeString = [NSString stringWithFormat:@"%f", a];
+    NSString *imageFile = [novelPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeString]];
+    NSData *imageData = UIImageJPEGRepresentation(image, 1);
+    BOOL result = [imageData writeToFile:imageFile atomically:YES];
+    if (result) {
+        return imageFile;
+    }
+    NSAssert(YES, @"imageSaveWithError");
+    return nil;
+}
 
 #pragma mark - UICollectionViewDelegate&UICollectionViewDataSource
 

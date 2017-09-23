@@ -20,17 +20,17 @@
 @property (nonatomic, strong) UIButton * dismissBtn ;
 @property (nonatomic, strong) UIButton * submitBtn ;
 
+@property (nonatomic, strong) UIImageView * bgImageView ;
 @property (nonatomic, strong) UIImageView * preView ;
 @property (nonatomic, strong) GSChoosePhotosView * imageChooseView ;
 @property (nonatomic, strong) UIButton * leftPreViewBtn ;
 @property (nonatomic, strong) UIButton * rightPreViewBtn ;
 /** <# 注释 #> */
 @property (nonatomic, assign) NSInteger  selectImageIndex ;
-
-///** <# 注释 #> */
-//@property (nonatomic, strong) NSMutableArray * imageDataArrM ;
 /** <# 注释 #> */
-@property (nonatomic, strong) NSMutableArray * imageFilePathArrM ;
+@property (nonatomic, strong) NSMutableArray * imageDataArrM ;
+
+
 @end
 
 
@@ -40,10 +40,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+
+    [self setupData];
     [self initUI];
-    if (self.imageDateInfo) {
-        self.imageFilePathArrM = self.imageDateInfo[@"image"];
-    }
+   
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -58,18 +58,48 @@
     // Dispose of any resources that can be recreated.
 }
 #pragma mark - Init Method
+
+- (void)setupData {
+    if (self.imageDateInfo) {
+        NSArray *imagePathArr = self.imageDateInfo[kpuzzleImagePath];
+        self.imageDataArrM = [[NSMutableArray alloc] init];
+        for (NSString *imagePath in imagePathArr) {
+            UIImage *image  = [UIImage imageWithContentsOfFile:imagePath];
+            [self.imageDataArrM addObject:image];
+        }
+    }
+    
+}
+
 - (void)initUI {
-//    if (SYSTEN_VERION >= 8.0) {
-//        UIBlurEffect *effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleDark];
-//        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
-//        effectView.frame = self.view.frame;
-//        [self.view insertSubview:effectView belowSubview:self.topView];
-//    }else {
-//        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT)];
-//        toolbar.barStyle = UIBlurEffectStyleDark;
-//        [self.view insertSubview:toolbar belowSubview:self.topView];
-//    }
+    
     self.view.backgroundColor = [UIColor whiteColor];
+
+    self.bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    if (self.imageDataArrM) {
+        UIImage *bgImage =[self.imageDataArrM firstObject];
+        self.bgImageView.image = bgImage;
+    }
+    
+    UIImage *puzzle = [UIImage imageWithContentsOfFile:self.imageDateInfo[kpuzzlePath]];
+    [self.preView setImage:puzzle];
+
+    if (SYSTEN_VERION >= 8.0) {
+        UIBlurEffect *effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleDark];
+        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
+        effectView.frame = self.view.frame;
+        [self.view insertSubview:effectView aboveSubview:self.bgImageView];
+    }else {
+        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT)];
+        toolbar.barStyle = UIBlurEffectStyleDark;
+        [self.view insertSubview:toolbar aboveSubview:self.bgImageView];
+    }
+ 
+    [self.view addSubview:self.bgImageView];
+    [self.view addSubview:self.preView];
+    [self.view addSubview:self.topView];
+    [self.view addSubview:self.tabView];
+    
     self.topView.backgroundColor = [UIColor colorWithRed:246/255.0 green:188/255.0 blue:1/255.0 alpha:1.0];
     [self.topView addSubview:self.dismissBtn];
     [self.topView addSubview:self.submitBtn];
@@ -77,7 +107,6 @@
     [self.tabView addSubview:self.imageChooseView];
     [self.tabView addSubview:self.leftPreViewBtn];
     [self.tabView addSubview:self.rightPreViewBtn];
-    [self.view insertSubview:self.preView atIndex:0];
 }
 
 #pragma mark - Action Method
@@ -87,7 +116,7 @@
 }
 
 - (void)submitbtnClick:(UIButton *)button {
-    if (!self.imageDateArrM || self.imageFilePathArrM.count == 0) {
+    if (!self.imageDateInfo) {
         return;
     }
     
@@ -95,13 +124,11 @@
    
     BIAlertAction *confirm = [BIAlertAction actionWithTitle:@"确认" style:BIAlertActionStyleDefault handler:^(BIAlertAction * _Nonnull action) {
         
-        NSString *path1 = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
-//        NSString *path2 = [[NSBundle mainBundle] pathForResource:@"newsPic2" ofType:@"jpg"];
-//        NSString *path3 = [[NSBundle mainBundle] pathForResource:@"newsPic3" ofType:@"jpg"];
-//        NSString *path4 = [[NSBundle mainBundle] pathForResource:@"newsPic4" ofType:@"jpg"];
-//
-        NSDictionary *param = @{@"thumbLink":[self.imageFilePathArrM firstObject],
-                                @"imagePaths":self.imageFilePathArrM};
+        NSArray *imagePathArr = self.imageDateInfo[kpuzzleImagePath];
+        NSString *puzzleThumbImagePath = self.imageDateInfo[kpuzzleThumbPath];
+        
+        NSDictionary *param = @{@"thumbLink":puzzleThumbImagePath,
+                                @"imagePaths":imagePathArr};
         [[GoodsShelfDataManager shareInstance] sendImageWithParam:param];
         GoodsShelfViewController *VC = [[GoodsShelfViewController alloc] init];
         [self.navigationController pushViewController:VC animated:YES];
@@ -127,7 +154,7 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     
-    return self.imageDateArrM.count;
+    return self.imageDataArrM.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -136,9 +163,8 @@
 
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     cell.selected = NO ;
-    ImageModel *model = [self.imageDateArrM objectAtIndex:indexPath.row];
-    cell.itemImageView.image = model.image;
-    cell.isSelect = model.isSelect;
+    UIImage *image = [self.imageDataArrM objectAtIndex:indexPath.row];
+    cell.itemImageView.image = image;
     
     return cell;
 }
@@ -156,12 +182,12 @@
     return CGSizeMake(itemsWidth, itemsHeight);
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"====>%ld===>%ld",(long)indexPath.section,(long)indexPath.row);
-
-    self.selectImageIndex =  indexPath.row;
-    
-}
+//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    NSLog(@"====>%ld===>%ld",(long)indexPath.section,(long)indexPath.row);
+//
+//    self.selectImageIndex =  indexPath.row;
+//
+//}
 
 #pragma mark - Privacy Method
 
@@ -253,8 +279,8 @@
     
     if (_selectImageIndex != selectImageIndex) {
         _selectImageIndex = selectImageIndex;
-        ImageModel *model = [self.imageDateArrM objectAtIndex:selectImageIndex];
-        for (ImageModel *model in self.imageDateArrM) {
+        ImageModel *model = [self.imageDataArrM objectAtIndex:selectImageIndex];
+        for (ImageModel *model in self.imageDataArrM) {
             model.isSelect = NO;
         }
         model.isSelect = YES;

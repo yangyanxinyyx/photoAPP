@@ -14,6 +14,11 @@
 #define kTabViewLeftMargin 10
 #define kTabViewRightMargin 10
 
+#define kGoodsShelfPuzzleSize  CGSizeMake(160,90)
+#define kpuzzleImagePath @"imagePath"
+#define kpuzzleMode @"mode"
+#define kpuzzlePath @"puzzlePath"
+#define kpuzzleThumbPath @"puzzleThumbPath"
 @interface CameraBaseViewController : UIViewController
 
 // 顶部
