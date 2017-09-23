@@ -19,8 +19,8 @@
 #import "GSProgressView.h"
 #import "ImageModel.h"
 #import "GSPrewViewController.h"
-#import "UIImage+imageHelper.h"
 #import "GoodsShelfViewController.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
@@ -97,7 +97,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isUpDown = YES;
     _isAngle = YES;
     _isFlash = NO;
-    _isSingleModel = YES;
+    _isSingleModel = NO;
     _isRephotograph = NO;
     _numberOrSos = 0;
     
@@ -138,9 +138,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [self.arrayImages removeAllObjects];
     [self.imageFileArray removeAllObjects];
     [self goBackBtnClick:nil];
+    self.showImageView.image = nil;
     _selectImageIndex = -1;
-    _isorSo = YES;
-    _isUpDown = NO;
     _isAngle = YES;
     _isFlash = NO;
     _isSingleModel = YES;
@@ -298,6 +297,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 #pragma mark 拍照
 - (void)takePhotoButtonClick:(UIButton *)sender{
     
+    self.rephotographTakePhotoButton.userInteractionEnabled = NO;
+    self.takePhotButton.userInteractionEnabled = NO;
+    
     AVCaptureConnection *stillImageConnection = [self.captureStillImageOutput connectionWithMediaType:AVMediaTypeVideo];
     UIDeviceOrientation currenDeciceOrientation = [[UIDevice currentDevice] orientation];
     AVCaptureVideoOrientation captureOrientation = [self AVCaptureVideoOrientationForDeviceOrientation:currenDeciceOrientation];
@@ -309,36 +311,69 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             return ;
         }
         NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        UIImage *image = [UIImage imageWithData:jpegData];
+        UIImage *imageTakePhoto = [UIImage imageWithData:jpegData];
+        UIImage *image = [self redrawImage:imageTakePhoto inStandardSize:1800.0f];
         self.imageOverlap = image;
         //重拍
         if (_isRephotograph) {
             ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex];
             [self saveImageFilewithIndex:_selectImageIndex];
-            model.image = self.imageOverlap;
-            [self goForWardBtnClick:nil];
+            model.imageFile = [self.imageFileArray objectAtIndex:_selectImageIndex];
+            dispatch_async(dispatch_get_main_queue(), ^{
+              [self goForWardBtnClick:nil];
+            });
+            
             _isRephotograph = NO;
         } else {
+            [self saveImageFilewithIndex:-1];
             ImageModel *model = [[ImageModel alloc] init];
-            model.image = image;
+            model.imageFile = [self.imageFileArray lastObject];
             [self.arrayImages addObject:model];
-            if (_isUpDown) {
+            if (_isorSo && _numberOrSos < 2) {
+                _isSingleModel = YES;
+            }
+            if (!_isSingleModel) {
                 _numberOrSos ++;
-                if (_numberOrSos == 2) {
-                    _isSingleModel = NO;
+            }
+            if (!_isSingleModel) {
+                
+                NSLog(@"%ld",(long)_numberOrSos);
+                if (_numberOrSos >= 2 ) {
+                    NSInteger count = _numberOrSos % 2;
+                    if (count == 0) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self toucheOrSOButtonValue:self.OrSoButton];
+                        });
+                        
+                        
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                           [self toucheUpAndDownButton:self.upAndDownButton];
+                        });
+                        
+                    }
                 }
             }
-            _showImageView.image = self.imageOverlap;
-            [self setImageOverlapFrame];
-            [self saveImageFilewithIndex:-1];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.01 animations:^{
+                    self.imageViewOverlap.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+                    self.imageViewOverlap.image = self.imageOverlap;
+                    self.imageViewOverlap.alpha = 1;
+                } completion:^(BOOL finished) {
+                    [self setImageOverlapFrame];
+                }];
+                _showImageView.image = self.imageOverlap;
+            });
+            
+          
+    
         }
         
-        [self.imageChooseView reloadData];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.captureSession stopRunning];
-            self.takePhotButton.userInteractionEnabled = NO;
-            [self.captureSession startRunning];
+           
+            [self.imageChooseView reloadData];
             self.takePhotButton.userInteractionEnabled = YES;
+            self.rephotographTakePhotoButton.userInteractionEnabled = YES;
         });
         
         
@@ -480,6 +515,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                         self.takePhotButton.userInteractionEnabled = YES;
                         self.angleImageView.image = [UIImage imageNamed:@"equilibristat"];
                         self.focusCursorImageView.image = [UIImage imageNamed:@"focusCursor"];
+                        [self.rephotographTakePhotoButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_white"] forState:UIControlStateNormal];
+                        self.rephotographTakePhotoButton.userInteractionEnabled = YES;
                         self.contentView.userInteractionEnabled = YES;
                     });
                     
@@ -491,6 +528,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                         self.angleImageView.image = [UIImage imageNamed:@"equilibristat_red"];
                         self.focusCursorImageView.image = [UIImage imageNamed:@"focusCursor_whiter"];
                         self.contentView.userInteractionEnabled = NO;
+                        [self.rephotographTakePhotoButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_gray"] forState:UIControlStateNormal];
+                        self.rephotographTakePhotoButton.userInteractionEnabled = NO;
                         
                     });
                     
@@ -520,13 +559,19 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isUpDown = !_isUpDown;
     
     self.imageViewOverlap.alpha = 0;
-    _numberOrSos = 0;
+//    _numberOrSos = 0;
     
     if (self.imageOverlap && !_isSingleModel) {
+        if (self.arrayImages.count == 1) {
+            [self.arrayImages removeAllObjects];
+            self.imageViewOverlap.alpha = 0;
+            self.showImageView.image = nil;
+            return;
+        }
         self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
         if (model) {
-            self.imageViewOverlap.image = model.image;
+            self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
             self.imageViewOverlap.alpha = ALPHA;
         }
         
@@ -547,10 +592,16 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isorSo = !_isorSo;
     
     self.imageViewOverlap.alpha = 0;
+    if (_isSingleModel) {
+        [self.arrayImages removeAllObjects];
+        self.imageViewOverlap.alpha = 0;
+        self.showImageView.image = nil;
+        return;
+    }
     if (self.imageOverlap && !_isSingleModel) {
         self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 1];
-        self.imageViewOverlap.image = model.image;
+        self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
         self.imageViewOverlap.alpha = ALPHA;
     }
     
@@ -637,6 +688,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     self.progressView.alpha = 0;
     [self.tabScrollView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:NO];
     [self.imageChooseView reloadData];
+    if (_isRephotograph) {
+        if (_isSingleModel) {
+            
+        }
+        ImageModel *model = [self.arrayImages lastObject];
+        self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
+        [self setImageOverlapFrame];
+    }
     
     
 }
@@ -659,25 +718,42 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)priViewBtnClick:(UIButton *)button {
     
 //    [self saveImageFile]; //保存 成文件路径
-
-    GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
-    NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
-    NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
-    [imageDateInfo setValue:self.imageFileArray forKey:@"image"];
-    [imageDateInfo setValue:photosModel forKey:@"model"];
+    [SVProgressHUD showWithStatus:@"正在处理.."];
+    [SVProgressHUD setForegroundColor:ORANGECOLOR];
+    [SVProgressHUD setBackgroundColor:[UIColor whiteColor]];
     
-    NSMutableArray *images = [[NSMutableArray alloc] init];
-    for (ImageModel *model in self.arrayImages) {
-        [images addObject:model.image];
-    }
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+       
+        NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
+        NSMutableArray *images = [[NSMutableArray alloc] init];
+        for (ImageModel *model in self.arrayImages) {
+            [images addObject:[UIImage imageWithContentsOfFile:model.imageFile]];
+        }
+        
+        NSArray *puzzleArr = [self savePuzzlePhotos:images];
+        NSString *puzzlePath = [puzzleArr firstObject];
+        NSString *puzzleThumbPath = [puzzleArr lastObject];
+        
+        NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
+        [imageDateInfo setValue:self.imageFileArray forKey:kpuzzleImagePath];
+        [imageDateInfo setValue:photosModel forKey:kpuzzleMode];
+        [imageDateInfo setValue:puzzlePath forKey:kpuzzlePath];
+        [imageDateInfo setValue:puzzleThumbPath forKey:kpuzzleThumbPath];
+        
+        if (self.arrayImages.count == 0) {
+            NSAssert(YES, @"preView 有毒？？？");
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+            GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
+            GSPreView.imageDateInfo = imageDateInfo;
+            [self.navigationController pushViewController:GSPreView animated:YES];
+        });
 
-    UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:_isSingleModel images:images];
-    if (self.arrayImages.count == 0) {
-        return;
-    }
-    GSPreView.imageDateArrM = self.arrayImages;
-    GSPreView.imageDateInfo = imageDateInfo;
-    [self.navigationController pushViewController:GSPreView animated:YES];
+    });
+   
+
+  
     
     
 }
@@ -710,14 +786,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         }
         if (_selectImageIndex == 0) {
             ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
-            self.imageOverlap = model.image;
+            self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
             self.imageViewOverlap.frame = CGRectMake(SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
             return;
         }
         ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
-        self.imageOverlap = model.image;
+        self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
         self.imageViewOverlap.frame = CGRectMake(-SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         self.imageViewOverlap.image = self.imageOverlap;
         self.imageViewOverlap.alpha = ALPHA;
@@ -729,20 +805,20 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         } else {
             if (_selectImageIndex == 0) {
                 ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
-                self.imageOverlap = model.image;
+                self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
                 self.imageViewOverlap.frame = CGRectMake(0, SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
                 self.imageViewOverlap.image = self.imageOverlap;
                 self.imageViewOverlap.alpha = ALPHA;
             } else{
                 if (_selectImageIndex % 2 != 0) {
                     ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
-                    self.imageOverlap = model.image;
+                    self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
                     self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
                     self.imageViewOverlap.image = self.imageOverlap;
                     self.imageViewOverlap.alpha = ALPHA;
                 } else {
                     ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 2];
-                    self.imageOverlap = model.image;
+                    self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
                     self.imageViewOverlap.frame = CGRectMake( - SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
                     self.imageViewOverlap.image = self.imageOverlap;
                     self.imageViewOverlap.alpha = ALPHA;
@@ -758,6 +834,42 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 #pragma mark - Privacy Method
 
+- (NSArray *)savePuzzlePhotos:(NSArray *)images {
+    
+    UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:self.isSingleModel images:images];
+    UIImage *puzzleThumb = [UIImage compressImage:puzzle newSize:kGoodsShelfPuzzleSize];
+    
+    NSString *puzzlePath =  [self imageSaveToTmp:puzzle];
+    NSString *puzzleThumbPath = [self imageSaveToTmp:puzzleThumb];
+    
+    if (puzzlePath && puzzleThumbPath) {
+        return @[puzzlePath,puzzleThumbPath];
+    }
+    NSAssert(YES, @"savePuzzlePhotoPathError");
+    return nil;
+}
+
+- (NSString *)imageSaveToTmp:(UIImage *)image {
+    
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *novelPath =  [docPath stringByAppendingPathComponent:@"tmp"];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:novelPath]) {
+    }else{
+        [manager createDirectoryAtPath:novelPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSTimeInterval a=[dat timeIntervalSince1970]*1000;
+    NSString *timeString = [NSString stringWithFormat:@"%f", a];
+    NSString *imageFile = [novelPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeString]];
+    NSData *imageData = UIImageJPEGRepresentation(image, 1);
+    BOOL result = [imageData writeToFile:imageFile atomically:YES];
+    if (result) {
+        return imageFile;
+    }
+    NSAssert(YES, @"imageSaveWithError");
+    return nil;
+}
 
 #pragma mark - UICollectionViewDelegate&UICollectionViewDataSource
 
@@ -776,7 +888,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     
     ImageModel *model = [self.arrayImages objectAtIndex:indexPath.row];
-    cell.itemImageView.image = model.image;
+    cell.itemImageView.image = [UIImage imageWithContentsOfFile:model.imageFile];
     cell.isSelect = model.isSelect;
     
     return cell;
@@ -816,7 +928,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         self.topView.frame = CGRectMake(0, -64, SCREEN_WIDTH, 64);
         self.rephotographTopView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 64);
         _rephotographImageView.alpha = 1;
-        _rephotographImageView.image = model.image;
+        _rephotographImageView.image = [UIImage imageWithContentsOfFile:model.imageFile];
         _rephotographButton.alpha = 1;
     }];
     _selectImageIndex = indexPath.row;
@@ -1138,6 +1250,46 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [CATransaction setAnimationDuration:0.25f];
     [self.captureVideoPreviewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
     [CATransaction commit];
+    
+}
+
+//图片压缩
+- (UIImage *)redrawImage:(UIImage *)img inStandardSize:(float)standardSize {
+    
+    float width, height, scale;
+    width = img.size.width;
+    height = img.size.height;
+    if (width == 0.0) {
+        width = 1.0;
+    }
+    if (height == 0.0) {
+        height = 1.0;
+    }
+    
+    
+    if (width > height) {
+        scale = standardSize / width;
+    }else {
+        scale = standardSize / height;
+    }
+    
+    //    if (width <= standardSize && height <= standardSize) {
+    //        return img;
+    //    }
+    
+    
+    int imgW = width * scale;
+    int imgH = height *scale;
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(imgW, imgH), NO, 1.0f);
+    
+    [img drawInRect:CGRectMake(0, 0,imgW, imgH)];
+    
+    UIImage *ret_img = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return ret_img;
     
 }
 @end

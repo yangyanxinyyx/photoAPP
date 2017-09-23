@@ -14,23 +14,27 @@
 #import "GoodsShelfViewController.h"
 #import "GoodsShelfDataManager.h"
 #import "BIAlertViewController.h"
+#import "CGAffineTransformFun.h"
+#import "UIImage+imageHelper.h"
 #define kNormalButtonWidth 20
 
-@interface GSPrewViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
+@interface GSPrewViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIGestureRecognizerDelegate>
 @property (nonatomic, strong) UIButton * dismissBtn ;
 @property (nonatomic, strong) UIButton * submitBtn ;
 
+@property (nonatomic, strong) UIImageView * bgImageView ;
+
+@property (nonatomic, strong) UIView * clipView ;
 @property (nonatomic, strong) UIImageView * preView ;
 @property (nonatomic, strong) GSChoosePhotosView * imageChooseView ;
 @property (nonatomic, strong) UIButton * leftPreViewBtn ;
 @property (nonatomic, strong) UIButton * rightPreViewBtn ;
 /** <# 注释 #> */
 @property (nonatomic, assign) NSInteger  selectImageIndex ;
-
-///** <# 注释 #> */
-//@property (nonatomic, strong) NSMutableArray * imageDataArrM ;
 /** <# 注释 #> */
-@property (nonatomic, strong) NSMutableArray * imageFilePathArrM ;
+@property (nonatomic, strong) NSMutableArray * imageDataArrM ;
+
+
 @end
 
 
@@ -40,10 +44,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+
+    [self setupData];
     [self initUI];
-    if (self.imageDateInfo) {
-        self.imageFilePathArrM = self.imageDateInfo[@"image"];
-    }
+   
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -58,18 +62,55 @@
     // Dispose of any resources that can be recreated.
 }
 #pragma mark - Init Method
+
+- (void)setupData {
+    if (self.imageDateInfo) {
+        NSArray *imagePathArr = self.imageDateInfo[kpuzzleImagePath];
+        self.imageDataArrM = [[NSMutableArray alloc] init];
+        for (NSString *imagePath in imagePathArr) {
+            UIImage *image  = [UIImage imageWithContentsOfFile:imagePath];
+            [self.imageDataArrM addObject:image];
+        }
+    }
+    
+}
+
 - (void)initUI {
-//    if (SYSTEN_VERION >= 8.0) {
-//        UIBlurEffect *effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleDark];
-//        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
-//        effectView.frame = self.view.frame;
-//        [self.view insertSubview:effectView belowSubview:self.topView];
-//    }else {
-//        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT)];
-//        toolbar.barStyle = UIBlurEffectStyleDark;
-//        [self.view insertSubview:toolbar belowSubview:self.topView];
-//    }
-    self.view.backgroundColor = [UIColor whiteColor];
+    
+
+    self.bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    if (self.imageDataArrM) {
+        UIImage *bgImage =[self.imageDataArrM firstObject];
+        self.bgImageView.image = bgImage;
+    }
+    if (SYSTEN_VERION >= 8.0) {
+        UIBlurEffect *effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleDark];
+        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
+        effectView.frame = self.view.frame;
+        [self.view insertSubview:effectView aboveSubview:self.bgImageView];
+    }else {
+        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT)];
+        toolbar.barStyle = UIBlurEffectStyleDark;
+        [self.view insertSubview:toolbar aboveSubview:self.bgImageView];
+    }
+    
+    self.clipView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT - TABVIEW_HEIGHT- TOPVIEW_HEIGHT)];
+    self.preView = [[UIImageView alloc] initWithFrame:self.clipView.frame];
+    
+    UIImage *puzzle = [UIImage imageWithContentsOfFile:self.imageDateInfo[kpuzzlePath]];
+    puzzle = [UIImage compressImage:puzzle newSize:[self resetPuzzleSize:puzzle.size clipViewSize:self.clipView.frame.size]];
+    
+    [self.preView setUserInteractionEnabled:YES];
+    [self.preView setImage:puzzle];
+    [self addGestureRecognizerToView];
+    
+    [self.view addSubview:self.bgImageView];
+    [self.view addSubview:self.clipView];
+    [self.clipView addSubview:self.preView];
+
+    [self.view addSubview:self.topView];
+    [self.view addSubview:self.tabView];
+    
     self.topView.backgroundColor = [UIColor colorWithRed:246/255.0 green:188/255.0 blue:1/255.0 alpha:1.0];
     [self.topView addSubview:self.dismissBtn];
     [self.topView addSubview:self.submitBtn];
@@ -77,7 +118,6 @@
     [self.tabView addSubview:self.imageChooseView];
     [self.tabView addSubview:self.leftPreViewBtn];
     [self.tabView addSubview:self.rightPreViewBtn];
-    [self.view insertSubview:self.preView atIndex:0];
 }
 
 #pragma mark - Action Method
@@ -87,7 +127,7 @@
 }
 
 - (void)submitbtnClick:(UIButton *)button {
-    if (!self.imageDateArrM || self.imageFilePathArrM.count == 0) {
+    if (!self.imageDateInfo) {
         return;
     }
     
@@ -95,13 +135,11 @@
    
     BIAlertAction *confirm = [BIAlertAction actionWithTitle:@"确认" style:BIAlertActionStyleDefault handler:^(BIAlertAction * _Nonnull action) {
         
-        NSString *path1 = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
-//        NSString *path2 = [[NSBundle mainBundle] pathForResource:@"newsPic2" ofType:@"jpg"];
-//        NSString *path3 = [[NSBundle mainBundle] pathForResource:@"newsPic3" ofType:@"jpg"];
-//        NSString *path4 = [[NSBundle mainBundle] pathForResource:@"newsPic4" ofType:@"jpg"];
-//
-        NSDictionary *param = @{@"thumbLink":[self.imageFilePathArrM firstObject],
-                                @"imagePaths":self.imageFilePathArrM};
+        NSArray *imagePathArr = self.imageDateInfo[kpuzzleImagePath];
+        NSString *puzzleThumbImagePath = self.imageDateInfo[kpuzzleThumbPath];
+        
+        NSDictionary *param = @{@"thumbLink":puzzleThumbImagePath,
+                                @"imagePaths":imagePathArr};
         [[GoodsShelfDataManager shareInstance] sendImageWithParam:param];
         GoodsShelfViewController *VC = [[GoodsShelfViewController alloc] init];
         [self.navigationController pushViewController:VC animated:YES];
@@ -127,7 +165,7 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     
-    return self.imageDateArrM.count;
+    return self.imageDataArrM.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -136,9 +174,8 @@
 
     GSThumbnailViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[GSChoosePhotosView getReuseItemsName] forIndexPath:indexPath];
     cell.selected = NO ;
-    ImageModel *model = [self.imageDateArrM objectAtIndex:indexPath.row];
-    cell.itemImageView.image = model.image;
-    cell.isSelect = model.isSelect;
+    UIImage *image = [self.imageDataArrM objectAtIndex:indexPath.row];
+    cell.itemImageView.image = image;
     
     return cell;
 }
@@ -156,14 +193,117 @@
     return CGSizeMake(itemsWidth, itemsHeight);
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"====>%ld===>%ld",(long)indexPath.section,(long)indexPath.row);
+//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    NSLog(@"====>%ld===>%ld",(long)indexPath.section,(long)indexPath.row);
+//
+//    self.selectImageIndex =  indexPath.row;
+//
+//}
 
-    self.selectImageIndex =  indexPath.row;
+#pragma mark - Privacy Method
+
+-(void)addGestureRecognizerToView{
+    // 移动手势
+    UIPanGestureRecognizer *_panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panView:)];
+    _panGestureRecognizer.delegate = self;
+    [self.preView addGestureRecognizer:_panGestureRecognizer];
+    
+    // 缩放手势
+    UIPinchGestureRecognizer *_pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchView:)];
+    [self.preView addGestureRecognizer:_pinchGestureRecognizer];
+    _pinchGestureRecognizer.delegate = self;
+}
+
+
+// 处理移动手势
+- (void) panView:(UIPanGestureRecognizer *)panGestureRecognizer
+{
+    UIView *panView = panGestureRecognizer.view;
+    CGPoint translation = [panGestureRecognizer translationInView:panView.superview];
+    panView.center = CGPointMake(panView.center.x + translation.x, panView.center.y+translation.y);
+    [panGestureRecognizer setTranslation:CGPointZero inView:panView.superview];
+    
+    if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        [self limitMoveRect];
+    }
+    
+    return;
     
 }
 
-#pragma mark - Privacy Method
+// 处理缩放手势
+- (void) pinchView:(UIPinchGestureRecognizer *)pinchGestureRecognizer
+{
+    UIView *pinchView = pinchGestureRecognizer.view;
+    CGFloat scale = pinchGestureRecognizer.scale;
+    pinchView.transform = CGAffineTransformScale(pinchView.transform, scale, scale);
+    pinchGestureRecognizer.scale = 1.0f;
+    
+    if (pinchGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        CGFloat scalex = [CGAffineTransformFun scaleXWithCGAffineTransform:pinchView.transform];
+        if (scalex < 1) {
+            [UIView animateWithDuration:0.3 animations:^{
+                pinchView.transform = CGAffineTransformIdentity;
+            }];
+        }
+        else if (scalex > 3) {
+            [UIView animateWithDuration:0.3 animations:^{
+                pinchView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 3, 3);
+            }];
+        }
+        
+        [self limitMoveRect];
+    }
+    return;
+    
+}
+
+- (void)limitMoveRect
+{
+    CGRect frame = self.preView.frame;
+    if (frame.origin.x > 1) {
+        frame = CGRectMake(0, frame.origin.y, frame.size.width, frame.size.height);
+    }
+    if (frame.origin.x+frame.size.width < self.clipView.frame.size.width - 1) {
+        frame = CGRectMake(self.clipView.frame.size.width-frame.size.width, frame.origin.y, frame.size.width, frame.size.height);
+    }
+    if (frame.origin.y > 1) {
+        frame = CGRectMake(frame.origin.x, 0, frame.size.width, frame.size.height);
+    }
+    if (frame.origin.y+frame.size.height < self.clipView.frame.size.height - 1) {
+        frame = CGRectMake(frame.origin.x, self.clipView.frame.size.height - frame.size.height, frame.size.width, frame.size.height);
+    }
+    [UIView animateWithDuration:0.3 animations:^{
+        self.preView.frame = frame;
+    }];
+}
+
+- (CGSize)resetPuzzleSize:(CGSize)puzzleSize clipViewSize:(CGSize)clipSize {
+    
+    CGFloat videoRadio = puzzleSize.width / (CGFloat)puzzleSize.height;
+    CGFloat screenRadio = clipSize.width / (CGFloat)clipSize.height;
+    
+    CGFloat newVideoW;
+    CGFloat newVideoH;
+    if (videoRadio > screenRadio) {
+        newVideoW = SCREEN_WIDTH;
+        newVideoH = newVideoW / videoRadio;
+    }else {
+        newVideoH = SCREEN_HEIGHT;
+        newVideoW = newVideoH * videoRadio;
+    }
+    
+    if (newVideoW > SCREEN_WIDTH) {
+        newVideoW = SCREEN_WIDTH;
+        newVideoH = newVideoW / videoRadio;
+    }
+    if (newVideoH > clipSize.height) {
+        newVideoH = clipSize.height;
+        newVideoW = newVideoH * videoRadio;
+    }
+    
+    return CGSizeMake(newVideoW, newVideoH);
+}
 
 #pragma mark - Setter&Getter
 
@@ -240,21 +380,12 @@
     return _rightPreViewBtn;
 }
 
-- (UIImageView *)preView {
-    if (!_preView) {
-        _preView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-        _preView.alpha = 0;
-        _preView.userInteractionEnabled = YES;
-    }
-    return _preView;
-}
-
 - (void)setSelectImageIndex:(NSInteger)selectImageIndex {
     
     if (_selectImageIndex != selectImageIndex) {
         _selectImageIndex = selectImageIndex;
-        ImageModel *model = [self.imageDateArrM objectAtIndex:selectImageIndex];
-        for (ImageModel *model in self.imageDateArrM) {
+        ImageModel *model = [self.imageDataArrM objectAtIndex:selectImageIndex];
+        for (ImageModel *model in self.imageDataArrM) {
             model.isSelect = NO;
         }
         model.isSelect = YES;
@@ -262,7 +393,7 @@
         
         [UIView animateWithDuration:0.3 animations:^{
             _preView.alpha = 1;
-            _preView.image = model.image;
+            _preView.image = [UIImage imageWithContentsOfFile:model.imageFile];
         }];
     }
     

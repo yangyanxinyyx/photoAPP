@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 @interface ImageModel : NSObject
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) NSString *imageFile;
 @property (nonatomic, assign) BOOL isSelect;
 @end
