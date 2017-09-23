@@ -706,7 +706,6 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
 //    [self saveImageFile]; //保存 成文件路径
 
-    GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
     NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
     
     NSMutableArray *images = [[NSMutableArray alloc] init];
@@ -724,8 +723,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [imageDateInfo setValue:puzzleThumbPath forKey:kpuzzleThumbPath];
 
     if (self.arrayImages.count == 0) {
-        return;
+        NSAssert(YES, @"preView 有毒？？？");
     }
+    GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
     GSPreView.imageDateInfo = imageDateInfo;
     [self.navigationController pushViewController:GSPreView animated:YES];
     
