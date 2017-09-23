@@ -25,7 +25,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     UIButton *but = [UIButton buttonWithType:UIButtonTypeCustom];
     but.frame = CGRectMake(20, 20, 100, 30);
-    but.backgroundColor = [UIColor orangeColor];
+    
     [but setTitle:@"镜头" forState:UIControlStateNormal];
     [but addTarget:self action:@selector(cameraVC) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:but];
@@ -46,7 +46,7 @@
 
     UIButton *bu = [UIButton buttonWithType:UIButtonTypeCustom];
     bu.frame = CGRectMake(200, 20, 100, 30);
-    bu.backgroundColor = [UIColor orangeColor];
+    
     [bu setTitle:@"货架" forState:UIControlStateNormal];
     [bu addTarget:self action:@selector(pressToGoodsShelfVC) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:bu];

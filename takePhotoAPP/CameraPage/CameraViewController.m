@@ -88,7 +88,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     _selectImageIndex = -1;
     _isorSo = YES;
     _isUpDown = NO;
@@ -109,7 +109,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self.captureSession startRunning];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.captureSession startRunning];
+    });
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
@@ -223,7 +226,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)setUpGesture{
     UIPinchGestureRecognizer *pinch  = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
     pinch.delegate = self;
-    //    [self.contentView addGestureRecognizer:pinch];
+    [self.contentView addGestureRecognizer:pinch];
 }
 
 //添加点击手势，点按时聚焦
@@ -330,16 +333,17 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.captureSession stopRunning];
             self.takePhotButton.userInteractionEnabled = NO;
+            [self.captureSession startRunning];
+            self.takePhotButton.userInteractionEnabled = YES;
         });
         
-        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.captureSession startRunning];
-                self.takePhotButton.userInteractionEnabled = YES;
-            });
-        }];
+//        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+//        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
+//            
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                
+//            });
+//        }];
     }];
     
 }
@@ -438,7 +442,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     if(motionManager.accelerometerAvailable) {
         
-        motionManager.accelerometerUpdateInterval = 0.5;
+        motionManager.accelerometerUpdateInterval = 0.05;
         
         [motionManager startAccelerometerUpdatesToQueue:queue withHandler:^(CMAccelerometerData*accelerometerData,NSError*error){
             
@@ -451,6 +455,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             }else{
                 
                 double zTheta = atan2(accelerometerData.acceleration.z,sqrtf(accelerometerData.acceleration.x*accelerometerData.acceleration.x+accelerometerData.acceleration.y*accelerometerData.acceleration.y))/M_PI*(-90.0)*2-90;
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                   self.angleImageView.transform = CGAffineTransformMakeRotation(3.1159 / 180 * (zTheta + 90));
+                });
+                
                 
                 
                 if (-zTheta > 45 && -zTheta < 135 ) {
@@ -529,7 +537,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     self.imageViewOverlap.alpha = 0;
     if (self.imageOverlap && !_isSingleModel) {
         self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
-        ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
+        ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 1];
         self.imageViewOverlap.image = model.image;
         self.imageViewOverlap.alpha = ALPHA;
     }
@@ -1013,7 +1021,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (UIView *)rephotographTopView{
     if (!_rephotographTopView) {
         _rephotographTopView = [[UIView alloc]initWithFrame:CGRectMake(0, -64, SCREEN_WIDTH, 64)];
-        _rephotographTopView.backgroundColor =  ORANGECOLOR;
+
     }
     return _rephotographTopView;
 }
