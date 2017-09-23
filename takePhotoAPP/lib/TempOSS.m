@@ -135,7 +135,7 @@
 {
     NSString* date;
     NSDateFormatter * formatter = [[NSDateFormatter alloc ] init];
-    [formatter setDateFormat:@"YYYYMMddhhmmssSSS"];
+    [formatter setDateFormat:@"YYYYMMdd"];
     date = [formatter stringFromDate:[NSDate date]];
     NSString *timeNow = [NSString stringWithFormat:@"%@",date];
     return timeNow;
