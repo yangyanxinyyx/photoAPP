@@ -96,7 +96,6 @@
     NSMutableArray *newImages = [[NSMutableArray alloc] init];
     for (UIImage *newImage in images) {
         [newImages addObject:[newImage fixOrientation]];
-        [newImages addObject:newImage];
     }
     CGSize size;
     NSInteger rowNum = 1;
@@ -120,7 +119,7 @@
         NSMutableArray *downImageArrM = [[NSMutableArray alloc] init];
         for (NSInteger i = 1 ; i <= newImages.count; i++) {
             UIImage * image = newImages[i - 1];
-            if (i/2 == 0) {
+            if (i%2 == 0) {
                 [upImageArrM addObject:image];
             }else {
                 [downImageArrM addObject:image];
