@@ -84,6 +84,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 @property (nonatomic, strong) UIButton *rephotographTakePhotoButton;
 
 
+
 @end
 
 @implementation CameraViewController
@@ -334,17 +335,18 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             if (!_isSingleModel) {
                 _numberOrSos ++;
             }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setImageOverlapFrame];
+                _showImageView.image = self.imageOverlap;
+            });
+            
             if (!_isSingleModel) {
-                
-                NSLog(@"%ld",(long)_numberOrSos);
                 if (_numberOrSos >= 2 ) {
                     NSInteger count = _numberOrSos % 2;
                     if (count == 0) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self toucheOrSOButtonValue:self.OrSoButton];
                         });
-                        
-                        
                     } else {
                         dispatch_async(dispatch_get_main_queue(), ^{
                            [self toucheUpAndDownButton:self.upAndDownButton];
@@ -353,17 +355,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                     }
                 }
             }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [UIView animateWithDuration:0.01 animations:^{
-                    self.imageViewOverlap.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-                    self.imageViewOverlap.image = self.imageOverlap;
-                    self.imageViewOverlap.alpha = 1;
-                } completion:^(BOOL finished) {
-                    [self setImageOverlapFrame];
-                }];
-                _showImageView.image = self.imageOverlap;
-            });
             
+          
           
     
         }
@@ -568,11 +561,11 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             return;
         }
         self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
-        if (model) {
-            self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
-            self.imageViewOverlap.alpha = ALPHA;
-        }
+        ImageModel *model = [self.arrayImages objectAtIndex:(self.arrayImages.count - 2)];
+        self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
+        self.imageViewOverlap.alpha = ALPHA;
+        
+        
         
     }
     
