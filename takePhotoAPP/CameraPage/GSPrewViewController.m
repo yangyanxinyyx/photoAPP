@@ -14,13 +14,17 @@
 #import "GoodsShelfViewController.h"
 #import "GoodsShelfDataManager.h"
 #import "BIAlertViewController.h"
+#import "CGAffineTransformFun.h"
+#import "UIImage+imageHelper.h"
 #define kNormalButtonWidth 20
 
-@interface GSPrewViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
+@interface GSPrewViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIGestureRecognizerDelegate>
 @property (nonatomic, strong) UIButton * dismissBtn ;
 @property (nonatomic, strong) UIButton * submitBtn ;
 
 @property (nonatomic, strong) UIImageView * bgImageView ;
+
+@property (nonatomic, strong) UIView * clipView ;
 @property (nonatomic, strong) UIImageView * preView ;
 @property (nonatomic, strong) GSChoosePhotosView * imageChooseView ;
 @property (nonatomic, strong) UIButton * leftPreViewBtn ;
@@ -73,17 +77,12 @@
 
 - (void)initUI {
     
-    self.view.backgroundColor = [UIColor whiteColor];
 
     self.bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     if (self.imageDataArrM) {
         UIImage *bgImage =[self.imageDataArrM firstObject];
         self.bgImageView.image = bgImage;
     }
-    
-    UIImage *puzzle = [UIImage imageWithContentsOfFile:self.imageDateInfo[kpuzzlePath]];
-    [self.preView setImage:puzzle];
-
     if (SYSTEN_VERION >= 8.0) {
         UIBlurEffect *effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleDark];
         UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
@@ -94,9 +93,21 @@
         toolbar.barStyle = UIBlurEffectStyleDark;
         [self.view insertSubview:toolbar aboveSubview:self.bgImageView];
     }
- 
+    
+    self.clipView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT - TABVIEW_HEIGHT- TOPVIEW_HEIGHT)];
+    self.preView = [[UIImageView alloc] initWithFrame:self.clipView.frame];
+    
+    UIImage *puzzle = [UIImage imageWithContentsOfFile:self.imageDateInfo[kpuzzlePath]];
+    puzzle = [UIImage compressImage:puzzle newSize:[self resetPuzzleSize:puzzle.size clipViewSize:self.clipView.frame.size]];
+    
+    [self.preView setUserInteractionEnabled:YES];
+    [self.preView setImage:puzzle];
+    [self addGestureRecognizerToView];
+    
     [self.view addSubview:self.bgImageView];
-    [self.view addSubview:self.preView];
+    [self.view addSubview:self.clipView];
+    [self.clipView addSubview:self.preView];
+
     [self.view addSubview:self.topView];
     [self.view addSubview:self.tabView];
     
@@ -191,6 +202,109 @@
 
 #pragma mark - Privacy Method
 
+-(void)addGestureRecognizerToView{
+    // 移动手势
+    UIPanGestureRecognizer *_panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panView:)];
+    _panGestureRecognizer.delegate = self;
+    [self.preView addGestureRecognizer:_panGestureRecognizer];
+    
+    // 缩放手势
+    UIPinchGestureRecognizer *_pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchView:)];
+    [self.preView addGestureRecognizer:_pinchGestureRecognizer];
+    _pinchGestureRecognizer.delegate = self;
+}
+
+
+// 处理移动手势
+- (void) panView:(UIPanGestureRecognizer *)panGestureRecognizer
+{
+    UIView *panView = panGestureRecognizer.view;
+    CGPoint translation = [panGestureRecognizer translationInView:panView.superview];
+    panView.center = CGPointMake(panView.center.x + translation.x, panView.center.y+translation.y);
+    [panGestureRecognizer setTranslation:CGPointZero inView:panView.superview];
+    
+    if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        [self limitMoveRect];
+    }
+    
+    return;
+    
+}
+
+// 处理缩放手势
+- (void) pinchView:(UIPinchGestureRecognizer *)pinchGestureRecognizer
+{
+    UIView *pinchView = pinchGestureRecognizer.view;
+    CGFloat scale = pinchGestureRecognizer.scale;
+    pinchView.transform = CGAffineTransformScale(pinchView.transform, scale, scale);
+    pinchGestureRecognizer.scale = 1.0f;
+    
+    if (pinchGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        CGFloat scalex = [CGAffineTransformFun scaleXWithCGAffineTransform:pinchView.transform];
+        if (scalex < 1) {
+            [UIView animateWithDuration:0.3 animations:^{
+                pinchView.transform = CGAffineTransformIdentity;
+            }];
+        }
+        else if (scalex > 3) {
+            [UIView animateWithDuration:0.3 animations:^{
+                pinchView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 3, 3);
+            }];
+        }
+        
+        [self limitMoveRect];
+    }
+    return;
+    
+}
+
+- (void)limitMoveRect
+{
+    CGRect frame = self.preView.frame;
+    if (frame.origin.x > 1) {
+        frame = CGRectMake(0, frame.origin.y, frame.size.width, frame.size.height);
+    }
+    if (frame.origin.x+frame.size.width < self.clipView.frame.size.width - 1) {
+        frame = CGRectMake(self.clipView.frame.size.width-frame.size.width, frame.origin.y, frame.size.width, frame.size.height);
+    }
+    if (frame.origin.y > 1) {
+        frame = CGRectMake(frame.origin.x, 0, frame.size.width, frame.size.height);
+    }
+    if (frame.origin.y+frame.size.height < self.clipView.frame.size.height - 1) {
+        frame = CGRectMake(frame.origin.x, self.clipView.frame.size.height - frame.size.height, frame.size.width, frame.size.height);
+    }
+    [UIView animateWithDuration:0.3 animations:^{
+        self.preView.frame = frame;
+    }];
+}
+
+- (CGSize)resetPuzzleSize:(CGSize)puzzleSize clipViewSize:(CGSize)clipSize {
+    
+    CGFloat videoRadio = puzzleSize.width / (CGFloat)puzzleSize.height;
+    CGFloat screenRadio = clipSize.width / (CGFloat)clipSize.height;
+    
+    CGFloat newVideoW;
+    CGFloat newVideoH;
+    if (videoRadio > screenRadio) {
+        newVideoW = SCREEN_WIDTH;
+        newVideoH = newVideoW / videoRadio;
+    }else {
+        newVideoH = SCREEN_HEIGHT;
+        newVideoW = newVideoH * videoRadio;
+    }
+    
+    if (newVideoW > SCREEN_WIDTH) {
+        newVideoW = SCREEN_WIDTH;
+        newVideoH = newVideoW / videoRadio;
+    }
+    if (newVideoH > clipSize.height) {
+        newVideoH = clipSize.height;
+        newVideoW = newVideoH * videoRadio;
+    }
+    
+    return CGSizeMake(newVideoW, newVideoH);
+}
+
 #pragma mark - Setter&Getter
 
 - (UIButton *)dismissBtn {
@@ -264,15 +378,6 @@
         [_rightPreViewBtn addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchDown];
     }
     return _rightPreViewBtn;
-}
-
-- (UIImageView *)preView {
-    if (!_preView) {
-        _preView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-        _preView.alpha = 0;
-        _preView.userInteractionEnabled = YES;
-    }
-    return _preView;
 }
 
 - (void)setSelectImageIndex:(NSInteger)selectImageIndex {

@@ -33,6 +33,10 @@
         [self.tableViewList scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataSource.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
     
+    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0/*延迟执行时间*/ * NSEC_PER_SEC)); dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+        [self.tableViewList reloadData];
+        
+    });
     
 }
 
@@ -100,7 +104,7 @@
     GoodsShelfModel *model = _dataSource[indexPath.row];
     UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@",[self changePath: model.thumbLink]]];
     cell.thumbImageView.image = image;
-    cell.state = model.goodUploadState;
+    cell.uploadState = model.goodUploadState?model.goodUploadState:@"null";
     
     return cell;
 }

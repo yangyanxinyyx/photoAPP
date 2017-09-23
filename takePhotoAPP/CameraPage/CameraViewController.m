@@ -20,6 +20,7 @@
 #import "ImageModel.h"
 #import "GSPrewViewController.h"
 #import "GoodsShelfViewController.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
@@ -710,32 +711,42 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)priViewBtnClick:(UIButton *)button {
     
 //    [self saveImageFile]; //保存 成文件路径
-
-    GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
-    NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
+    [SVProgressHUD showWithStatus:@"正在处理.."];
+    [SVProgressHUD setForegroundColor:ORANGECOLOR];
+    [SVProgressHUD setBackgroundColor:[UIColor whiteColor]];
     
-    NSMutableArray *images = [[NSMutableArray alloc] init];
-    for (ImageModel *model in self.arrayImages) {
-        [images addObject:[UIImage imageWithContentsOfFile:model.imageFile]];
-    }
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
+       
+        NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
+        NSMutableArray *images = [[NSMutableArray alloc] init];
+        for (ImageModel *model in self.arrayImages) {
+            [images addObject:[UIImage imageWithContentsOfFile:model.imageFile]];
+        }
         
-    });
-    NSArray *puzzleArr = [self savePuzzlePhotos:images];
-    NSString *puzzlePath = [puzzleArr firstObject];
-    NSString *puzzleThumbPath = [puzzleArr lastObject];
-    
-    NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
-    [imageDateInfo setValue:self.imageFileArray forKey:kpuzzleImagePath];
-    [imageDateInfo setValue:photosModel forKey:kpuzzleMode];
-    [imageDateInfo setValue:puzzlePath forKey:kpuzzlePath];
-    [imageDateInfo setValue:puzzleThumbPath forKey:kpuzzleThumbPath];
+        NSArray *puzzleArr = [self savePuzzlePhotos:images];
+        NSString *puzzlePath = [puzzleArr firstObject];
+        NSString *puzzleThumbPath = [puzzleArr lastObject];
+        
+        NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
+        [imageDateInfo setValue:self.imageFileArray forKey:kpuzzleImagePath];
+        [imageDateInfo setValue:photosModel forKey:kpuzzleMode];
+        [imageDateInfo setValue:puzzlePath forKey:kpuzzlePath];
+        [imageDateInfo setValue:puzzleThumbPath forKey:kpuzzleThumbPath];
+        
+        if (self.arrayImages.count == 0) {
+            NSAssert(YES, @"preView 有毒？？？");
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+            GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
+            GSPreView.imageDateInfo = imageDateInfo;
+            [self.navigationController pushViewController:GSPreView animated:YES];
+        });
 
-    if (self.arrayImages.count == 0) {
-        return;
-    }
-    GSPreView.imageDateInfo = imageDateInfo;
-    [self.navigationController pushViewController:GSPreView animated:YES];
+    });
+   
+
+  
     
     
 }

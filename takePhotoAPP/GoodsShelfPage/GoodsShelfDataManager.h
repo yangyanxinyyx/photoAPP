@@ -19,6 +19,7 @@
 
 - (void)sendImageWithParam:(NSDictionary *)param;
 - (void)reSendImagewithModel:(GoodsShelfModel *)model;
+- (void)setSendFail;
 
 + (NSString *)changeNSArrayToNSString:(NSArray *)array;
 + (NSArray *)changeNSStringToNSArray:(NSString *)string;
