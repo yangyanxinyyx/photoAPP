@@ -714,6 +714,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     for (ImageModel *model in self.arrayImages) {
         [images addObject:[UIImage imageWithContentsOfFile:model.imageFile]];
     }
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        
+    });
     NSArray *puzzleArr = [self savePuzzlePhotos:images];
     NSString *puzzlePath = [puzzleArr firstObject];
     NSString *puzzleThumbPath = [puzzleArr lastObject];
