@@ -318,7 +318,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex];
             [self saveImageFilewithIndex:_selectImageIndex];
             model.imageFile = [self.imageFileArray objectAtIndex:_selectImageIndex];
-            [self goForWardBtnClick:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+              [self goForWardBtnClick:nil];
+            });
+            
             _isRephotograph = NO;
         } else {
             [self saveImageFilewithIndex:-1];
@@ -337,28 +340,36 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                 if (_numberOrSos >= 2 ) {
                     NSInteger count = _numberOrSos % 2;
                     if (count == 0) {
-                        [self toucheOrSOButtonValue:self.OrSoButton];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self toucheOrSOButtonValue:self.OrSoButton];
+                        });
+                        
                         
                     } else {
-                        [self toucheUpAndDownButton:self.upAndDownButton];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                           [self toucheUpAndDownButton:self.upAndDownButton];
+                        });
+                        
                     }
                 }
             }
-            _showImageView.image = self.imageOverlap;
-            [UIView animateWithDuration:0.01 animations:^{
-                self.imageViewOverlap.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-                self.imageViewOverlap.image = self.imageOverlap;
-                self.imageViewOverlap.alpha = 1;
-            } completion:^(BOOL finished) {
-                [self setImageOverlapFrame];
-            }];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.01 animations:^{
+                    self.imageViewOverlap.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+                    self.imageViewOverlap.image = self.imageOverlap;
+                    self.imageViewOverlap.alpha = 1;
+                } completion:^(BOOL finished) {
+                    [self setImageOverlapFrame];
+                }];
+                _showImageView.image = self.imageOverlap;
+            });
             
-            
+          
+    
         }
         
-        
-        
         dispatch_async(dispatch_get_main_queue(), ^{
+           
             [self.imageChooseView reloadData];
             self.takePhotButton.userInteractionEnabled = YES;
             self.rephotographTakePhotoButton.userInteractionEnabled = YES;
