@@ -97,7 +97,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isUpDown = YES;
     _isAngle = YES;
     _isFlash = NO;
-    _isSingleModel = YES;
+    _isSingleModel = NO;
     _isRephotograph = NO;
     _numberOrSos = 0;
     
@@ -138,9 +138,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [self.arrayImages removeAllObjects];
     [self.imageFileArray removeAllObjects];
     [self goBackBtnClick:nil];
+    self.showImageView.image = nil;
     _selectImageIndex = -1;
-    _isorSo = YES;
-    _isUpDown = NO;
     _isAngle = YES;
     _isFlash = NO;
     _isSingleModel = YES;
@@ -298,6 +297,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 #pragma mark 拍照
 - (void)takePhotoButtonClick:(UIButton *)sender{
     
+    self.rephotographTakePhotoButton.userInteractionEnabled = NO;
+    self.takePhotButton.userInteractionEnabled = NO;
+    
     AVCaptureConnection *stillImageConnection = [self.captureStillImageOutput connectionWithMediaType:AVMediaTypeVideo];
     UIDeviceOrientation currenDeciceOrientation = [[UIDevice currentDevice] orientation];
     AVCaptureVideoOrientation captureOrientation = [self AVCaptureVideoOrientationForDeviceOrientation:currenDeciceOrientation];
@@ -309,7 +311,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             return ;
         }
         NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        UIImage *image = [UIImage imageWithData:jpegData];
+        UIImage *imageTakePhoto = [UIImage imageWithData:jpegData];
+        UIImage *image = [self redrawImage:imageTakePhoto inStandardSize:1800.0f];
         self.imageOverlap = image;
         //重拍
         if (_isRephotograph) {
@@ -322,23 +325,43 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             ImageModel *model = [[ImageModel alloc] init];
             model.image = image;
             [self.arrayImages addObject:model];
-            if (_isUpDown) {
+            if (_isorSo && _numberOrSos < 2) {
+                _isSingleModel = YES;
+            }
+            if (!_isSingleModel) {
                 _numberOrSos ++;
-                if (_numberOrSos == 2) {
-                    _isSingleModel = NO;
+            }
+            if (!_isSingleModel) {
+                
+                NSLog(@"%ld",(long)_numberOrSos);
+                if (_numberOrSos >= 2 ) {
+                    NSInteger count = _numberOrSos % 2;
+                    if (count == 0) {
+                        [self toucheOrSOButtonValue:self.OrSoButton];
+                        
+                    } else {
+                        [self toucheUpAndDownButton:self.upAndDownButton];
+                    }
                 }
             }
             _showImageView.image = self.imageOverlap;
-            [self setImageOverlapFrame];
+            [UIView animateWithDuration:0.01 animations:^{
+                self.imageViewOverlap.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+                self.imageViewOverlap.image = self.imageOverlap;
+                self.imageViewOverlap.alpha = 1;
+            } completion:^(BOOL finished) {
+                [self setImageOverlapFrame];
+            }];
+            
             [self saveImageFilewithIndex:-1];
         }
         
-        [self.imageChooseView reloadData];
+        
+        
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.captureSession stopRunning];
-            self.takePhotButton.userInteractionEnabled = NO;
-            [self.captureSession startRunning];
+            [self.imageChooseView reloadData];
             self.takePhotButton.userInteractionEnabled = YES;
+            self.rephotographTakePhotoButton.userInteractionEnabled = YES;
         });
         
         
@@ -480,6 +503,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                         self.takePhotButton.userInteractionEnabled = YES;
                         self.angleImageView.image = [UIImage imageNamed:@"equilibristat"];
                         self.focusCursorImageView.image = [UIImage imageNamed:@"focusCursor"];
+                        [self.rephotographTakePhotoButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_white"] forState:UIControlStateNormal];
+                        self.rephotographTakePhotoButton.userInteractionEnabled = YES;
                         self.contentView.userInteractionEnabled = YES;
                     });
                     
@@ -491,6 +516,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                         self.angleImageView.image = [UIImage imageNamed:@"equilibristat_red"];
                         self.focusCursorImageView.image = [UIImage imageNamed:@"focusCursor_whiter"];
                         self.contentView.userInteractionEnabled = NO;
+                        [self.rephotographTakePhotoButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_gray"] forState:UIControlStateNormal];
+                        self.rephotographTakePhotoButton.userInteractionEnabled = NO;
                         
                     });
                     
@@ -520,9 +547,15 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isUpDown = !_isUpDown;
     
     self.imageViewOverlap.alpha = 0;
-    _numberOrSos = 0;
+//    _numberOrSos = 0;
     
     if (self.imageOverlap && !_isSingleModel) {
+        if (self.arrayImages.count == 1) {
+            [self.arrayImages removeAllObjects];
+            self.imageViewOverlap.alpha = 0;
+            self.showImageView.image = nil;
+            return;
+        }
         self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 2];
         if (model) {
@@ -547,6 +580,12 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isorSo = !_isorSo;
     
     self.imageViewOverlap.alpha = 0;
+    if (_isSingleModel) {
+        [self.arrayImages removeAllObjects];
+        self.imageViewOverlap.alpha = 0;
+        self.showImageView.image = nil;
+        return;
+    }
     if (self.imageOverlap && !_isSingleModel) {
         self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 1];
@@ -637,6 +676,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     self.progressView.alpha = 0;
     [self.tabScrollView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:NO];
     [self.imageChooseView reloadData];
+    if (_isRephotograph) {
+        if (_isSingleModel) {
+            
+        }
+        ImageModel *model = [self.arrayImages lastObject];
+        self.imageOverlap = model.image;
+        [self setImageOverlapFrame];
+    }
     
     
 }
@@ -1138,6 +1185,46 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [CATransaction setAnimationDuration:0.25f];
     [self.captureVideoPreviewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
     [CATransaction commit];
+    
+}
+
+//图片压缩
+- (UIImage *)redrawImage:(UIImage *)img inStandardSize:(float)standardSize {
+    
+    float width, height, scale;
+    width = img.size.width;
+    height = img.size.height;
+    if (width == 0.0) {
+        width = 1.0;
+    }
+    if (height == 0.0) {
+        height = 1.0;
+    }
+    
+    
+    if (width > height) {
+        scale = standardSize / width;
+    }else {
+        scale = standardSize / height;
+    }
+    
+    //    if (width <= standardSize && height <= standardSize) {
+    //        return img;
+    //    }
+    
+    
+    int imgW = width * scale;
+    int imgH = height *scale;
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(imgW, imgH), NO, 1.0f);
+    
+    [img drawInRect:CGRectMake(0, 0,imgW, imgH)];
+    
+    UIImage *ret_img = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return ret_img;
     
 }
 @end
