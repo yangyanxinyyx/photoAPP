@@ -103,4 +103,12 @@
     _numberLabel.text = [NSString stringWithFormat:@"%.1fX",sender.value];
     [self.delgegate camerScaleWithSliderValue:sender.value];
 }
+- (void)setProgressViewWithProgress:(CGFloat)progress{
+    if (progress > 3.0) {
+        return;
+    }
+    _numberLabel.frame = CGRectMake((progress - 1) * 250 * SCREEN_RATE / 2, 10 * SCREEN_RATE, 40 * SCREEN_RATE, 12);
+    _numberLabel.text = [NSString stringWithFormat:@"%.1fX",progress];
+    self.progressSlider.value = progress;
+}
 @end
