@@ -16,4 +16,5 @@
 
 @interface GSProgressView : UIView
 @property (weak,nonatomic) id<GSProgressViewDelegate> delgegate;
+- (void)setProgressViewWithProgress:(CGFloat)progress;
 @end

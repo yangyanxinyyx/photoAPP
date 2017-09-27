@@ -143,7 +143,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _selectImageIndex = -1;
     _isAngle = YES;
     _isFlash = NO;
-    _isSingleModel = YES;
+    _isSingleModel = NO;
     _isRephotograph = NO;
     _numberOrSos = 0;
     self.imageOverlap = nil;
@@ -405,6 +405,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         if (self.effectiveScale < 1.0) {
             self.effectiveScale = 1.0;
         }
+        if (self.effectiveScale > 3.0) {
+            self.effectiveScale = 3.0;
+        }
         NSLog(@"%f ------------- %f ------------- recognizerScale%f",self.effectiveScale,self.beginGestureScale,recognizer.scale);
         CGFloat maxScaleAndCropFactor = [[self.captureStillImageOutput connectionWithMediaType:AVMediaTypeVideo] videoMaxScaleAndCropFactor];
         NSLog(@"%f",maxScaleAndCropFactor);
@@ -415,7 +418,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         [CATransaction setAnimationDuration:0.25f];
         [self.captureVideoPreviewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
         [CATransaction commit];
-        
+        [self.progressView setProgressViewWithProgress:self.effectiveScale];
     }
 }
 
@@ -495,23 +498,20 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             }else{
                 
                 double zTheta = atan2(accelerometerData.acceleration.z,sqrtf(accelerometerData.acceleration.x*accelerometerData.acceleration.x+accelerometerData.acceleration.y*accelerometerData.acceleration.y))/M_PI*(-90.0)*2-90;
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                   self.angleImageView.transform = CGAffineTransformMakeRotation(3.1159 / 180 * (zTheta + 90));
-                });
                 
-                
-                
-                if (-zTheta > 45 && -zTheta < 135 ) {
-                    _isAngle = YES;
-                    dispatch_sync(dispatch_get_main_queue(), ^{
-                        [self.takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto"] forState:UIControlStateNormal];
-                        self.takePhotButton.userInteractionEnabled = YES;
-                        self.angleImageView.image = [UIImage imageNamed:@"equilibristat"];
-                        self.focusCursorImageView.image = [UIImage imageNamed:@"focusCursor"];
-                        [self.rephotographTakePhotoButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_white"] forState:UIControlStateNormal];
-                        self.rephotographTakePhotoButton.userInteractionEnabled = YES;
-                        self.contentView.userInteractionEnabled = YES;
-                    });
+                double xyTheta =atan2(accelerometerData.acceleration.x,accelerometerData.acceleration.y)/M_PI*180.0;
+                if (-zTheta > 85 && -zTheta < 95 ) {
+                    if ((xyTheta< -135 && xyTheta > -180 )||( xyTheta > 135 && xyTheta < 180)) {
+                        dispatch_sync(dispatch_get_main_queue(), ^{
+                            [self.takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto"] forState:UIControlStateNormal];
+                            self.takePhotButton.userInteractionEnabled = YES;
+                            self.angleImageView.image = [UIImage imageNamed:@"equilibristat"];
+                            self.focusCursorImageView.image = [UIImage imageNamed:@"focusCursor"];
+                            [self.rephotographTakePhotoButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_white"] forState:UIControlStateNormal];
+                            self.rephotographTakePhotoButton.userInteractionEnabled = YES;
+                            self.contentView.userInteractionEnabled = YES;
+                        });
+                    }
                     
                 } else {
                     _isAngle = NO;
@@ -523,10 +523,13 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                         self.contentView.userInteractionEnabled = NO;
                         [self.rephotographTakePhotoButton setBackgroundImage:[UIImage imageNamed:@"takePhoto_gray"] forState:UIControlStateNormal];
                         self.rephotographTakePhotoButton.userInteractionEnabled = NO;
-                        
                     });
-                    
                 }
+                
+                
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                   self.angleImageView.transform = CGAffineTransformMakeRotation(3.14159 / 180 * (zTheta + 90));
+                });
             }
             
         }];
