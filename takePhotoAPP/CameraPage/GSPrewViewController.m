@@ -76,10 +76,10 @@
     
     
     self.bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    if (self.imageDataArrM) {
-        UIImage *bgImage =[self.imageDataArrM firstObject];
-        self.bgImageView.image = bgImage;
-    }
+//    if (self.imageDataArrM) {
+//        UIImage *bgImage =[self.imageDataArrM firstObject];
+//        self.bgImageView.image = bgImage;
+//    }
     if (SYSTEN_VERION >= 8.0) {
         UIBlurEffect *effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleDark];
         UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
