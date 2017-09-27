@@ -140,7 +140,7 @@
     NSInteger index = [notify.object[@"index"] integerValue];
     NSArray *array = [[GoodsShelfDataManager shareInstance] datas];
     self.dataSource  = [NSMutableArray arrayWithArray:array];
-    if (index>0 && index < self.dataSource.count) {
+    if (index >= 0 && index < self.dataSource.count) {
             [self.tableViewList reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:YES];
     }
 
