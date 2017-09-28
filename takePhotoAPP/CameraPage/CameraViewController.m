@@ -21,6 +21,7 @@
 #import "GSPrewViewController.h"
 #import "GoodsShelfViewController.h"
 #import <SVProgressHUD/SVProgressHUD.h>
+#import "BIAlertViewController.h"
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
@@ -716,6 +717,19 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)priViewBtnClick:(UIButton *)button {
     
+    if (!_isSingleModel) {
+        if ((self.imageFileArray.count % 2 != 0) ) {
+            BIAlertViewController *alertVC = [BIAlertViewController alertControllerWithMessage:@"竖拍模式，请保持偶数张照片"];
+            
+            BIAlertAction *confirm = [BIAlertAction actionWithTitle:@"确认" style:BIAlertActionStyleDefault handler:^(BIAlertAction * _Nonnull action) {
+            }];
+            
+            [alertVC addAction:confirm];
+            [self presentViewController:alertVC animated:YES completion:NULL];
+            return ;
+        }
+    }
+
 //    [self saveImageFile]; //保存 成文件路径
     [SVProgressHUD showWithStatus:@"正在处理.."];
     [SVProgressHUD setForegroundColor:ORANGECOLOR];
