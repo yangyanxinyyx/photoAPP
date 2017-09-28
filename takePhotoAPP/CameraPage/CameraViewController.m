@@ -155,8 +155,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     _captureSession = [[AVCaptureSession alloc] init];
     
-    if ([_captureSession canSetSessionPreset: AVCaptureSessionPreset1920x1080]) {
-        _captureSession.sessionPreset = AVCaptureSessionPreset1920x1080;
+    if ([_captureSession canSetSessionPreset: AVCaptureSessionPresetPhoto]) {
+        _captureSession.sessionPreset = AVCaptureSessionPresetPhoto;
     }
     
     //获取输入设备

@@ -21,10 +21,6 @@
 		8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9B71F4C4E30004B7ACA /* GoodsShelfViewController.m */; };
 		8363E9BB1F4D1708004B7ACA /* GoodsShelfTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9BA1F4D1708004B7ACA /* GoodsShelfTableViewCell.m */; };
 		8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8363E9CD1F4D1DBF004B7ACA /* GoodsShelfModel.m */; };
-		837341251F71141C00292FE5 /* newsPic1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 837341241F7112DB00292FE5 /* newsPic1.jpg */; };
-		837341261F71141C00292FE5 /* newsPic2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 837341211F7112DA00292FE5 /* newsPic2.jpg */; };
-		837341271F71141C00292FE5 /* newsPic3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 837341221F7112DB00292FE5 /* newsPic3.jpg */; };
-		837341281F71141C00292FE5 /* newsPic4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 837341231F7112DB00292FE5 /* newsPic4.jpg */; };
 		838ACB211F67D1B400D19ACE /* GoodsShelfTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 838ACB201F67D1B400D19ACE /* GoodsShelfTopBar.m */; };
 		843A89931F663713007B7496 /* GSProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 843A89921F663713007B7496 /* GSProgressView.m */; };
 		849943871F6A9CF900F76836 /* ImageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 849943861F6A9CF900F76836 /* ImageModel.m */; };
@@ -94,10 +90,6 @@
 		8363E9BA1F4D1708004B7ACA /* GoodsShelfTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfTableViewCell.m; sourceTree = "<group>"; };
 		8363E9CC1F4D1DBF004B7ACA /* GoodsShelfModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfModel.h; sourceTree = "<group>"; };
 		8363E9CD1F4D1DBF004B7ACA /* GoodsShelfModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfModel.m; sourceTree = "<group>"; };
-		837341211F7112DA00292FE5 /* newsPic2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = newsPic2.jpg; sourceTree = "<group>"; };
-		837341221F7112DB00292FE5 /* newsPic3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = newsPic3.jpg; sourceTree = "<group>"; };
-		837341231F7112DB00292FE5 /* newsPic4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = newsPic4.jpg; sourceTree = "<group>"; };
-		837341241F7112DB00292FE5 /* newsPic1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = newsPic1.jpg; sourceTree = "<group>"; };
 		838ACB1F1F67D1B400D19ACE /* GoodsShelfTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoodsShelfTopBar.h; sourceTree = "<group>"; };
 		838ACB201F67D1B400D19ACE /* GoodsShelfTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoodsShelfTopBar.m; sourceTree = "<group>"; };
 		843A89911F663713007B7496 /* GSProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSProgressView.h; sourceTree = "<group>"; };
@@ -257,10 +249,6 @@
 		8363E97D1F4C4C24004B7ACA /* takePhotoAPP */ = {
 			isa = PBXGroup;
 			children = (
-				837341241F7112DB00292FE5 /* newsPic1.jpg */,
-				837341211F7112DA00292FE5 /* newsPic2.jpg */,
-				837341221F7112DB00292FE5 /* newsPic3.jpg */,
-				837341231F7112DB00292FE5 /* newsPic4.jpg */,
 				A7C3036A1F6D13770000D8C0 /* database */,
 				A7C303791F6D13770000D8C0 /* Network */,
 				A7C3033C1F6D11650000D8C0 /* lib */,
@@ -630,10 +618,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				837341251F71141C00292FE5 /* newsPic1.jpg in Resources */,
-				837341261F71141C00292FE5 /* newsPic2.jpg in Resources */,
-				837341271F71141C00292FE5 /* newsPic3.jpg in Resources */,
-				837341281F71141C00292FE5 /* newsPic4.jpg in Resources */,
 				8363E98E1F4C4C24004B7ACA /* LaunchScreen.storyboard in Resources */,
 				8363E98B1F4C4C24004B7ACA /* Assets.xcassets in Resources */,
 				A7676DE31F651F01004859D0 /* 000.JPG in Resources */,
