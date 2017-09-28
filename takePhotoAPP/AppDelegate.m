@@ -31,7 +31,10 @@
     [[DataBaseManager shareDataBase] creatTable];
     [[GoodsShelfDataManager shareInstance] setSendFail];
     [[GoodsShelfDataManager shareInstance] datas];
-
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@"" forKey:TASKID];
+    [defaults setObject:@"" forKey:TYPE];
+    [defaults setObject:@"" forKey:USERID];
     
     
 //    NSString *path = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
