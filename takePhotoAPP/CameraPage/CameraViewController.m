@@ -155,8 +155,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     _captureSession = [[AVCaptureSession alloc] init];
     
-    if ([_captureSession canSetSessionPreset: AVCaptureSessionPresetPhoto]) {
-        _captureSession.sessionPreset = AVCaptureSessionPresetPhoto;
+    if ([_captureSession canSetSessionPreset: AVCaptureSessionPreset640x480]) {
+        _captureSession.sessionPreset = AVCaptureSessionPreset640x480;
     }
     
     //获取输入设备
@@ -186,7 +186,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     //初始化预览图层
     self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
-    [self.captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+    [self.captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
     self.captureVideoPreviewLayer.frame = CGRectMake(0, 0, SCREEN_WIDTH , SCREEN_HEIGHT);
     self.contentView.layer.masksToBounds = YES;
     [self.contentView.layer addSublayer:self.captureVideoPreviewLayer];
@@ -370,19 +370,19 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         });
         
         
-//        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
-//        ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
-//        if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
-//            NSLog(@"无权限");
-//            return ;
-//        }
-//        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-//        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-//            
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//
-//            });
-//        }];
+        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
+        ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
+        if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
+            NSLog(@"无权限");
+            return ;
+        }
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+            });
+        }];
     }];
     
 }
@@ -716,6 +716,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)priViewBtnClick:(UIButton *)button {
     
+    if (self.arrayImages.count == 0 || self.imageFileArray.count == 0 ) {
+        return;
+    }
 //    [self saveImageFile]; //保存 成文件路径
     [SVProgressHUD showWithStatus:@"正在处理.."];
     [SVProgressHUD setForegroundColor:ORANGECOLOR];
