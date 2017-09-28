@@ -23,7 +23,9 @@
 #define ALPHA   0.7
 #define SYSTEN_VERION       [[UIDevice currentDevice].systemVersion floatValue]
 
-
+#define TASKID      @"taskid"
+#define TYPE        @"type"
+#define USERID      @"userid"
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 

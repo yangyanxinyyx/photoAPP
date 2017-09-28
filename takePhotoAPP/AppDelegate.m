@@ -34,14 +34,25 @@
 
     
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
-    NSLog(@"%@",NSHomeDirectory());
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
+//    NSLog(@"%@",NSHomeDirectory());
     return YES;
 }
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options{
     if (url) {
-
+        NSString *strUrl = [NSString stringWithFormat:@"%@", url];
+        NSString *queryStr = [[strUrl componentsSeparatedByString:@"?"] lastObject];
+        NSArray *queryParameters = [queryStr componentsSeparatedByString:@"&"];
+        NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+        for (NSString *strCondition in queryParameters) {
+            NSArray *keyValueArr = [strCondition componentsSeparatedByString:@"="];
+            [paramDict setObject:[keyValueArr lastObject] forKey:[keyValueArr firstObject]];
+        }
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:[paramDict objectForKey:@"taskid"] forKey:TASKID];
+        [defaults setObject:[paramDict objectForKey:@"type"] forKey:TYPE];
+        [defaults setObject:[paramDict objectForKey:@"userid"] forKey:USERID];
     }
     return YES;
 }
