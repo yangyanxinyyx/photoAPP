@@ -90,6 +90,26 @@
     self.clipView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT - TABVIEW_HEIGHT- TOPVIEW_HEIGHT)];
     self.preView = [[UIImageView alloc] initWithFrame:self.clipView.frame];
     UIImage *puzzle = [UIImage imageWithContentsOfFile:self.imageDateInfo[kpuzzlePath]];
+    CGFloat puzzleRadio = puzzle.size.width / puzzle.size.height;
+    CGFloat clipRadio = self.clipView.frame.size.width / self.clipView.frame.size.height;
+    CGFloat newWidth;
+    CGFloat newHeight;
+    CGFloat newOffsetx;
+    CGFloat newOffsety;
+    if (clipRadio > puzzleRadio) {
+        newOffsetx = 0;
+        newWidth = self.clipView.frame.size.width;
+        newHeight = newWidth / puzzleRadio;
+        newOffsety = (newHeight - self.clipView.frame.size.height) * 0.5;
+    }else {
+        newOffsety = 0;
+        newHeight = self.clipView.frame.size.height;
+        newWidth = newHeight * puzzleRadio;
+        newOffsetx = (newWidth - self.clipView.frame.size.width) * 0.5;
+    }
+    
+    [self.preView setFrame:CGRectMake(0, 0, newWidth, newHeight)];
+    
 //    puzzle = [UIImage compressImage:puzzle newSize:[self resetPuzzleSize:puzzle.size clipViewSize:self.clipView.frame.size]];
     [self.preView setUserInteractionEnabled:YES];
     [self.preView setImage:puzzle];

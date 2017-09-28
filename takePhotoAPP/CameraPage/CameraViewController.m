@@ -673,7 +673,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         NSData *imageData = UIImageJPEGRepresentation(self.imageOverlap, 1);
         BOOL resultWrite = [imageData writeToFile:imageFile atomically:YES];
         if (resultWrite) {
-            [self.imageFileArray insertObject:imageFile atIndex:index];
+            [self.imageFileArray replaceObjectAtIndex:index withObject:imageFile];
         } else {
             NSLog(@"写入失败");
         }
@@ -750,11 +750,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         });
 
     });
-   
 
-  
-    
-    
 }
 
 - (void)touchCancleButton{
@@ -837,7 +833,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:self.isSingleModel images:images];
     UIImage *puzzleThumb = [UIImage compressImage:puzzle newSize:kGoodsShelfPuzzleSize];
-    
+
     NSString *puzzlePath =  [self imageSaveToTmp:puzzle];
     NSString *puzzleThumbPath = [self imageSaveToTmp:puzzleThumb];
     

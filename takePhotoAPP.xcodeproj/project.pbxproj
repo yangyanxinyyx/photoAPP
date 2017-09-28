@@ -588,7 +588,7 @@
 				TargetAttributes = {
 					8363E97A1F4C4C24004B7ACA = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = G583SJY324;
+						DevelopmentTeam = CM54Q38BZA;
 						ProvisioningStyle = Automatic;
 					};
 					8363E9931F4C4C24004B7ACA = {
@@ -877,7 +877,7 @@
 			baseConfigurationReference = F7D04EE0951396EF748C2905 /* Pods-takePhotoAPP.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = G583SJY324;
+				DEVELOPMENT_TEAM = CM54Q38BZA;
 				ENABLE_BITCODE = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -901,7 +901,7 @@
 			baseConfigurationReference = 81902AEA646C612FEBA5EF4D /* Pods-takePhotoAPP.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = G583SJY324;
+				DEVELOPMENT_TEAM = CM54Q38BZA;
 				ENABLE_BITCODE = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
