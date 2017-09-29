@@ -23,6 +23,8 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "BIAlertViewController.h"
 
+#define IMAGEVIEWOVERLAPHEIGHT      (SCREEN_HEIGHT - TOPVIEW_HEIGHT -TABVIEW_HEIGHT)
+
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 @interface CameraViewController ()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,GSProgressViewDelegate>
@@ -187,8 +189,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     //初始化预览图层
     self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
-    [self.captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
-    self.captureVideoPreviewLayer.frame = CGRectMake(0, 0, SCREEN_WIDTH , SCREEN_HEIGHT);
+    [self.captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResize];
+    self.captureVideoPreviewLayer.frame = CGRectMake(0, TOPVIEW_HEIGHT, SCREEN_WIDTH , SCREEN_HEIGHT - TOPVIEW_HEIGHT - TABVIEW_HEIGHT);
     self.contentView.layer.masksToBounds = YES;
     [self.contentView.layer addSublayer:self.captureVideoPreviewLayer];
     [self addGenstureRecognizer];
@@ -322,10 +324,12 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             [self saveImageFilewithIndex:_selectImageIndex];
             model.imageFile = [self.imageFileArray objectAtIndex:_selectImageIndex];
             dispatch_async(dispatch_get_main_queue(), ^{
-              [self goForWardBtnClick:nil];
+              
+                [self goForWardBtnClick:nil];
+                _isRephotograph = NO;
             });
             
-            _isRephotograph = NO;
+            
         } else {
             [self saveImageFilewithIndex:-1];
             ImageModel *model = [[ImageModel alloc] init];
@@ -371,19 +375,19 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         });
         
         
-        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
-        ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
-        if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
-            NSLog(@"无权限");
-            return ;
-        }
-        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-
-            });
-        }];
+//        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
+//        ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
+//        if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
+//            NSLog(@"无权限");
+//            return ;
+//        }
+//        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+//        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
+//
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//
+//            });
+//        }];
     }];
     
 }
@@ -427,12 +431,12 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)setImageOverlapFrame{
     if (_imageOverlap) {
         if (_isorSo) {
-            self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
         }
         if (_isUpDown) {
-            self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
+            self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
         }
@@ -576,9 +580,11 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             [self.arrayImages removeAllObjects];
             self.imageViewOverlap.alpha = 0;
             self.showImageView.image = nil;
+            [self.imageChooseView reloadData];
+            
             return;
         }
-        self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:(self.arrayImages.count - 2)];
         self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
         self.imageViewOverlap.alpha = ALPHA;
@@ -606,13 +612,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         [self.arrayImages removeAllObjects];
         self.imageViewOverlap.alpha = 0;
         self.showImageView.image = nil;
+        [self.imageChooseView reloadData];
         return;
     }
     if (!self.arrayImages) {
         return;
     }
     if (self.imageOverlap && !_isSingleModel ) {
-        self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
+        self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
         ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 1];
         self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
         self.imageViewOverlap.alpha = ALPHA;
@@ -812,14 +819,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         if (_selectImageIndex == 0) {
             ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
             self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-            self.imageViewOverlap.frame = CGRectMake(SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            self.imageViewOverlap.frame = CGRectMake(SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
             return;
         }
         ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
         self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-        self.imageViewOverlap.frame = CGRectMake(-SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        self.imageViewOverlap.frame = CGRectMake(-SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
         self.imageViewOverlap.image = self.imageOverlap;
         self.imageViewOverlap.alpha = ALPHA;
         
@@ -831,20 +838,20 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             if (_selectImageIndex == 0) {
                 ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
                 self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-                self.imageViewOverlap.frame = CGRectMake(0, SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
+                self.imageViewOverlap.frame = CGRectMake(0, IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
                 self.imageViewOverlap.image = self.imageOverlap;
                 self.imageViewOverlap.alpha = ALPHA;
             } else{
                 if (_selectImageIndex % 2 != 0) {
                     ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
                     self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-                    self.imageViewOverlap.frame = CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT);
+                    self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
                     self.imageViewOverlap.image = self.imageOverlap;
                     self.imageViewOverlap.alpha = ALPHA;
                 } else {
                     ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 2];
                     self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-                    self.imageViewOverlap.frame = CGRectMake( - SCREEN_WIDTH / 3 * 2, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+                    self.imageViewOverlap.frame = CGRectMake( - SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
                     self.imageViewOverlap.image = self.imageOverlap;
                     self.imageViewOverlap.alpha = ALPHA;
                 }
@@ -1007,8 +1014,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (UIImageView *)imageViewOverlap{
     if (!_imageViewOverlap) {
-        _imageViewOverlap = [[UIImageView alloc]initWithFrame:CGRectMake(0, - SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _imageViewOverlap = [[UIImageView alloc]initWithFrame:CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT)];
         _imageViewOverlap.alpha = 0;
+        
     }
     return _imageViewOverlap;
 }
@@ -1211,7 +1219,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 }
 - (UIImageView *)rephotographImageView{
     if (!_rephotographImageView) {
-        _rephotographImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _rephotographImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, TOPVIEW_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT - TOPVIEW_HEIGHT - TABVIEW_HEIGHT)];
+        _rephotographImageView.contentMode = UIViewContentModeScaleAspectFill;
         _rephotographImageView.alpha = 0;
         _rephotographImageView.userInteractionEnabled = YES;
     }
@@ -1221,7 +1230,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (UIButton *)rephotographButton{
     if (!_rephotographButton) {
         _rephotographButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _rephotographButton.frame = CGRectMake((SCREEN_WIDTH - 80 * SCREEN_RATE) / 2, SCREEN_HEIGHT - 60 * SCREEN_RATE - 113, 80 * SCREEN_RATE, 30 * SCREEN_RATE);
+        _rephotographButton.frame = CGRectMake((SCREEN_WIDTH - 80 * SCREEN_RATE) / 2, SCREEN_HEIGHT - 60 * SCREEN_RATE - 113 - 64, 80 * SCREEN_RATE, 30 * SCREEN_RATE);
         _rephotographButton.backgroundColor = [UIColor colorWithRed:213 / 255.0 green:41 / 255.0 blue:39 / 255.0 alpha:1];
         [_rephotographButton setTitle:@"重拍" forState:UIControlStateNormal];
         [_rephotographButton setTitleColor:[UIColor colorWithRed:255 / 255.0 green:255 / 255.0 blue:255 / 255.0 alpha:1] forState:UIControlStateNormal];
