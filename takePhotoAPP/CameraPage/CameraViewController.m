@@ -762,16 +762,20 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
        
         NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
         NSMutableArray *images = [[NSMutableArray alloc] init];
-        for (ImageModel *model in self.arrayImages) {
-            [images addObject:[UIImage imageWithContentsOfFile:model.imageFile]];
+//        for (ImageModel *model in self.arrayImages) {
+        for (NSString *imagePath in self.imageFileArray) {
+            UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+            [images addObject:image];
         }
+       
+//        }
         
         NSArray *puzzleArr = [self savePuzzlePhotos:images];
         NSString *puzzlePath = [puzzleArr firstObject];
         NSString *puzzleThumbPath = [puzzleArr lastObject];
         
         NSNumber * photosModel = [NSNumber numberWithBool:_isSingleModel];
-        [imageDateInfo setValue:self.imageFileArray forKey:kpuzzleImagePath];
+        [imageDateInfo setValue:[NSMutableArray arrayWithArray:self.imageFileArray] forKey:kpuzzleImagePath];
         [imageDateInfo setValue:photosModel forKey:kpuzzleMode];
         [imageDateInfo setValue:puzzlePath forKey:kpuzzlePath];
         [imageDateInfo setValue:puzzleThumbPath forKey:kpuzzleThumbPath];
@@ -782,7 +786,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD dismiss];
             GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
-            GSPreView.imageDateInfo = imageDateInfo;
+            GSPreView.imageDateInfo = imageDateInfo ;
             [self.navigationController pushViewController:GSPreView animated:YES];
         });
 

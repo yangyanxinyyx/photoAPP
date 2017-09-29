@@ -8,8 +8,8 @@
 
 #import "UIImage+imageHelper.h"
 
-#define kPuzzleMixLeftOffset SCREEN_WIDTH/3.0
-#define kPuzzleMixUpOffset SCREEN_HEIGHT/3.0
+#define kPuzzleMixLeftOffset(width) width/3.0
+#define kPuzzleMixUpOffset(height) height/3.0
 
 @implementation UIImage (imageHelper)
 
@@ -97,8 +97,12 @@
 + (UIImage *)imageMergeImagesWithMergeModel:(BOOL)isvertiacl images:(NSArray *)images {
     
     NSMutableArray *newImages = [[NSMutableArray alloc] init];
+    CGFloat WIDTH = 0;
+    CGFloat HEIGHT = 0;
     for (UIImage *newImage in images) {
         [newImages addObject:[newImage fixOrientation]];
+        WIDTH = newImage.size.width;
+        HEIGHT = newImage.size.height;
     }
     CGSize size;
     NSInteger rowNum = 1;
@@ -110,26 +114,26 @@
 //    size.height = SCREEN_HEIGHT * rowNum;
     if (isvertiacl) {
         CGFloat sizeWidth = 0.0;
-        CGFloat sizeHeight = SCREEN_HEIGHT;
+        CGFloat sizeHeight = HEIGHT;
 
         for (NSInteger i = 0 ; i < newImages.count; i++) {
             if (i == 0) {
-                sizeWidth = SCREEN_WIDTH;
+                sizeWidth = WIDTH;
             }else {
-                sizeWidth += (SCREEN_WIDTH - kPuzzleMixLeftOffset);
+                sizeWidth += (WIDTH - kPuzzleMixLeftOffset(WIDTH));
             }
         }
         size = CGSizeMake(sizeWidth, sizeHeight);
     }else {
         CGFloat sizeWidth = 0.0;
-        CGFloat sizeHeight = SCREEN_HEIGHT + (SCREEN_HEIGHT - kPuzzleMixUpOffset);
+        CGFloat sizeHeight = HEIGHT + (HEIGHT - kPuzzleMixUpOffset(HEIGHT));
         
         NSInteger count = ceil(newImages.count/(float)rowNum);
         for (NSInteger i = 0 ; i < count; i++) {
             if (i == 0) {
-                sizeWidth = SCREEN_WIDTH;
+                sizeWidth = WIDTH;
             }else {
-                sizeWidth += (SCREEN_WIDTH - kPuzzleMixLeftOffset);
+                sizeWidth += (WIDTH - kPuzzleMixLeftOffset(WIDTH));
             }
         }
         size = CGSizeMake(sizeWidth, sizeHeight);
@@ -143,7 +147,7 @@
             if (i == 0) {
                 [image drawInRect:CGRectMake( 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT)];
             }else {
-                [image drawInRect:CGRectMake((SCREEN_WIDTH - kPuzzleMixLeftOffset) * i , 0, SCREEN_WIDTH , SCREEN_HEIGHT)];
+                [image drawInRect:CGRectMake((SCREEN_WIDTH - kPuzzleMixLeftOffset(WIDTH)) * i , 0, WIDTH , HEIGHT)];
             }
 
         }
@@ -162,18 +166,18 @@
         for (NSInteger i = 0 ; i < upImageArrM.count; i ++) {
             UIImage *upImage =[upImageArrM objectAtIndex: i];
             if (i == 0) {
-                [upImage drawInRect:CGRectMake( 0 , 0, SCREEN_WIDTH , SCREEN_HEIGHT)];
+                [upImage drawInRect:CGRectMake( 0 , 0, WIDTH , HEIGHT)];
             }else {
-                [upImage drawInRect:CGRectMake((SCREEN_WIDTH - kPuzzleMixLeftOffset) * i , 0, SCREEN_WIDTH , SCREEN_HEIGHT)];
+                [upImage drawInRect:CGRectMake((WIDTH - kPuzzleMixLeftOffset(WIDTH)) * i , 0, WIDTH , HEIGHT)];
             }
          
         }
         for (NSInteger i = 0 ; i < downImageArrM.count ; i++) {
             UIImage *downImage =[downImageArrM objectAtIndex: i];
             if (i == 0) {
-                [downImage drawInRect:CGRectMake( 0 , SCREEN_HEIGHT - kPuzzleMixUpOffset, SCREEN_WIDTH, SCREEN_HEIGHT)];
+                [downImage drawInRect:CGRectMake( 0 , HEIGHT - kPuzzleMixUpOffset(HEIGHT), WIDTH, HEIGHT)];
             }else {
-                [downImage drawInRect:CGRectMake( (SCREEN_WIDTH - kPuzzleMixLeftOffset) * i ,SCREEN_HEIGHT - kPuzzleMixUpOffset, SCREEN_WIDTH , SCREEN_HEIGHT)];
+                [downImage drawInRect:CGRectMake( (WIDTH - kPuzzleMixLeftOffset(WIDTH)) * i ,HEIGHT - kPuzzleMixUpOffset(HEIGHT), WIDTH , HEIGHT)];
             }
         }
         
