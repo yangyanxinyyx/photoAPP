@@ -756,6 +756,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     }
 //    [self saveImageFile]; //保存 成文件路径
     [SVProgressHUD showWithStatus:@"正在处理.."];
+    self.preViewBtn.enabled = NO;
     [SVProgressHUD setForegroundColor:ORANGECOLOR];
     [SVProgressHUD setBackgroundColor:[UIColor whiteColor]];
     
@@ -763,13 +764,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
        
         NSMutableDictionary *imageDateInfo = [[NSMutableDictionary alloc] init];
         NSMutableArray *images = [[NSMutableArray alloc] init];
-//        for (ImageModel *model in self.arrayImages) {
         for (NSString *imagePath in self.imageFileArray) {
             UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
             [images addObject:image];
         }
-       
-//        }
         
         NSArray *puzzleArr = [self savePuzzlePhotos:images];
         NSString *puzzlePath = [puzzleArr firstObject];
@@ -786,6 +784,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD dismiss];
+            self.preViewBtn.enabled = YES;
             GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
             GSPreView.imageDateInfo = imageDateInfo ;
             [self.navigationController pushViewController:GSPreView animated:YES];
