@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		40B4D5089D3374C78865EA41 /* Pods_takePhotoAPP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E07F52AC165F5468C845ACE7 /* Pods_takePhotoAPP.framework */; };
+		8329231D1F7F4D6200801D55 /* YXNetWorking.m in Sources */ = {isa = PBXBuildFile; fileRef = 8329231B1F7F4D6200801D55 /* YXNetWorking.m */; };
 		835415541F6D16F400CB7B77 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 835415531F6D16F400CB7B77 /* libsqlite3.tbd */; };
 		835415551F6D1C6800CB7B77 /* libOSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7C3033D1F6D116C0000D8C0 /* libOSS.a */; };
 		835415561F6D207900CB7B77 /* TempOSS.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C303691F6D117D0000D8C0 /* TempOSS.m */; };
@@ -67,6 +68,8 @@
 
 /* Begin PBXFileReference section */
 		81902AEA646C612FEBA5EF4D /* Pods-takePhotoAPP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-takePhotoAPP.release.xcconfig"; path = "Pods/Target Support Files/Pods-takePhotoAPP/Pods-takePhotoAPP.release.xcconfig"; sourceTree = "<group>"; };
+		8329231B1F7F4D6200801D55 /* YXNetWorking.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YXNetWorking.m; sourceTree = "<group>"; };
+		8329231C1F7F4D6200801D55 /* YXNetWorking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YXNetWorking.h; sourceTree = "<group>"; };
 		835415531F6D16F400CB7B77 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		8363E97B1F4C4C24004B7ACA /* takePhotoAPP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = takePhotoAPP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8363E97F1F4C4C24004B7ACA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -476,6 +479,8 @@
 		A7C303791F6D13770000D8C0 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				8329231C1F7F4D6200801D55 /* YXNetWorking.h */,
+				8329231B1F7F4D6200801D55 /* YXNetWorking.m */,
 				A7C3037C1F6D13770000D8C0 /* NetworkKit.h */,
 				A7C3037D1F6D13770000D8C0 /* NetworkKit.m */,
 				A7C3037E1F6D13770000D8C0 /* UploadModel.h */,
@@ -576,7 +581,7 @@
 				TargetAttributes = {
 					8363E97A1F4C4C24004B7ACA = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = CM54Q38BZA;
+						DevelopmentTeam = G583SJY324;
 						ProvisioningStyle = Automatic;
 					};
 					8363E9931F4C4C24004B7ACA = {
@@ -717,6 +722,7 @@
 				8363E9CE1F4D1DBF004B7ACA /* GoodsShelfModel.m in Sources */,
 				A7C303851F6D13770000D8C0 /* FMResultSet.m in Sources */,
 				A75425BB1F6F5FF0002E4D80 /* BIAlertViewController.m in Sources */,
+				8329231D1F7F4D6200801D55 /* YXNetWorking.m in Sources */,
 				8363E9B81F4C4E30004B7ACA /* GoodsShelfViewController.m in Sources */,
 				A75803F51F63DE8D00DADBE1 /* CameraViewController.m in Sources */,
 				A7676DEC1F657FE3004859D0 /* GSThumbnailViewCell.m in Sources */,
@@ -863,7 +869,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = CM54Q38BZA;
+				DEVELOPMENT_TEAM = G583SJY324;
 				ENABLE_BITCODE = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -891,7 +897,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = CM54Q38BZA;
+				DEVELOPMENT_TEAM = G583SJY324;
 				ENABLE_BITCODE = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

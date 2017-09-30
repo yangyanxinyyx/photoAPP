@@ -507,7 +507,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
                 double xyTheta = atan2(accelerometerData.acceleration.y,accelerometerData.acceleration.x)/M_PI*180.0;
                 double zxTheta = atan2(accelerometerData.acceleration.z, accelerometerData.acceleration.x) / M_PI * 180.0;
                 if (-zTheta > 60 && -zTheta < 120 ) {
-                    NSLog(@"==>%f",zxTheta);
+                   // NSLog(@"==>%f",zxTheta);
                     if (-xyTheta > 85 && -xyTheta < 95) {
                         dispatch_sync(dispatch_get_main_queue(), ^{
                             [self.takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto"] forState:UIControlStateNormal];
@@ -681,6 +681,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         BOOL result = [imageData writeToFile:imageFile atomically:YES];
         if (result) {
             [self.imageFileArray addObject:imageFile];
+            NSLog(@"写入图片=====%@",imageFile);
         } else {
             NSLog(@"写入失败");
         }

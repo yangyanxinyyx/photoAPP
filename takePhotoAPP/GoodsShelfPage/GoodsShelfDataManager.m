@@ -11,7 +11,7 @@
 #import "UploadModel.h"
 #import "GoodsShelfModel.h"
 #import "NetworkKit.h"
-
+#import "YXNetWorking.h"
 
 
 @implementation GoodsShelfDataManager
@@ -41,7 +41,7 @@
     
     NSString *thumbLink = param[@"thumbLink"];
     NSArray *imagePaths = param[@"imagePaths"];
-    
+    NSLog(@"发送array=====%@",imagePaths);
     
     //添加数据库
     GoodsShelfModel *goodModel = [[GoodsShelfModel alloc] init];
@@ -54,6 +54,7 @@
     goodModel.addTime = [NSString stringWithFormat:@"%@", @(time)];
     [self addModel:goodModel];
     
+    NSMutableArray *uploadParam = [NSMutableArray array];
     //上传
     NSMutableArray *failArray = [NSMutableArray array];
     for (NSInteger i=0; i<imagePaths.count; i++) {
@@ -66,16 +67,46 @@
              if (error || responseObject == nil ) {
                  [failArray addObject:@(i)];
              }
+             NSMutableDictionary *uploadDic = [NSMutableDictionary dictionary];
+             if ([responseObject isKindOfClass:[NSString class]]) {
+                 [uploadDic setValue:[imagePaths[i] lastPathComponent] forKey:@"date"];
+                 [uploadDic setValue:responseObject forKey:@"url"];
+                 [uploadDic setValue:[NSString stringWithFormat:@"%ld",i+1] forKey:@"sort"];
+                 [uploadParam addObject:uploadDic];
+             }
              if (i == imagePaths.count - 1) {
                  if (failArray.count == 0) {
                      //全部成功
-                     goodModel.goodUploadState = GoodsUploadStateSuccess;
-                     [self updateModel:goodModel];
+                     NSString *userId = [[NSUserDefaults standardUserDefaults] valueForKey:USERID];
+                     NSString *taskID = [[NSUserDefaults standardUserDefaults] valueForKey:TASKID];
+                     NSString *type = [[NSUserDefaults standardUserDefaults] valueForKey:TYPE];
+                     NSDictionary *upload = @{@"userid":userId,
+                                              @"taskid":taskID,
+                                              @"type":type,
+                                              @"pic":uploadParam
+                                              };
+                     [YXNetWorking requestWithType:POST urlString:@"http://hgz.inno-vision.cn/huogaizhuan2/index.php?r=Callback/GetAppImg" ParDic:upload finish:^(NSData *data) {
+                         goodModel.goodUploadState = GoodsUploadStateSuccess;
+                         [self updateModel:goodModel];
+                     } err:^(NSError *error) {
+                         goodModel.goodUploadState = GoodsUploadStateFail;
+                         NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.imagePaths];
+                         NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.failArrays];
+                         NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                         for (NSInteger i =0; i<imagePaths.count; i++) {
+                             [temp addObject:[NSNumber numberWithInteger:i]];
+                         }
+                         failArrays = [NSArray arrayWithArray:temp];
+                         goodModel.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                         [self updateModel:goodModel];
+                     }];
+                     
                      
                      //删除临时文件
                      for (NSString *path in imagePaths) {
                          if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
                              [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+                             NSLog(@"删除路径=====%@",path);
                          }
                      }
                      
@@ -107,9 +138,9 @@
     
     model.goodUploadState = GoodsUploadStateUploading;
     [self updateModel:model];
-    
+    NSMutableArray *uploadParam = [NSMutableArray array];
     NSMutableArray *failArray = [NSMutableArray arrayWithArray:failArrays];
-    for (NSInteger i= resendArray.count - 1; i == 0; i--) {
+    for (NSInteger i= resendArray.count - 1; i > -1; i--) {
         UploadModel *uploadModel = [[UploadModel alloc] init];
         uploadModel.imagePath = resendArray[i];
         uploadModel.imagePath = [self changePath:uploadModel.imagePath];
@@ -119,11 +150,40 @@
             if (responseObject && !error) {
                 [failArray removeObjectAtIndex:i];
             }
+            NSMutableDictionary *uploadDic = [NSMutableDictionary dictionary];
+            if ([responseObject isKindOfClass:[NSString class]]) {
+                [uploadDic setValue:[imagePaths[i] lastPathComponent] forKey:@"date"];
+                [uploadDic setValue:responseObject forKey:@"url"];
+                [uploadDic setValue:[NSString stringWithFormat:@"%ld",i+1] forKey:@"sort"];
+                [uploadParam addObject:uploadDic];
+            }
+            
             if (i == 0) {
                 if (failArray.count == 0) {
                     //全部成功
-                    model.goodUploadState = GoodsUploadStateSuccess;
-                    [self updateModel:model];
+                    NSString *userId = [[NSUserDefaults standardUserDefaults] valueForKey:USERID];
+                    NSString *taskID = [[NSUserDefaults standardUserDefaults] valueForKey:TASKID];
+                    NSString *type = [[NSUserDefaults standardUserDefaults] valueForKey:TYPE];
+                    NSDictionary *upload = @{@"userid":userId,
+                                             @"taskid":taskID,
+                                             @"type":type,
+                                             @"pic":uploadParam
+                                             };
+                    [YXNetWorking requestWithType:POST urlString:@"http://hgz.inno-vision.cn/huogaizhuan2/index.php?r=Callback/GetAppImg" ParDic:upload finish:^(NSData *data) {
+                        model.goodUploadState = GoodsUploadStateSuccess;
+                        [self updateModel:model];
+                    } err:^(NSError *error) {
+                        model.goodUploadState = GoodsUploadStateFail;
+                        NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];
+                        NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:model.failArrays];
+                        NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                        for (NSInteger i =0; i<imagePaths.count; i++) {
+                            [temp addObject:[NSNumber numberWithInteger:i]];
+                        }
+                        failArrays = [NSArray arrayWithArray:temp];
+                        model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                        [self updateModel:model];
+                    }];
                     
                     //删除临时文件
                     for (NSString *path in imagePaths) {
