@@ -139,20 +139,24 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 }
 
 - (void)clearData{
+ 
+    [self goBackBtnClick:nil];
+    [self clearData1];
+}
+
+- (void)clearData1{
     [self.arrayImages removeAllObjects];
     [self.imageFileArray removeAllObjects];
-    [self goBackBtnClick:nil];
     self.showImageView.image = nil;
     _selectImageIndex = -1;
     _isAngle = YES;
     _isFlash = NO;
-    _isSingleModel = NO;
     _isRephotograph = NO;
     _numberOrSos = 0;
     self.imageOverlap = nil;
     self.imageViewOverlap.alpha = 0;
+    [self.imageChooseView reloadData];
 }
-
 #pragma makr - Camera
 - (void)initCamera{
     
@@ -335,36 +339,20 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             ImageModel *model = [[ImageModel alloc] init];
             model.imageFile = [self.imageFileArray lastObject];
             [self.arrayImages addObject:model];
-            if (_isorSo && _numberOrSos < 2) {
-                _isSingleModel = YES;
+            self.showImageView.image = self.imageOverlap;
+            if (_isSingleModel) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   [self setImageOverlapFrameWithType:0];
+                });
+         
+            } else {
+                NSInteger index = self.imageFileArray.count % 2;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   [self setImageOverlapFrameWithType:index];
+                });
+                
+                    
             }
-            if (!_isSingleModel) {
-                _numberOrSos ++;
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self setImageOverlapFrame];
-                _showImageView.image = self.imageOverlap;
-            });
-            
-            if (!_isSingleModel) {
-                if (_numberOrSos >= 2 ) {
-                    NSInteger count = _numberOrSos % 2;
-                    if (count == 0) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self toucheOrSOButtonValue:self.OrSoButton];
-                        });
-                    } else {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                           [self toucheUpAndDownButton:self.upAndDownButton];
-                        });
-                        
-                    }
-                }
-            }
-            
-          
-          
-    
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -428,14 +416,13 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 }
 
 #pragma mark 拼图
-- (void)setImageOverlapFrame{
+- (void)setImageOverlapFrameWithType:(NSInteger) index{
     if (_imageOverlap) {
-        if (_isorSo) {
+        if (index == 0) {
             self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
-        }
-        if (_isUpDown) {
+        } else{
             self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
@@ -573,25 +560,26 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isUpDown = !_isUpDown;
     
     self.imageViewOverlap.alpha = 0;
-//    _numberOrSos = 0;
-    
-    if (self.imageOverlap && !_isSingleModel) {
-        if (self.arrayImages.count == 1) {
-            [self.arrayImages removeAllObjects];
-            self.imageViewOverlap.alpha = 0;
-            self.showImageView.image = nil;
-            [self.imageChooseView reloadData];
-            
-            return;
-        }
-        self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
-        ImageModel *model = [self.arrayImages objectAtIndex:(self.arrayImages.count - 2)];
-        self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
-        self.imageViewOverlap.alpha = ALPHA;
-        
-        
-        
-    }
+    _isSingleModel = !_isSingleModel;
+    _isRephotograph = NO;
+    [self clearData1];
+//    if (self.imageOverlap && !_isSingleModel) {
+//        if (self.arrayImages.count == 1) {
+//            [self.arrayImages removeAllObjects];
+//            self.imageViewOverlap.alpha = 0;
+//            self.showImageView.image = nil;
+//            [self.imageChooseView reloadData];
+//
+//            return;
+//        }
+//        self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+//        ImageModel *model = [self.arrayImages objectAtIndex:(self.arrayImages.count - 2)];
+//        self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
+//        self.imageViewOverlap.alpha = ALPHA;
+//
+//
+//
+//    }
     
 }
 
@@ -606,24 +594,26 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     }
     _isUpDown = !_isUpDown;
     _isorSo = !_isorSo;
-    
+    _isSingleModel = !_isSingleModel;
     self.imageViewOverlap.alpha = 0;
-    if (_isSingleModel) {
-        [self.arrayImages removeAllObjects];
-        self.imageViewOverlap.alpha = 0;
-        self.showImageView.image = nil;
-        [self.imageChooseView reloadData];
-        return;
-    }
-    if (!self.arrayImages) {
-        return;
-    }
-    if (self.imageOverlap && !_isSingleModel ) {
-        self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
-        ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 1];
-        self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
-        self.imageViewOverlap.alpha = ALPHA;
-    }
+    _isRephotograph = NO;
+    [self clearData1];
+//    if (!_isSingleModel) {
+//        [self.arrayImages removeAllObjects];
+//        self.imageViewOverlap.alpha = 0;
+//        self.showImageView.image = nil;
+//        [self.imageChooseView reloadData];
+//        return;
+//    }
+//    if (!self.arrayImages) {
+//        return;
+//    }
+//    if (self.imageOverlap && !_isSingleModel ) {
+//        self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+//        ImageModel *model = [self.arrayImages objectAtIndex:self.arrayImages.count - 1];
+//        self.imageViewOverlap.image = [UIImage imageWithContentsOfFile:model.imageFile];
+//        self.imageViewOverlap.alpha = ALPHA;
+//    }
     
 }
 
@@ -716,7 +706,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         }
         ImageModel *model = [self.arrayImages lastObject];
         self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-        [self setImageOverlapFrame];
+        [self setImageOverlapFrameWithType:self.imageFileArray.count % 2];
     }
     
     

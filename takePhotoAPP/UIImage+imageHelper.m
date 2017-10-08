@@ -145,9 +145,9 @@
         for (NSInteger i = 0 ; i < newImages.count ; i++ ) {
             UIImage *image =[newImages objectAtIndex: i];
             if (i == 0) {
-                [image drawInRect:CGRectMake( 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT)];
+                [image drawInRect:CGRectMake( 0, 0, WIDTH , HEIGHT)];
             }else {
-                [image drawInRect:CGRectMake((SCREEN_WIDTH - kPuzzleMixLeftOffset(WIDTH)) * i , 0, WIDTH , HEIGHT)];
+                [image drawInRect:CGRectMake((WIDTH - kPuzzleMixLeftOffset(WIDTH)) * i , 0, WIDTH , HEIGHT)];
             }
 
         }
