@@ -863,7 +863,15 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (NSArray *)savePuzzlePhotos:(NSArray *)images {
     
     NSMutableArray *composeImageArrM = [[NSMutableArray alloc] init];
-    CGFloat composeScale = 0.3;
+    CGFloat composeScale = 1.0;
+
+    if (images.count > 10) {
+        if (images.count > 20) {
+            composeScale = 0.3;
+        }else {
+            composeScale = 0.5;
+        }
+    }
     for (UIImage *image in images) {
         UIImage *composeImage = [UIImage compressImage:image newSize:CGSizeMake(image.size.width * composeScale, image.size.height * composeScale)];
         [composeImageArrM addObject:composeImage];
