@@ -419,11 +419,11 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)setImageOverlapFrameWithType:(NSInteger) index{
     if (_imageOverlap) {
         if (index == 0) {
-            self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+            self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH + 100 * SCREEN_RATE, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
         } else{
-            self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+            self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT  + TOPVIEW_HEIGHT + 75 * SCREEN_RATE, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
         }
@@ -813,14 +813,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         if (_selectImageIndex == 0) {
             ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
             self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-            self.imageViewOverlap.frame = CGRectMake(SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+            self.imageViewOverlap.frame = CGRectMake(SCREEN_WIDTH - 100 * SCREEN_RATE, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
             self.imageViewOverlap.image = self.imageOverlap;
             self.imageViewOverlap.alpha = ALPHA;
             return;
         }
         ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
         self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-        self.imageViewOverlap.frame = CGRectMake(-SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+        self.imageViewOverlap.frame = CGRectMake(-SCREEN_WIDTH + SCREEN_RATE * 100, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
         self.imageViewOverlap.image = self.imageOverlap;
         self.imageViewOverlap.alpha = ALPHA;
         
@@ -832,20 +832,20 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             if (_selectImageIndex == 0) {
                 ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex + 1];
                 self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-                self.imageViewOverlap.frame = CGRectMake(0, IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+                self.imageViewOverlap.frame = CGRectMake(0, IMAGEVIEWOVERLAPHEIGHT + TOPVIEW_HEIGHT - 75 * SCREEN_RATE, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
                 self.imageViewOverlap.image = self.imageOverlap;
                 self.imageViewOverlap.alpha = ALPHA;
             } else{
                 if (_selectImageIndex % 2 != 0) {
                     ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 1];
                     self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-                    self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+                    self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT + TOPVIEW_HEIGHT + 75 * SCREEN_RATE, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
                     self.imageViewOverlap.image = self.imageOverlap;
                     self.imageViewOverlap.alpha = ALPHA;
                 } else {
                     ImageModel *model = [self.arrayImages objectAtIndex:_selectImageIndex - 2];
                     self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-                    self.imageViewOverlap.frame = CGRectMake( - SCREEN_WIDTH / 3 * 2, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
+                    self.imageViewOverlap.frame = CGRectMake( - SCREEN_WIDTH + SCREEN_RATE * 100, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
                     self.imageViewOverlap.image = self.imageOverlap;
                     self.imageViewOverlap.alpha = ALPHA;
                 }
@@ -999,7 +999,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (UIView *)segmentView3{
     if (!_segmentView3) {
-        _segmentView3 = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT / 3, SCREEN_WIDTH, 1)];
+        _segmentView3 = [[UIView alloc]initWithFrame:CGRectMake(0, IMAGEVIEWOVERLAPHEIGHT / 3 + TOPVIEW_HEIGHT, SCREEN_WIDTH, 1)];
         _segmentView3.backgroundColor = [UIColor whiteColor];
     }
     return _segmentView3;
@@ -1007,7 +1007,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (UIView *)segmentView4 {
     if (!_segmentView4) {
-        _segmentView4 = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT / 3 * 2, SCREEN_WIDTH, 1)];
+        _segmentView4 = [[UIView alloc]initWithFrame:CGRectMake(0, IMAGEVIEWOVERLAPHEIGHT / 3 * 2 + TOPVIEW_HEIGHT, SCREEN_WIDTH, 1)];
         _segmentView4.backgroundColor = [UIColor whiteColor];
     }
     return _segmentView4;
@@ -1178,7 +1178,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (UIImageView *)angleImageView{
     if (!_angleImageView) {
         _angleImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 150 * SCREEN_RATE, 100 * SCREEN_RATE)];
-        _angleImageView.center = self.view.center;
+        _angleImageView.center = CGPointMake(self.view.center.x, TOPVIEW_HEIGHT + IMAGEVIEWOVERLAPHEIGHT / 2);
         _angleImageView.image = [UIImage imageNamed:@"equilibristat"];
     }
     return _angleImageView;
@@ -1187,7 +1187,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (UIImageView *)focusCursorImageView{
     if (!_focusCursorImageView) {
         _focusCursorImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 150 * SCREEN_RATE, 100 * SCREEN_RATE)];
-        _focusCursorImageView.center = self.view.center;
+        _focusCursorImageView.center =  CGPointMake(self.view.center.x, TOPVIEW_HEIGHT + IMAGEVIEWOVERLAPHEIGHT / 2);
         _focusCursorImageView.image = [UIImage imageNamed:@"focusCursor"];
     }
     return _focusCursorImageView;

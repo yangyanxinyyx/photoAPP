@@ -69,7 +69,8 @@
              }
              NSMutableDictionary *uploadDic = [NSMutableDictionary dictionary];
              if ([responseObject isKindOfClass:[NSString class]]) {
-                 [uploadDic setValue:[imagePaths[i] lastPathComponent] forKey:@"date"];
+//                 [uploadDic setValue:[imagePaths[i] lastPathComponent] forKey:@"date"];
+                 [uploadDic setObject:@"2017-10-09:10:00:00" forKey:@"date"];
                  [uploadDic setValue:responseObject forKey:@"url"];
                  [uploadDic setValue:[NSString stringWithFormat:@"%ld",i+1] forKey:@"sort"];
                  [uploadParam addObject:uploadDic];
@@ -80,12 +81,15 @@
                      NSString *userId = [[NSUserDefaults standardUserDefaults] valueForKey:USERID];
                      NSString *taskID = [[NSUserDefaults standardUserDefaults] valueForKey:TASKID];
                      NSString *type = [[NSUserDefaults standardUserDefaults] valueForKey:TYPE];
-                     NSDictionary *upload = @{@"userid":userId,
-                                              @"taskid":taskID,
-                                              @"type":type,
-                                              @"pic":uploadParam
+                     NSString *uploadParamString = [GoodsShelfDataManager changeNSArrayToNSString:uploadParam];
+                     NSDictionary *upload = @{@"userid":@"1",
+                                              @"taskid":@"1",
+                                              @"type":@"1",
+                                              @"pic":uploadParamString
                                               };
                      [YXNetWorking requestWithType:POST urlString:@"http://hgz.inno-vision.cn/huogaizhuan2/index.php?r=Callback/GetAppImg" ParDic:upload finish:^(NSData *data) {
+                         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                         NSLog(@"%@",dic);
                          goodModel.goodUploadState = GoodsUploadStateSuccess;
                          [self updateModel:goodModel];
                      } err:^(NSError *error) {
