@@ -862,7 +862,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (NSArray *)savePuzzlePhotos:(NSArray *)images {
     
-    UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:self.isSingleModel images:images];
+    NSMutableArray *composeImageArrM = [[NSMutableArray alloc] init];
+    CGFloat composeScale = 0.3;
+    for (UIImage *image in images) {
+        UIImage *composeImage = [UIImage compressImage:image newSize:CGSizeMake(image.size.width * composeScale, image.size.height * composeScale)];
+        [composeImageArrM addObject:composeImage];
+    }
+    
+    UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:self.isSingleModel images:composeImageArrM];
     UIImage *puzzleThumb = [UIImage compressImage:puzzle newSize:kGoodsShelfPuzzleSize];
 
     NSString *puzzlePath =  [self imageSaveToTmp:puzzle];

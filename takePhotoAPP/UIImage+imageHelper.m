@@ -8,8 +8,11 @@
 
 #import "UIImage+imageHelper.h"
 
-#define kPuzzleMixLeftOffset(width) width/3.0
-#define kPuzzleMixUpOffset(height) height/3.0
+//#define kPuzzleMixLeftOffset(width) width/3.0
+//#define kPuzzleMixUpOffset(height) height/3.0
+#define kPuzzleMixLeftOffset SCREEN_RATE * 100
+#define kPuzzleMixUpOffset SCREEN_RATE * 75
+
 
 @implementation UIImage (imageHelper)
 
@@ -18,7 +21,6 @@
     
     // No-op if the orientation is already correct
     if (self.imageOrientation == UIImageOrientationUp) return self;
-    
     // We need to calculate the proper transformation to make the image upright.
     // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
     CGAffineTransform transform = CGAffineTransformIdentity;
@@ -120,20 +122,20 @@
             if (i == 0) {
                 sizeWidth = WIDTH;
             }else {
-                sizeWidth += (WIDTH - kPuzzleMixLeftOffset(WIDTH));
+                sizeWidth += (WIDTH - kPuzzleMixLeftOffset);
             }
         }
         size = CGSizeMake(sizeWidth, sizeHeight);
     }else {
         CGFloat sizeWidth = 0.0;
-        CGFloat sizeHeight = HEIGHT + (HEIGHT - kPuzzleMixUpOffset(HEIGHT));
+        CGFloat sizeHeight = HEIGHT + (HEIGHT - kPuzzleMixUpOffset);
         
         NSInteger count = ceil(newImages.count/(float)rowNum);
         for (NSInteger i = 0 ; i < count; i++) {
             if (i == 0) {
                 sizeWidth = WIDTH;
             }else {
-                sizeWidth += (WIDTH - kPuzzleMixLeftOffset(WIDTH));
+                sizeWidth += (WIDTH - kPuzzleMixLeftOffset);
             }
         }
         size = CGSizeMake(sizeWidth, sizeHeight);
@@ -147,7 +149,7 @@
             if (i == 0) {
                 [image drawInRect:CGRectMake( 0, 0, WIDTH , HEIGHT)];
             }else {
-                [image drawInRect:CGRectMake((WIDTH - kPuzzleMixLeftOffset(WIDTH)) * i , 0, WIDTH , HEIGHT)];
+                [image drawInRect:CGRectMake((WIDTH - kPuzzleMixLeftOffset) * i , 0, WIDTH , HEIGHT)];
             }
 
         }
@@ -168,16 +170,16 @@
             if (i == 0) {
                 [upImage drawInRect:CGRectMake( 0 , 0, WIDTH , HEIGHT)];
             }else {
-                [upImage drawInRect:CGRectMake((WIDTH - kPuzzleMixLeftOffset(WIDTH)) * i , 0, WIDTH , HEIGHT)];
+                [upImage drawInRect:CGRectMake((WIDTH - kPuzzleMixLeftOffset) * i , 0, WIDTH , HEIGHT)];
             }
          
         }
         for (NSInteger i = 0 ; i < downImageArrM.count ; i++) {
             UIImage *downImage =[downImageArrM objectAtIndex: i];
             if (i == 0) {
-                [downImage drawInRect:CGRectMake( 0 , HEIGHT - kPuzzleMixUpOffset(HEIGHT), WIDTH, HEIGHT)];
+                [downImage drawInRect:CGRectMake( 0 , HEIGHT - kPuzzleMixUpOffset, WIDTH, HEIGHT)];
             }else {
-                [downImage drawInRect:CGRectMake( (WIDTH - kPuzzleMixLeftOffset(WIDTH)) * i ,HEIGHT - kPuzzleMixUpOffset(HEIGHT), WIDTH , HEIGHT)];
+                [downImage drawInRect:CGRectMake( (WIDTH - kPuzzleMixLeftOffset) * i ,HEIGHT - kPuzzleMixUpOffset, WIDTH , HEIGHT)];
             }
         }
         
