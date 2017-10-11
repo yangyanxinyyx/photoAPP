@@ -69,8 +69,12 @@
              }
              NSMutableDictionary *uploadDic = [NSMutableDictionary dictionary];
              if ([responseObject isKindOfClass:[NSString class]]) {
-//                 [uploadDic setValue:[imagePaths[i] lastPathComponent] forKey:@"date"];
-                 [uploadDic setObject:@"2017-10-09:10:00:00" forKey:@"date"];
+                 NSString *name = [[imagePaths[i] lastPathComponent] substringToIndex:10];
+                 NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+                 stampFormatter.timeZone = [NSTimeZone systemTimeZone];
+                 NSDate *stampDate = [NSDate dateWithTimeIntervalSince1970:[name integerValue]];
+                 NSString *date = [stampFormatter stringFromDate:stampDate];
+                 [uploadDic setObject:date forKey:@"date"];
                  [uploadDic setValue:responseObject forKey:@"url"];
                  [uploadDic setValue:[NSString stringWithFormat:@"%ld",i+1] forKey:@"sort"];
                  [uploadParam addObject:uploadDic];
@@ -82,16 +86,31 @@
                      NSString *taskID = [[NSUserDefaults standardUserDefaults] valueForKey:TASKID];
                      NSString *type = [[NSUserDefaults standardUserDefaults] valueForKey:TYPE];
                      NSString *uploadParamString = [GoodsShelfDataManager changeNSArrayToNSString:uploadParam];
-                     NSDictionary *upload = @{@"userid":@"1",
-                                              @"taskid":@"1",
-                                              @"type":@"1",
+                     NSDictionary *upload = @{@"userid":userId,
+                                              @"taskid":taskID,
+                                              @"type":type,
                                               @"pic":uploadParamString
                                               };
                      [YXNetWorking requestWithType:POST urlString:@"http://hgz.inno-vision.cn/huogaizhuan2/index.php?r=Callback/GetAppImg" ParDic:upload finish:^(NSData *data) {
                          NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                          NSLog(@"%@",dic);
-                         goodModel.goodUploadState = GoodsUploadStateSuccess;
-                         [self updateModel:goodModel];
+                         if (dic[@"status"] && [dic[@"status"] isEqualToString:@"1"]) {
+                             goodModel.goodUploadState = GoodsUploadStateSuccess;
+                             [self updateModel:goodModel];
+                         }else{
+                             goodModel.goodUploadState = GoodsUploadStateFail;
+                             NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.imagePaths];
+                             NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.failArrays];
+                             NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                             for (NSInteger i =0; i<imagePaths.count; i++) {
+                                 [temp addObject:[NSNumber numberWithInteger:i]];
+                             }
+                             failArrays = [NSArray arrayWithArray:temp];
+                             goodModel.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                             [self updateModel:goodModel];
+                             
+                         }
+                         
                      } err:^(NSError *error) {
                          goodModel.goodUploadState = GoodsUploadStateFail;
                          NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.imagePaths];
@@ -156,7 +175,13 @@
             }
             NSMutableDictionary *uploadDic = [NSMutableDictionary dictionary];
             if ([responseObject isKindOfClass:[NSString class]]) {
-                [uploadDic setValue:[imagePaths[i] lastPathComponent] forKey:@"date"];
+                
+                NSString *name = [[imagePaths[i] lastPathComponent] substringToIndex:10];
+                NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+                stampFormatter.timeZone = [NSTimeZone systemTimeZone];
+                NSDate *stampDate = [NSDate dateWithTimeIntervalSince1970:[name integerValue]];
+                NSString *date = [stampFormatter stringFromDate:stampDate];
+                [uploadDic setValue:date forKey:@"date"];
                 [uploadDic setValue:responseObject forKey:@"url"];
                 [uploadDic setValue:[NSString stringWithFormat:@"%ld",i+1] forKey:@"sort"];
                 [uploadParam addObject:uploadDic];
@@ -168,14 +193,31 @@
                     NSString *userId = [[NSUserDefaults standardUserDefaults] valueForKey:USERID];
                     NSString *taskID = [[NSUserDefaults standardUserDefaults] valueForKey:TASKID];
                     NSString *type = [[NSUserDefaults standardUserDefaults] valueForKey:TYPE];
+                    NSString *uploadParamString = [GoodsShelfDataManager changeNSArrayToNSString:uploadParam];
                     NSDictionary *upload = @{@"userid":userId,
                                              @"taskid":taskID,
                                              @"type":type,
-                                             @"pic":uploadParam
+                                             @"pic":uploadParamString
                                              };
                     [YXNetWorking requestWithType:POST urlString:@"http://hgz.inno-vision.cn/huogaizhuan2/index.php?r=Callback/GetAppImg" ParDic:upload finish:^(NSData *data) {
-                        model.goodUploadState = GoodsUploadStateSuccess;
-                        [self updateModel:model];
+                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                        if (dic[@"status"] && [dic[@"status"] isEqualToString:@"1"]) {
+                            model.goodUploadState = GoodsUploadStateSuccess;
+                            [self updateModel:model];
+                        }else{
+                            model.goodUploadState = GoodsUploadStateFail;
+                            NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];
+                            NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:model.failArrays];
+                            NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                            for (NSInteger i =0; i<imagePaths.count; i++) {
+                                [temp addObject:[NSNumber numberWithInteger:i]];
+                            }
+                            failArrays = [NSArray arrayWithArray:temp];
+                            model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                            [self updateModel:model];
+                            
+                        }
+                        
                     } err:^(NSError *error) {
                         model.goodUploadState = GoodsUploadStateFail;
                         NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];

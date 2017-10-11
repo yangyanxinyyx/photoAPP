@@ -16,6 +16,7 @@
     if (self) {
         self.contentView.backgroundColor = UICOLOR(248, 248, 248, 1);
         self.backgroundColor = UICOLOR(248, 248, 248, 1);
+        self.taskID = [[NSUserDefaults standardUserDefaults] valueForKey:TASKID];
         
         self.viewBackground = [[UIView alloc] init];
         [self.contentView addSubview:_viewBackground];
@@ -46,10 +47,9 @@
     
     _thumbImageView.frame = CGRectMake(10, 10, 160, 90);
     _thumbImageView.backgroundColor = [UIColor redColor];
-
     if ([self.uploadState isKindOfClass:[NSString class]]) {
         if ([self.uploadState isEqualToString: GoodsUploadStateSuccess]) {
-            _uploadStateLabel.text = @"已上传";
+            _uploadStateLabel.text = [NSString stringWithFormat:@"任务%@已上传",self.taskID];
             _uploadStateLabel.textColor = UICOLOR(246, 188, 1, 1);
             [_uploadStateLabel sizeToFit];
             _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
@@ -58,14 +58,14 @@
             self.iconImageView.frame = CGRectMake(_uploadStateLabel.frame.origin.x - 8 - image.size.width, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, image.size.width, image.size.height);
             
         }else if ([self.uploadState isEqualToString: GoodsUploadStateUploading]){
-            _uploadStateLabel.text = @"正在上传...";
+            _uploadStateLabel.text = [NSString stringWithFormat:@"任务%@正在上传...",self.taskID];
             _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
             [_uploadStateLabel sizeToFit];
             _uploadStateLabel.frame = CGRectMake(185, (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);
             self.iconImageView.image = nil;
             
         }else if ([self.uploadState isEqualToString: GoodsUploadStateFail]){
-            _uploadStateLabel.text = @"上传失败";
+            _uploadStateLabel.text = [NSString stringWithFormat:@"任务%@上传失败",self.taskID];
             _uploadStateLabel.textColor = UICOLOR(213, 41, 39, 1);
             [_uploadStateLabel sizeToFit];
             _uploadStateLabel.frame = CGRectMake(_viewBackground.frame.size.width - _uploadStateLabel.frame.size.width - 15 , (self.contentView.frame.size.height - _uploadStateLabel.frame.size.height)/2, _uploadStateLabel.frame.size.width, _uploadStateLabel.frame.size.height);

@@ -16,6 +16,7 @@
 @property (nonatomic,strong) UILabel *uploadStateLabel;
 @property (nonatomic,strong) UIImageView *iconImageView;
 
+@property (nonatomic,strong) NSString *taskID;
 @property (nonatomic,copy) GoodsUploadState uploadState;
 
 @end

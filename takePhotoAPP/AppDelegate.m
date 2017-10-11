@@ -53,9 +53,12 @@
             [paramDict setObject:[keyValueArr lastObject] forKey:[keyValueArr firstObject]];
         }
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:[paramDict objectForKey:@"taskid"] forKey:TASKID];
-        [defaults setObject:[paramDict objectForKey:@"type"] forKey:TYPE];
-        [defaults setObject:[paramDict objectForKey:@"userid"] forKey:USERID];
+//        [defaults setObject:[paramDict objectForKey:@"taskid"] forKey:TASKID];
+//        [defaults setObject:[paramDict objectForKey:@"type"] forKey:TYPE];
+//        [defaults setObject:[paramDict objectForKey:@"userid"] forKey:USERID];
+        [defaults setObject:@"1" forKey:TASKID];
+        [defaults setObject:@"1" forKey:TYPE];
+        [defaults setObject:@"1" forKey:USERID];
     }
     return YES;
 }
