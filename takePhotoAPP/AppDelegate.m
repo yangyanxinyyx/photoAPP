@@ -38,17 +38,20 @@
                 UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"网络状态不好，请开启网络" preferredStyle:UIAlertControllerStyleAlert];
                 UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
                 [alertC addAction:action];
-                
+                NSLog(@"网络有问题");
                 return ;
             }
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             NSNumber *status = [dic objectForKey:@"status"];
             if ([status longValue] == 0) {
-                dispatch_sync(dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
                     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                     [defaults setObject:@"1" forKey:TASKID];
                     [defaults setObject:@"1" forKey:TYPE];
-//                    [defaults setObject:@"1" forKey:USERID];
+                    [defaults setObject:@"1" forKey:USERID];
+                    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:1],@"status", nil];
+//                    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:status,@"status", nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATIONVESION object:nil userInfo:dic];
                 });
             } else {
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -93,7 +96,7 @@
         [defaults setObject:[paramDict objectForKey:@"taskid"] forKey:TASKID];
         [defaults setObject:[paramDict objectForKey:@"type"] forKey:TYPE];
         [defaults setObject:[paramDict objectForKey:@"userid"] forKey:USERID];
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATIONSKIP object:nil];
         
     }
     return YES;

@@ -204,7 +204,8 @@
 
 - (BOOL)isInstagreamInstalled{
     NSURL *instagramURL = [NSURL URLWithString:@"weixin://"];
-    return [[UIApplication sharedApplication] canOpenURL:instagramURL];
+    BOOL canOpen = [[UIApplication sharedApplication] canOpenURL:instagramURL];
+    return canOpen ;
 }
 
 - (void)openUserPage:(NSString *)userName{
