@@ -87,7 +87,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 @property (nonatomic, strong) UIButton *rephotographTakePhotoButton;
 
-
+@property (nonatomic) BOOL isOwner;
 
 @end
 
@@ -104,7 +104,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isSingleModel = NO;
     _isRephotograph = NO;
     _numberOrSos = 0;
-    
+    _isOwner = NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAppSkip) name:NOTIFICATION object:nil];
     [self setupUI];
     [self setInitMotionMangager];
     [self initCamera];
@@ -117,7 +118,21 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.captureSession startRunning];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *userID = [defaults objectForKey:USERID];
+        if ([userID isEqualToString:@""] || userID == NULL) {
+            _isOwner = NO;
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [alertController addAction:action];
+            [self presentViewController:alertController animated:YES completion:nil];
+        } else {
+            _isOwner = YES;
+          [self.captureSession startRunning];
+        }
+        
     });
     
 }
@@ -304,7 +319,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 }
 #pragma mark 拍照
 - (void)takePhotoButtonClick:(UIButton *)sender{
-    
+    if (!_isOwner) {
+        return;
+    }
     self.rephotographTakePhotoButton.userInteractionEnabled = NO;
     self.takePhotButton.userInteractionEnabled = NO;
     
@@ -1334,5 +1351,23 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     
     return ret_img;
     
+}
+
+#pragma mark -跳转
+- (void)notificationAppSkip{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *userID = [defaults objectForKey:USERID];
+    if ([userID isEqualToString:@""] || userID == NULL) {
+        _isOwner = NO;
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alertController addAction:action];
+        [self presentViewController:alertController animated:YES completion:nil];
+    } else {
+        _isOwner = YES;
+        [self.captureSession startRunning];
+    }
 }
 @end

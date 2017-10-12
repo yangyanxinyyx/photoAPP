@@ -13,7 +13,6 @@
 #import "CameraViewController.h"
 #import "GoodsShelfDataManager.h"
 @interface AppDelegate ()
-
 @end
 
 @implementation AppDelegate
@@ -21,21 +20,59 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    
-    CameraViewController *VC = [[CameraViewController alloc] init];
-    UINavigationController *Nav = [[UINavigationController alloc] initWithRootViewController:VC];
-    
-    self.window.rootViewController = Nav;
-    [self.window makeKeyAndVisible];
-    [[DataBaseManager shareDataBase] creatTable];
-    [[GoodsShelfDataManager shareInstance] setSendFail];
-    [[GoodsShelfDataManager shareInstance] datas];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@"" forKey:TASKID];
     [defaults setObject:@"" forKey:TYPE];
     [defaults setObject:@"" forKey:USERID];
     
+    NSString *versionStr = [defaults objectForKey:VERSION];
+    if ([versionStr isEqualToString:@"0.0.1"] || versionStr != nil) {
+        
+    } else {
+        NSString *urlStr = [NSString stringWithFormat:@"http://hgz.inno-vision.cn/huogaizhuan2/index.php?r=Callback/IsTest"];
+        NSString *newStr = [urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:newStr];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (data == nil) {
+                UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"网络状态不好，请开启网络" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
+                [alertC addAction:action];
+                
+                return ;
+            }
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            NSNumber *status = [dic objectForKey:@"status"];
+            if ([status longValue] == 0) {
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                    [defaults setObject:@"1" forKey:TASKID];
+                    [defaults setObject:@"1" forKey:TYPE];
+//                    [defaults setObject:@"1" forKey:USERID];
+                });
+            } else {
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                [defaults setObject:@"0.0.1" forKey:VERSION];
+            }
+        }];
+        [dataTask resume];
+    }
+    
+    
+    
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    CameraViewController *VC = [[CameraViewController alloc] init];
+    UINavigationController *Nav = [[UINavigationController alloc] initWithRootViewController:VC];
+    self.window.rootViewController = Nav;
+    [self.window makeKeyAndVisible];
+    
+    [[DataBaseManager shareDataBase] creatTable];
+    [[GoodsShelfDataManager shareInstance] setSendFail];
+    [[GoodsShelfDataManager shareInstance] datas];
+   
+    
+    
+//    http://hgz.inno-vision.cn/huogaizhuan2/index.php?r=Callback/IsTest
     
 //    NSString *path = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
 //    NSLog(@"%@",NSHomeDirectory());
@@ -53,12 +90,11 @@
             [paramDict setObject:[keyValueArr lastObject] forKey:[keyValueArr firstObject]];
         }
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//        [defaults setObject:[paramDict objectForKey:@"taskid"] forKey:TASKID];
-//        [defaults setObject:[paramDict objectForKey:@"type"] forKey:TYPE];
-//        [defaults setObject:[paramDict objectForKey:@"userid"] forKey:USERID];
-        [defaults setObject:@"1" forKey:TASKID];
-        [defaults setObject:@"1" forKey:TYPE];
-        [defaults setObject:@"1" forKey:USERID];
+        [defaults setObject:[paramDict objectForKey:@"taskid"] forKey:TASKID];
+        [defaults setObject:[paramDict objectForKey:@"type"] forKey:TYPE];
+        [defaults setObject:[paramDict objectForKey:@"userid"] forKey:USERID];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION object:nil];
+        
     }
     return YES;
 }
