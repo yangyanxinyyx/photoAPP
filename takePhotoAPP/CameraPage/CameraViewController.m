@@ -1376,6 +1376,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     NSLog(@"%@",notificationCenter.userInfo);
     NSNumber *status = [notificationCenter.userInfo objectForKey:@"status"];
     if ([status longValue] == 0) {
+        _isOwner = NO;
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
@@ -1383,6 +1384,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         [alertController addAction:action];
         [self presentViewController:alertController animated:YES completion:nil];
     } else {
+        _isOwner = YES;
        [self.captureSession startRunning];
     }
 
