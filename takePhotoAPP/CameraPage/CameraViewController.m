@@ -884,7 +884,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     NSMutableArray *composeImageArrM = [[NSMutableArray alloc] init];
     CGFloat composeScale = 1.0;
 
-    if (images.count > 10) {
+    if (images.count > 5) {
         if (images.count > 20) {
             composeScale = 0.3;
         }else {

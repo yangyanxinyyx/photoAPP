@@ -131,19 +131,24 @@
 
 - (void)addModelNotify:(NSNotification *)notify
 {
-    [self requestData];
-    [self.tableViewList scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataSource.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self requestData];
+        [self.tableViewList scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataSource.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    });
+    
 }
 
 - (void)uodateModelNotify:(NSNotification *)notify
 {
-    NSInteger index = [notify.object[@"index"] integerValue];
-    NSArray *array = [[GoodsShelfDataManager shareInstance] datas];
-    self.dataSource  = [NSMutableArray arrayWithArray:array];
-    if (index >= 0 && index < self.dataSource.count) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSInteger index = [notify.object[@"index"] integerValue];
+        NSArray *array = [[GoodsShelfDataManager shareInstance] datas];
+        self.dataSource  = [NSMutableArray arrayWithArray:array];
+        if (index >= 0 && index < self.dataSource.count) {
             [self.tableViewList reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:YES];
-    }
-
+        }
+    });
+ 
 }
 
 - (void)didReceiveMemoryWarning {
