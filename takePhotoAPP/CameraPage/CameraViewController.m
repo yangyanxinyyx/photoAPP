@@ -683,9 +683,11 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     }
     if (index == -1) {
         NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-        NSTimeInterval a=[dat timeIntervalSince1970]*1000;
+        NSTimeInterval a = [dat timeIntervalSince1970];
         NSString *timeString = [NSString stringWithFormat:@"%f", a];
-        NSString *imageFile = [novelPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeString]];
+        NSInteger number = [timeString integerValue];
+        NSString *timeStringNumber = [NSString stringWithFormat:@"%ld",number];
+        NSString *imageFile = [novelPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeStringNumber]];
         NSData *imageData = UIImageJPEGRepresentation(self.imageOverlap, 1);
         BOOL result = [imageData writeToFile:imageFile atomically:YES];
         if (result) {
