@@ -32,9 +32,12 @@
     [[GoodsShelfDataManager shareInstance] setSendFail];
     [[GoodsShelfDataManager shareInstance] datas];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@"" forKey:TASKID];
-    [defaults setObject:@"" forKey:TYPE];
-    [defaults setObject:@"" forKey:USERID];
+//    [defaults setObject:@"" forKey:TASKID];
+//    [defaults setObject:@"" forKey:TYPE];
+//    [defaults setObject:@"" forKey:USERID];
+    [defaults setObject:@"1" forKey:TASKID];
+    [defaults setObject:@"1" forKey:TYPE];
+    [defaults setObject:@"1" forKey:USERID];
     
     
 //    NSString *path = [[NSBundle mainBundle] pathForResource:@"newsPic1" ofType:@"jpg"];
