@@ -123,13 +123,13 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *userID = [defaults objectForKey:USERID];
         if ([userID isEqualToString:@""] || userID == NULL) {
-            _isOwner = NO;
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-
-            }];
-            [alertController addAction:action];
-            [self presentViewController:alertController animated:YES completion:nil];
+//            _isOwner = NO;
+//            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
+//            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//
+//            }];
+//            [alertController addAction:action];
+//            [self presentViewController:alertController animated:YES completion:nil];
         } else {
             _isOwner = YES;
           [self.captureSession startRunning];
