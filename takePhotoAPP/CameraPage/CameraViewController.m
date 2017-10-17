@@ -324,6 +324,27 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     if (!_isOwner) {
         return;
     }
+    
+    //相机权限
+    AVAuthorizationStatus authSatatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (authSatatus == AVAuthorizationStatusRestricted || authSatatus == AVAuthorizationStatusDenied) {
+        
+        UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"活该赚想访问您的相机" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"不允许" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                [[UIApplication sharedApplication] openURL:url];
+            }
+        }];
+        [alertC addAction:action];
+        [alertC addAction:action1];
+        [self presentViewController:alertC animated:YES completion:nil];
+        return;
+    }
+    
     self.rephotographTakePhotoButton.userInteractionEnabled = NO;
     self.takePhotButton.userInteractionEnabled = NO;
     
