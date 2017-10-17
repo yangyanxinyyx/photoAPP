@@ -54,6 +54,10 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATIONVESION object:nil userInfo:dic];
                 });
             } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:status,@"status", nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATIONVESION object:nil userInfo:dic];
+                });
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                 [defaults setObject:@"0.0.1" forKey:VERSION];
             }

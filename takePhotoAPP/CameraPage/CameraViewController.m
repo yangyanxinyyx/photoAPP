@@ -110,7 +110,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationVesion:) name:NOTIFICATIONVESION object:nil];
     [self setupUI];
     [self setInitMotionMangager];
-    [self initCamera];
+   
     [self setUpGesture];
 //    [self.captureSession startRunning];
     self.effectiveScale = self.beginGestureScale = 1.0f;
@@ -124,12 +124,12 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         NSString *userID = [defaults objectForKey:USERID];
         if ([userID isEqualToString:@""] || userID == NULL) {
             _isOwner = NO;
-//            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
-//            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//
-//            }];
-//            [alertController addAction:action];
-//            [self presentViewController:alertController animated:YES completion:nil];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+
+            }];
+            [alertController addAction:action];
+            [self presentViewController:alertController animated:YES completion:nil];
         } else {
             _isOwner = YES;
           [self.captureSession startRunning];
@@ -1132,7 +1132,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         _takePhotButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _takePhotButton.frame = CGRectMake((SCREEN_WIDTH - 70 * SCREEN_RATE) / 2 , kTabViewTopMargin, 70 * SCREEN_RATE, 70 * SCREEN_RATE);
         _takePhotButton.layer.masksToBounds = YES;
-        _takePhotButton.layer.cornerRadius = 35;
+        _takePhotButton.layer.cornerRadius = 35 * SCREEN_RATE;
         [_takePhotButton setBackgroundImage:[UIImage imageNamed:@"takePhoto"] forState:UIControlStateNormal];
         [_takePhotButton addTarget:self action:@selector(takePhotoButtonClick:) forControlEvents:UIControlEventTouchDown];
     }
@@ -1392,13 +1392,17 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         [self presentViewController:alertController animated:YES completion:nil];
     } else {
         _isOwner = YES;
+        if (!self.captureSession) {
+           [self initCamera];
+        }
         [self.captureSession startRunning];
     }
 }
 - (void)notificationVesion:(NSNotification *)notificationCenter{
     NSLog(@"%@",notificationCenter.userInfo);
-    NSNumber *status = [notificationCenter.userInfo objectForKey:@"status"];
-    if ([status longValue] == 0) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *userID = [defaults objectForKey:USERID];
+    if ([userID isEqualToString:@""] || userID == NULL) {
         _isOwner = NO;
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -1408,7 +1412,8 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         [self presentViewController:alertController animated:YES completion:nil];
     } else {
         _isOwner = YES;
-       [self.captureSession startRunning];
+        [self initCamera];
+        [self.captureSession startRunning];
     }
 
 }
