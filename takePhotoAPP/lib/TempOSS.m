@@ -56,7 +56,7 @@
 {
     OSSPutObjectRequest * put = [OSSPutObjectRequest new];
     put.bucketName = @"inno-sss";
-    put.objectKey = [NSString stringWithFormat:@"hgz/photo/%@/%@.jpg",[self getTimeNow],[self getRandom]];
+    put.objectKey = [NSString stringWithFormat:@"hgz/photo/%@/%@/%@.jpg",[self getTime:file],[[NSUserDefaults standardUserDefaults]valueForKey:TASKID],[self getRandom]];
     put.uploadingFileURL = [NSURL URLWithString:file];
     put.uploadProgress = ^(int64_t bytesSent, int64_t totalByteSent, int64_t totalBytesExpectedToSend) {
         if (process) {
@@ -139,6 +139,17 @@
     date = [formatter stringFromDate:[NSDate date]];
     NSString *timeNow = [NSString stringWithFormat:@"%@",date];
     return timeNow;
+}
+
+- (NSString *)getTime:(NSString *)file
+{
+    NSString *name = [[file lastPathComponent] substringToIndex:10];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[name integerValue]];
+    NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];
+    [stampFormatter setDateFormat:@"YYYY-MM-dd"];
+    stampFormatter.timeZone = [NSTimeZone systemTimeZone];
+    NSString *dateStr = [stampFormatter stringFromDate:date];
+    return dateStr;
 }
 
 - (NSString *)getRandom

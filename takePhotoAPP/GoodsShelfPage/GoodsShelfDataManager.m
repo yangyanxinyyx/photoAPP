@@ -57,6 +57,7 @@
     NSMutableArray *uploadParam = [NSMutableArray array];
     //上传
     NSMutableArray *failArray = [NSMutableArray array];
+    __block int temp = 0;
     for (NSInteger i=0; i<imagePaths.count; i++) {
         UploadModel *uploadModel = [[UploadModel alloc] init];
         uploadModel.imagePath = imagePaths[i];
@@ -64,13 +65,14 @@
          [NetworkKit sendImageWithObject:uploadModel process:^(NSDictionary *object) {
              
          } response:^(NSDictionary *urlObject, id responseObject, NSError *error) {
+             temp ++ ;
              if (error || responseObject == nil ) {
                  [failArray addObject:@(i)];
              }
              NSMutableDictionary *uploadDic = [NSMutableDictionary dictionary];
              if ([responseObject isKindOfClass:[NSString class]]) {
                  NSString *name = [[imagePaths[i] lastPathComponent] substringToIndex:10];
-                 NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+                 NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd"];
                  stampFormatter.timeZone = [NSTimeZone systemTimeZone];
                  NSDate *stampDate = [NSDate dateWithTimeIntervalSince1970:[name integerValue]];
                  NSString *date = [stampFormatter stringFromDate:stampDate];
@@ -79,7 +81,7 @@
                  [uploadDic setValue:[NSString stringWithFormat:@"%ld",i+1] forKey:@"sort"];
                  [uploadParam addObject:uploadDic];
              }
-             if (i == imagePaths.count - 1) {
+             if (temp == imagePaths.count ) {
                  if (failArray.count == 0) {
                      //全部成功
                      NSString *userId = [[NSUserDefaults standardUserDefaults] valueForKey:USERID];
@@ -100,27 +102,24 @@
                          }else{
                              goodModel.goodUploadState = GoodsUploadStateFail;
                              NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.imagePaths];
-                             NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.failArrays];
-                             NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                             NSMutableArray *temp = [NSMutableArray array];
                              for (NSInteger i =0; i<imagePaths.count; i++) {
                                  [temp addObject:[NSNumber numberWithInteger:i]];
                              }
-                             failArrays = [NSArray arrayWithArray:temp];
-                             goodModel.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                             NSArray *allarray = [NSArray arrayWithArray:temp];
+                             goodModel.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:allarray];
                              [self updateModel:goodModel];
-                             
                          }
                          
                      } err:^(NSError *error) {
                          goodModel.goodUploadState = GoodsUploadStateFail;
                          NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.imagePaths];
-                         NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:goodModel.failArrays];
-                         NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                         NSMutableArray *temp = [NSMutableArray array];
                          for (NSInteger i =0; i<imagePaths.count; i++) {
                              [temp addObject:[NSNumber numberWithInteger:i]];
                          }
-                         failArrays = [NSArray arrayWithArray:temp];
-                         goodModel.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                         NSArray *allarray = [NSArray arrayWithArray:temp];
+                         goodModel.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:allarray];
                          [self updateModel:goodModel];
                      }];
                      
@@ -140,8 +139,9 @@
                      [self updateModel:goodModel];
                  }
              }
+//             dispatch_semaphore_signal(sema);
          }];
-        
+//        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     }
     
     
@@ -163,21 +163,32 @@
     [self updateModel:model];
     NSMutableArray *uploadParam = [NSMutableArray array];
     NSMutableArray *failArray = [NSMutableArray arrayWithArray:failArrays];
-    for (NSInteger i= resendArray.count - 1; i > -1; i--) {
+    __block int temp = 0;
+    for (NSInteger i= 0; i < resendArray.count; i++) {
+        
         UploadModel *uploadModel = [[UploadModel alloc] init];
         uploadModel.imagePath = resendArray[i];
         uploadModel.imagePath = [self changePath:uploadModel.imagePath];
         [NetworkKit sendImageWithObject:uploadModel process:^(NSDictionary *object) {
             
         } response:^(NSDictionary *urlObject, id responseObject, NSError *error) {
+            temp ++ ;
             if (responseObject && !error) {
-                [failArray removeObjectAtIndex:i];
+                for (NSInteger j =0; j<imagePaths.count; j++) {
+                    NSString *str = imagePaths[j];
+                    NSString *str1 = resendArray[i];
+                    if ([[str1 lastPathComponent] isEqualToString:[str lastPathComponent]] ) {
+                        NSInteger index = j;
+                        [failArray removeObject:[NSNumber numberWithInteger:index]];
+                    }
+                }
+                NSLog(@"上传成功第%ld张",i);
             }
             NSMutableDictionary *uploadDic = [NSMutableDictionary dictionary];
             if ([responseObject isKindOfClass:[NSString class]]) {
                 
                 NSString *name = [[imagePaths[i] lastPathComponent] substringToIndex:10];
-                NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+                NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd"];
                 stampFormatter.timeZone = [NSTimeZone systemTimeZone];
                 NSDate *stampDate = [NSDate dateWithTimeIntervalSince1970:[name integerValue]];
                 NSString *date = [stampFormatter stringFromDate:stampDate];
@@ -187,7 +198,8 @@
                 [uploadParam addObject:uploadDic];
             }
             
-            if (i == 0) {
+            if (temp == resendArray.count) {
+                NSLog(@"最后一次上传完毕  数组的数量%ld",failArray.count);
                 if (failArray.count == 0) {
                     //全部成功
                     NSString *userId = [[NSUserDefaults standardUserDefaults] valueForKey:USERID];
@@ -207,13 +219,12 @@
                         }else{
                             model.goodUploadState = GoodsUploadStateFail;
                             NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];
-                            NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:model.failArrays];
-                            NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                            NSMutableArray *temp = [NSMutableArray array];
                             for (NSInteger i =0; i<imagePaths.count; i++) {
                                 [temp addObject:[NSNumber numberWithInteger:i]];
                             }
-                            failArrays = [NSArray arrayWithArray:temp];
-                            model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                            NSArray *allarray = [NSArray arrayWithArray:temp];
+                            model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:allarray];
                             [self updateModel:model];
                             
                         }
@@ -221,13 +232,12 @@
                     } err:^(NSError *error) {
                         model.goodUploadState = GoodsUploadStateFail;
                         NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];
-                        NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:model.failArrays];
-                        NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                        NSMutableArray *temp = [NSMutableArray array];
                         for (NSInteger i =0; i<imagePaths.count; i++) {
                             [temp addObject:[NSNumber numberWithInteger:i]];
                         }
-                        failArrays = [NSArray arrayWithArray:temp];
-                        model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                        NSArray *allarray = [NSArray arrayWithArray:temp];
+                        model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:allarray];
                         [self updateModel:model];
                     }];
                     
@@ -259,13 +269,12 @@
             if ([model.goodUploadState isEqualToString:GoodsUploadStateUploading]) {
                 model.goodUploadState = GoodsUploadStateFail;
                 NSArray *imagePaths = [GoodsShelfDataManager changeNSStringToNSArray:model.imagePaths];
-                NSArray *failArrays = [GoodsShelfDataManager changeNSStringToNSArray:model.failArrays];
-                NSMutableArray *temp = [NSMutableArray arrayWithArray:failArrays];
+                NSMutableArray *temp = [NSMutableArray array];
                 for (NSInteger i =0; i<imagePaths.count; i++) {
                     [temp addObject:[NSNumber numberWithInteger:i]];
                 }
-                failArrays = [NSArray arrayWithArray:temp];
-                model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:failArrays];
+                NSArray *allarray = [NSArray arrayWithArray:temp];
+                model.failArrays = [GoodsShelfDataManager changeNSArrayToNSString:allarray];
                 [[DataBaseManager shareDataBase] updateInTableWithModel:model];
             }
         }
