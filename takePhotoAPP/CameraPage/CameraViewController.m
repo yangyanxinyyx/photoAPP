@@ -121,15 +121,18 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [super viewDidAppear:animated];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *userID = [defaults objectForKey:USERID];
-        if ([userID isEqualToString:@""] || userID == NULL) {
-//            _isOwner = NO;
-//            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
-//            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//
-//            }];
-//            [alertController addAction:action];
-//            [self presentViewController:alertController animated:YES completion:nil];
+        NSString *version = [defaults objectForKey:VERSION];
+        if ([version isEqualToString:@"0.0.1"] ) {
+            NSString *userID = [defaults objectForKey:USERID];
+            if (userID == nil || [userID isEqualToString:@""]) {
+                _isOwner = NO;
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }];
+                [alertController addAction:action];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
         } else {
             _isOwner = YES;
           [self.captureSession startRunning];

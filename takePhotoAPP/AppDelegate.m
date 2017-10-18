@@ -45,11 +45,11 @@
             NSNumber *status = [dic objectForKey:@"status"];
             if ([status longValue] == 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                    [defaults setObject:@"1" forKey:TASKID];
-                    [defaults setObject:@"1" forKey:TYPE];
-                    [defaults setObject:@"1" forKey:USERID];
-                    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:1],@"status", nil];
+//                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//                    [defaults setObject:@"1" forKey:TASKID];
+//                    [defaults setObject:@"1" forKey:TYPE];
+//                    [defaults setObject:@"1" forKey:USERID];
+//                    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:1],@"status", nil];
 //                    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:status,@"status", nil];
                     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATIONVESION object:nil userInfo:dic];
                 });
