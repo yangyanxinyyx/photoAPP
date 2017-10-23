@@ -45,8 +45,8 @@
  b = sx * sin(angle)
  c = -sy * sin(angle)
  d = sy * cos(angle)
- tx = sx * dx * cos(angle) - sy * dy * sin(angle)
- ty = sx * dx * sin(angle) + sy * dy * cos(angle)
+ tx = sx * dx * cos(angle) - sy * dy * sin(angle) a * dx
+ ty = sx * dx * sin(angle) + sy * dy * cos(angle) a * dy
  
  */
 

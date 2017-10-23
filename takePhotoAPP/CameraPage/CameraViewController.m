@@ -119,39 +119,39 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *version = [defaults objectForKey:VERSION];
-        if ([version isEqualToString:@"0.0.1"] ) {
-            NSString *userID = [defaults objectForKey:USERID];
-            if (userID == nil || [userID isEqualToString:@""]) {
-                _isOwner = NO;
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    
-                }];
-                [alertController addAction:action];
-                [self presentViewController:alertController animated:YES completion:nil];
-            }
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *version = [defaults objectForKey:VERSION];
+    if ([version isEqualToString:@"0.0.1"] ) {
+        NSString *userID = [defaults objectForKey:USERID];
+        if (userID == nil || [userID isEqualToString:@""]) {
+            _isOwner = NO;
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请从微信公众号”活该赚“跳转" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [alertController addAction:action];
+            [self presentViewController:alertController animated:YES completion:nil];
         } else {
             _isOwner = YES;
-          [self.captureSession startRunning];
+            [self.captureSession startRunning];
         }
+    } else {
+        _isOwner = YES;
+        [self.captureSession startRunning];
+    }
+    
         
-    });
+    
     
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (self.captureSession) {
-           [self.captureSession stopRunning];
-        }
-    });
-//    if (self.captureSession) {
-//        [self.captureSession stopRunning];
-//    }
+    if (self.captureSession) {
+        [self.captureSession stopRunning];
+    }
+    
+
 }
 
 - (void)dealloc {
@@ -385,13 +385,19 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             self.showImageView.image = self.imageOverlap;
             if (_isSingleModel) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                   [self setImageOverlapFrameWithType:0];
+                   [self setImageOverlapFrameWithType:0 image:self.imageOverlap];
                 });
          
             } else {
                 NSInteger index = self.imageFileArray.count % 2;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                   [self setImageOverlapFrameWithType:index];
+                    if (index == 0) {
+                        NSString *imageFile = [self.imageFileArray objectAtIndex:(self.imageFileArray.count - 2)];
+                        UIImage *image = [UIImage imageWithContentsOfFile:imageFile];
+                       [self setImageOverlapFrameWithType:0 image:image];
+                    } else {
+                        [self setImageOverlapFrameWithType:1 image:self.imageOverlap];
+                    }
                 });
                 
                     
@@ -459,15 +465,15 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 }
 
 #pragma mark 拼图
-- (void)setImageOverlapFrameWithType:(NSInteger) index{
+- (void)setImageOverlapFrameWithType:(NSInteger) index image:(UIImage *)image{
     if (_imageOverlap) {
         if (index == 0) {
             self.imageViewOverlap.frame = CGRectMake(- SCREEN_WIDTH + 100 * SCREEN_RATE, TOPVIEW_HEIGHT, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
-            self.imageViewOverlap.image = self.imageOverlap;
+            self.imageViewOverlap.image = image;
             self.imageViewOverlap.alpha = ALPHA;
         } else{
             self.imageViewOverlap.frame = CGRectMake(0, - IMAGEVIEWOVERLAPHEIGHT  + TOPVIEW_HEIGHT + 75 * SCREEN_RATE, SCREEN_WIDTH, IMAGEVIEWOVERLAPHEIGHT);
-            self.imageViewOverlap.image = self.imageOverlap;
+            self.imageViewOverlap.image = image;
             self.imageViewOverlap.alpha = ALPHA;
         }
     }
@@ -751,7 +757,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         }
         ImageModel *model = [self.arrayImages lastObject];
         self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-        [self setImageOverlapFrameWithType:self.imageFileArray.count % 2];
+        [self setImageOverlapFrameWithType:self.imageFileArray.count % 2 image:self.imageOverlap];
     }
     
     
