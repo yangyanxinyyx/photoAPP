@@ -155,6 +155,13 @@
         GoodsShelfViewController *VC = [[GoodsShelfViewController alloc] init];
         [self.navigationController pushViewController:VC animated:YES];
         
+        // =================== modify by Liangyz
+        if ([[NSFileManager defaultManager] fileExistsAtPath:_puzzlePath]) {
+            [[NSFileManager defaultManager] removeItemAtPath:_puzzlePath error:nil];
+        }
+        unlink([_puzzlePath UTF8String]);
+        // ===================
+        
     }];
  
     [alertVC addAction:confirm];

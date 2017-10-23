@@ -11,5 +11,6 @@
 @interface GSPrewViewController : CameraBaseViewController
 
 @property (nonatomic, strong) NSDictionary * imageDateInfo ;
-
+/** 拼图路径 */
+@property (nonatomic, strong) NSString * puzzlePath ;
 @end

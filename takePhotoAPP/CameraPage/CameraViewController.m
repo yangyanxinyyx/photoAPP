@@ -89,6 +89,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 @property (nonatomic) BOOL isOwner;
 
+@property (nonatomic, strong) NSString * puzzlePath ;
 
 @end
 
@@ -119,6 +120,14 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
+    // =================== modify by Liangyz
+    if ([[NSFileManager defaultManager] fileExistsAtPath:_puzzlePath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:_puzzlePath error:nil];
+    }
+    unlink([_puzzlePath UTF8String]);
+    // ===================
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *version = [defaults objectForKey:VERSION];
     if ([version isEqualToString:@"0.0.1"] ) {
@@ -827,6 +836,9 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
             [SVProgressHUD dismiss];
             self.preViewBtn.enabled = YES;
             GSPrewViewController *GSPreView = [[GSPrewViewController alloc] init];
+            if (self.puzzlePath) {
+                GSPreView.puzzlePath = self.puzzlePath;
+            }
             GSPreView.imageDateInfo = imageDateInfo ;
             [self.navigationController pushViewController:GSPreView animated:YES];
         });
@@ -931,11 +943,12 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     UIImage *puzzle = [UIImage imageMergeImagesWithMergeModel:self.isSingleModel images:composeImageArrM];
     UIImage *puzzleThumb = [UIImage compressImage:puzzle newSize:kGoodsShelfPuzzleSize];
 
-    NSString *puzzlePath =  [self imageSaveToTmp:puzzle];
+    self.puzzlePath = [self imageSaveToTmp:puzzle];
+//    NSString *puzzlePath =  [self imageSaveToTmp:puzzle];
     NSString *puzzleThumbPath = [self imageSaveToTmp:puzzleThumb];
     
-    if (puzzlePath && puzzleThumbPath) {
-        return @[puzzlePath,puzzleThumbPath];
+    if (_puzzlePath && puzzleThumbPath) {
+        return @[_puzzlePath,puzzleThumbPath];
     }
     NSAssert(YES, @"savePuzzlePhotoPathError");
     return nil;
