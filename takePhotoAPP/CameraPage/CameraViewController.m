@@ -107,15 +107,25 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     _isRephotograph = NO;
     _numberOrSos = 0;
     _isOwner = NO;
+   
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAppSkip) name:NOTIFICATIONSKIP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationVesion:) name:NOTIFICATIONVESION object:nil];
     [self setupUI];
     [self setInitMotionMangager];
-   
     [self setUpGesture];
-//    [self.captureSession startRunning];
+
     self.effectiveScale = self.beginGestureScale = 1.0f;
-    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([[defaults objectForKey:@"isURL"] isEqualToString:@"url"]) {
+        _isOwner = YES;
+        if (!self.captureSession) {
+            [self initCamera];
+        }
+        [self.captureSession startRunning];
+        [defaults setObject:@"" forKey:@"isURL"];
+    }
+
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -149,9 +159,6 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         [self.captureSession startRunning];
     }
     
-        
-    
-    
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
@@ -159,8 +166,6 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     if (self.captureSession) {
         [self.captureSession stopRunning];
     }
-    
-
 }
 
 - (void)dealloc {

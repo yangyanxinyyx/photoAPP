@@ -21,9 +21,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@"" forKey:TASKID];
-    [defaults setObject:@"" forKey:TYPE];
-    [defaults setObject:@"" forKey:USERID];
+    if ([[defaults objectForKey:@"url"] isEqualToString:@"isURL"]) {
+        [defaults setObject:@"" forKey:@"isURL"];
+    } else {
+        [defaults setObject:@"" forKey:TASKID];
+        [defaults setObject:@"" forKey:TYPE];
+        [defaults setObject:@"" forKey:USERID];
+    }
     
     NSString *versionStr = [defaults objectForKey:VERSION];
     if ([versionStr isEqualToString:@"0.0.1"] || versionStr != nil) {
@@ -88,6 +92,7 @@
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options{
     if (url) {
+        
         NSString *strUrl = [NSString stringWithFormat:@"%@", url];
         NSString *queryStr = [[strUrl componentsSeparatedByString:@"?"] lastObject];
         NSArray *queryParameters = [queryStr componentsSeparatedByString:@"&"];
@@ -100,6 +105,7 @@
         [defaults setObject:[paramDict objectForKey:@"taskid"] forKey:TASKID];
         [defaults setObject:[paramDict objectForKey:@"type"] forKey:TYPE];
         [defaults setObject:[paramDict objectForKey:@"userid"] forKey:USERID];
+        [defaults setObject:@"url" forKey:@"isURL"];
         [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATIONSKIP object:nil];
         
     }
