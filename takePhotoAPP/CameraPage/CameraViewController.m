@@ -727,10 +727,10 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     }
     if (index == -1) {
         NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-        NSTimeInterval a = [dat timeIntervalSince1970];
+        NSTimeInterval a = [dat timeIntervalSince1970] * 1000;
         NSString *timeString = [NSString stringWithFormat:@"%f", a];
         NSInteger number = [timeString integerValue];
-        NSString *timeStringNumber = [NSString stringWithFormat:@"%ld",number];
+        NSString *timeStringNumber = [NSString stringWithFormat:@"%ld",(long)number];
         NSString *imageFile = [novelPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeStringNumber]];
         NSData *imageData = UIImageJPEGRepresentation(self.imageOverlap, 1);
         BOOL result = [imageData writeToFile:imageFile atomically:YES];
@@ -767,11 +767,20 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
     [self.imageChooseView reloadData];
     if (_isRephotograph) {
         if (_isSingleModel) {
-            
+            ImageModel *model = [self.arrayImages lastObject];
+            self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
+            [self setImageOverlapFrameWithType:0 image:self.imageOverlap];
+        } else {
+            NSInteger index = self.imageFileArray.count % 2;
+            if (index == 0) {
+                NSString *imageFile = [self.imageFileArray objectAtIndex:(self.imageFileArray.count - 2)];
+                UIImage *image = [UIImage imageWithContentsOfFile:imageFile];
+                [self setImageOverlapFrameWithType:0 image:image];
+            } else {
+                [self setImageOverlapFrameWithType:1 image:self.imageOverlap];
+            }
         }
-        ImageModel *model = [self.arrayImages lastObject];
-        self.imageOverlap = [UIImage imageWithContentsOfFile:model.imageFile];
-        [self setImageOverlapFrameWithType:self.imageFileArray.count % 2 image:self.imageOverlap];
+        
     }
     
     
@@ -969,7 +978,7 @@ typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
         [manager createDirectoryAtPath:novelPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSTimeInterval a=[dat timeIntervalSince1970]*1000;
+    NSTimeInterval a = [dat timeIntervalSince1970]*1000;
     NSString *timeString = [NSString stringWithFormat:@"%f", a];
     NSString *imageFile = [novelPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeString]];
     NSData *imageData = UIImageJPEGRepresentation(image, 1);
