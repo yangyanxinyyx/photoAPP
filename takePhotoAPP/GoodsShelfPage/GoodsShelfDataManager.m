@@ -72,7 +72,7 @@
              NSMutableDictionary *uploadDic = [NSMutableDictionary dictionary];
              if ([responseObject isKindOfClass:[NSString class]]) {
                  NSString *name = [[imagePaths[i] lastPathComponent] substringToIndex:10];
-                 NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd"];
+                 NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
                  stampFormatter.timeZone = [NSTimeZone systemTimeZone];
                  NSDate *stampDate = [NSDate dateWithTimeIntervalSince1970:[name integerValue]];
                  NSString *date = [stampFormatter stringFromDate:stampDate];
@@ -188,7 +188,7 @@
             if ([responseObject isKindOfClass:[NSString class]]) {
                 
                 NSString *name = [[imagePaths[i] lastPathComponent] substringToIndex:10];
-                NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd"];
+                NSDateFormatter *stampFormatter = [[NSDateFormatter alloc] init];[stampFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
                 stampFormatter.timeZone = [NSTimeZone systemTimeZone];
                 NSDate *stampDate = [NSDate dateWithTimeIntervalSince1970:[name integerValue]];
                 NSString *date = [stampFormatter stringFromDate:stampDate];
